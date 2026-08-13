@@ -46,12 +46,12 @@ export default function LandingPage() {
           מעקב טיפולים, תזכורות לטסט שנתי וביטוח, ועוזר AI אישי הלומד את ספר הרכב שלך.
         </p>
 
-        {/* Navigation Buttons */}
-        <div style={{ display: "flex", gap: "12px", justifyContent: "center" }}>
+        {/* Navigation Button */}
+        <div style={{ display: "flex", justifyContent: "center" }}>
           <Link
             to="/auth"
             style={{
-              padding: "12px 24px",
+              padding: "12px 28px",
               borderRadius: "10px",
               fontWeight: "700",
               fontSize: "15px",
@@ -60,20 +60,6 @@ export default function LandingPage() {
             }}
           >
             התחברות / הרשמה
-          </Link>
-          <Link
-            to="/home"
-            style={{
-              padding: "12px 24px",
-              borderRadius: "10px",
-              fontWeight: "600",
-              fontSize: "15px",
-              color: "#334155",
-              backgroundColor: "#f1f5f9",
-              border: "1px solid #cbd5e1",
-            }}
-          >
-            כניסה לדשבורד
           </Link>
         </div>
       </div>
