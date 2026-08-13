@@ -15,122 +15,130 @@ export const formatPlateNumber = (input) => {
   return clean;
 };
 
-const MOCK_PLATE_DATABASE = {
-  "12345678": {
-    make: "Toyota",
-    model: "Corolla Hybrid",
-    year: 2023,
-    color: "לבן פנינה",
-    fuelType: "היברידי",
-    mileage: 32000,
-    lastServiceDate: "2024-02-10",
-    lastServiceMileage: 28000,
-    serviceInterval: "כל 15,000 ק\"מ / שנה",
-    testExpiryDate: "2025-08-15",
-    insuranceExpiryDate: "2025-09-01"
-  },
-  "1234567": {
-    make: "Mazda",
-    model: "Mazda 3",
-    year: 2019,
-    color: "אדום מטאלי",
-    fuelType: "בנזין",
-    mileage: 78000,
-    lastServiceDate: "2023-11-05",
-    lastServiceMileage: 70000,
-    serviceInterval: "כל 15,000 ק\"מ / שנה",
-    testExpiryDate: "2025-04-10",
-    insuranceExpiryDate: "2025-05-15"
-  },
-  "8899900": {
-    make: "Hyundai",
-    model: "Ioniq 5",
-    year: 2024,
-    color: "אפור עכבר",
-    fuelType: "חשמלי",
-    mileage: 15000,
-    lastServiceDate: "2024-05-01",
-    lastServiceMileage: 15000,
-    serviceInterval: "כל 20,000 ק\"מ / 2 שנים",
-    testExpiryDate: "2026-03-30",
-    insuranceExpiryDate: "2026-04-15"
-  },
-  "11223344": {
-    make: "Tesla",
-    model: "Model 3",
-    year: 2023,
-    color: "שחור",
-    fuelType: "חשמלי",
-    mileage: 24000,
-    lastServiceDate: "2024-01-20",
-    lastServiceMileage: 20000,
-    serviceInterval: "כל 20,000 ק\"מ / 2 שנים",
-    testExpiryDate: "2026-01-20",
-    insuranceExpiryDate: "2026-02-01"
-  },
-  "55666777": {
-    make: "Kia",
-    model: "Sportage",
-    year: 2021,
-    color: "כסוף",
-    fuelType: "בנזין",
-    mileage: 52000,
-    lastServiceDate: "2024-03-12",
-    lastServiceMileage: 45000,
-    serviceInterval: "כל 15,000 ק\"מ / שנה",
-    testExpiryDate: "2025-11-01",
-    insuranceExpiryDate: "2025-12-01"
+export const formatGovDateToDisplay = (dateStr) => {
+  if (!dateStr) return "";
+  const cleanDate = dateStr.slice(0, 10);
+  const parts = cleanDate.split("-");
+  if (parts.length === 3) {
+    return `${parts[2]}.${parts[1]}.${parts[0]}`;
   }
+  return dateStr;
 };
 
+const HEBREW_MAKE_MAP = {
+  "טויוטה": "Toyota",
+  "יונדאי": "Hyundai",
+  "קיה": "Kia",
+  "מאזדה": "Mazda",
+  "טסלה": "Tesla",
+  "סקודה": "Skoda",
+  "פיז'ו": "Peugeot",
+  "ניסאן": "Nissan",
+  "מרצדס": "Mercedes-Benz",
+  "ב.מ.וו": "BMW",
+  "שברולט": "Chevrolet",
+  "פולקסווגן": "Volkswagen",
+  "סובארו": "Subaru",
+  "סוזוקי": "Suzuki",
+  "אאודי": "Audi",
+  "סיאט": "Seat",
+  "רנו": "Renault",
+  "וולוו": "Volvo",
+  "ג'יפ": "Jeep",
+  "סיטרואן": "Citroen",
+  "פורד": "Ford",
+  "הונדה": "Honda",
+  "מיצובישי": "Mitsubishi",
+  "קופרה": "Cupra",
+  "ג'אקו": "Jaecoo",
+  "BYD": "BYD",
+  "ג'ילי": "Geely",
+  "MG": "MG"
+};
+
+const normalizeMakeName = (rawMakeStr) => {
+  if (!rawMakeStr) return "יצרן כללי";
+  const str = String(rawMakeStr).trim();
+  for (const [hebKey, engMake] of Object.entries(HEBREW_MAKE_MAP)) {
+    if (str.includes(hebKey)) {
+      return engMake;
+    }
+  }
+  return str;
+};
+
+// Ministry of Transport Datastore Resource IDs (data.gov.il)
+// Primary: Active Private & Commercial Vehicles Dataset
+const ACTIVE_VEHICLES_RESOURCE_ID = "053cea08-09bc-40ec-8f7a-156f0677aff3";
+// Secondary: Special Purpose / Imported / Legacy Vehicles Dataset
+const SPECIAL_VEHICLES_RESOURCE_ID = "0866573c-40cd-4ca8-91d2-9dd2d7a492e5";
+
 export const fetchVehicleDetailsByPlate = async (plateNumber) => {
-  const cleanDigits = plateNumber.replace(/\D/g, "");
+  const cleanDigits = cleanPlateNumber(plateNumber);
   if (!cleanDigits || (cleanDigits.length !== 7 && cleanDigits.length !== 8)) {
     throw new Error("מספר רישוי חייב להכיל 7 או 8 ספרות");
   }
 
-  if (MOCK_PLATE_DATABASE[cleanDigits]) {
-    await new Promise((res) => setTimeout(res, 600));
+  const numericPlate = parseInt(cleanDigits, 10);
+
+  const tryFetchFromResource = async (resourceId) => {
+    try {
+      const response = await axios.get("https://data.gov.il/api/3/action/datastore_search", {
+        params: {
+          resource_id: resourceId,
+          filters: JSON.stringify({ mispar_rechev: numericPlate }),
+          limit: 1
+        },
+        timeout: 6000
+      });
+
+      const records = response.data?.result?.records;
+      if (records && records.length > 0) {
+        return records[0];
+      }
+    } catch (err) {
+      console.warn(`[licensePlateService] Fetch failed for dataset ${resourceId}:`, err?.message || err);
+    }
+    return null;
+  };
+
+  let record = await tryFetchFromResource(ACTIVE_VEHICLES_RESOURCE_ID);
+
+  if (!record) {
+    record = await tryFetchFromResource(SPECIAL_VEHICLES_RESOURCE_ID);
+  }
+
+  if (record) {
+    const rawMake = record.tozeret_nm || record.make || "";
+    const make = normalizeMakeName(rawMake);
+    const model = record.kinuy_mishari || record.model_nm || record.degem_nm || "דגם כללי";
+    const year = record.shnat_yitzur ? parseInt(record.shnat_yitzur, 10) : new Date().getFullYear();
+    const color = record.tzeva_rechev || "לבן";
+    const fuelType = record.sug_delek_nm || "בנזין";
+    const rawTestDate = record.tokef_dt ? record.tokef_dt.slice(0, 10) : "";
+    const testExpiryDate = formatGovDateToDisplay(rawTestDate);
+
     return {
       success: true,
       found: true,
-      data: MOCK_PLATE_DATABASE[cleanDigits]
+      source: "gov_api",
+      data: {
+        make,
+        model,
+        year,
+        color,
+        fuelType,
+        mileage: 0,
+        testExpiryDate,
+        rawGovernmentData: record
+      }
     };
-  }
-
-  try {
-    const response = await axios.get("https://data.gov.il/api/3/action/datastore_search", {
-      params: {
-        resource_id: "05a481d8-a477-49bc-be85-b9e73b7e7592",
-        filters: JSON.stringify({ mispar_rechev: cleanDigits })
-      },
-      timeout: 4000
-    });
-
-    const records = response.data?.result?.records;
-    if (records && records.length > 0) {
-      const rec = records[0];
-      return {
-        success: true,
-        found: true,
-        data: {
-          make: rec.tozeret_nm || rec.make || "יצרן כללי",
-          model: rec.kinuy_mishari || rec.model_nm || "דגם כללי",
-          year: rec.shnat_yitzur ? parseInt(rec.shnat_yitzur, 10) : new Date().getFullYear(),
-          color: rec.tzeva_rechev || "לבן",
-          fuelType: rec.sug_delek_nm || "בנזין",
-          mileage: 0,
-          testExpiryDate: rec.tokef_dt ? rec.tokef_dt.slice(0, 10) : ""
-        }
-      };
-    }
-  } catch {
-    // TODO: log backend API fallback
   }
 
   return {
     success: true,
     found: false,
+    source: "none",
     data: {
       make: "",
       model: "",

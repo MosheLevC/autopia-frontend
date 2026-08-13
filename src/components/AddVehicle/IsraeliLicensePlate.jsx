@@ -1,6 +1,21 @@
 import { Paper, TextInput } from "@mantine/core";
 
-export default function IsraeliLicensePlate({ value, onChange, placeholder = "123·45·678", autoFocus = false }) {
+export default function IsraeliLicensePlate({
+  value,
+  onChange,
+  onSearch,
+  onKeyDown,
+  placeholder = "123·45·678",
+  autoFocus = false
+}) {
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      onSearch?.();
+    }
+    onKeyDown?.(e);
+  };
+
   return (
     <Paper
       radius="lg"
@@ -68,6 +83,7 @@ export default function IsraeliLicensePlate({ value, onChange, placeholder = "12
       <TextInput
         value={value}
         onChange={onChange}
+        onKeyDown={handleKeyDown}
         placeholder={placeholder}
         variant="unstyled"
         autoFocus={autoFocus}

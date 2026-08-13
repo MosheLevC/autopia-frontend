@@ -29,7 +29,7 @@ export default function VehicleWizard({ onComplete, onCancel }) {
     insuranceExpiryDate: "01.05.2026",
   });
 
-  const [plateInput, setPlateInput] = useState("123·45·678");
+  const [plateInput, setPlateInput] = useState("");
   const [isSearching, setIsSearching] = useState(false);
   const [searchError, setSearchError] = useState("");
   const [searchNotice, setSearchNotice] = useState("");
@@ -197,6 +197,7 @@ export default function VehicleWizard({ onComplete, onCancel }) {
               <IsraeliLicensePlate
                 value={plateInput}
                 onChange={handlePlateChange}
+                onSearch={() => handlePlateSearch()}
                 placeholder="123·45·678"
                 autoFocus
               />
