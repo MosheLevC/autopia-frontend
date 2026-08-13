@@ -14,6 +14,7 @@ import {
   ThemeIcon,
   Title,
 } from "@mantine/core";
+import Logo from "../components/Logo";
 
 const FEATURES = [
   {
@@ -51,22 +52,7 @@ export default function LandingPage() {
       <Container size="md">
         <Stack align="center" gap="xl">
           <Stack align="center" gap="sm" ta="center">
-            <Box
-              style={{
-                width: 64,
-                height: 64,
-                borderRadius: 20,
-                background: "linear-gradient(135deg, #2563eb, #1d4ed8)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                color: "#ffffff",
-                fontSize: 32,
-                boxShadow: "0 8px 20px rgba(37, 99, 235, 0.35)",
-              }}
-            >
-              <i className="ph-bold ph-car" />
-            </Box>
+            <Logo size={80} />
 
             <Title order={1} style={{ fontSize: 36, fontWeight: 800, color: "#0f172a" }}>
               אוטופיה | Autopia

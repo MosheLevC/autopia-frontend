@@ -16,6 +16,7 @@ import {
   TextInput,
   Title,
 } from "@mantine/core";
+import Logo from "../components/Logo";
 
 export default function AuthPage() {
   const [mode, setMode] = useState("login");
@@ -54,22 +55,7 @@ export default function AuthPage() {
       <Container size="xs" style={{ width: "100%" }}>
         <Paper radius="xl" p="xl" withBorder shadow="md" style={{ backgroundColor: "#ffffff" }}>
           <Stack align="center" gap="xs" mb="lg">
-            <Box
-              style={{
-                width: 56,
-                height: 56,
-                borderRadius: 16,
-                background: "linear-gradient(135deg, #2563eb, #1d4ed8)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                color: "#ffffff",
-                fontSize: 28,
-                boxShadow: "0 8px 18px rgba(37, 99, 235, 0.3)",
-              }}
-            >
-              <i className="ph-car" />
-            </Box>
+            <Logo size={72} />
 
             <Title order={2} style={{ fontSize: 26, fontWeight: 800, color: "#0f172a" }}>
               Autopia | אוטופיה
