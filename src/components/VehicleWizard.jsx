@@ -16,17 +16,17 @@ export default function VehicleWizard({ onComplete, onCancel }) {
     plateNumber: "",
     make: "",
     model: "",
-    year: 2021,
-    color: "לבן",
-    fuelType: "בנזין",
-    mileage: 124350,
+    year: new Date().getFullYear(),
+    color: "",
+    fuelType: "",
+    mileage: 0,
     manualFile: null,
     manualFileName: "",
     lastServiceDate: "",
     lastServiceMileage: 0,
-    serviceInterval: 'כל 15,000 ק"מ',
+    serviceInterval: "",
     testExpiryDate: "",
-    insuranceExpiryDate: "01.05.2026",
+    insuranceExpiryDate: "",
   });
 
   const [plateInput, setPlateInput] = useState("");
