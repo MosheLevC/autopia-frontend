@@ -1,5 +1,15 @@
 import { useState } from "react";
-import { Alert, Box, Button, Card, Divider, Group, Stack, Text, Title } from "@mantine/core";
+import {
+  Alert,
+  Button,
+  Card,
+  Divider,
+  Group,
+  SimpleGrid,
+  Stack,
+  Text,
+  Title,
+} from "@mantine/core";
 import StepProgress from "./AddVehicle/StepProgress";
 import IsraeliLicensePlate from "./AddVehicle/IsraeliLicensePlate";
 import StepGuidanceCard from "./AddVehicle/StepGuidanceCard";
@@ -92,7 +102,9 @@ export default function VehicleWizard({ onComplete, onCancel }) {
           mileage: result.data.mileage || prev.mileage,
           testExpiryDate: result.data.testExpiryDate || prev.testExpiryDate,
         }));
-        setSearchNotice(`אותר רכב: ${result.data.make} ${result.data.model} (${result.data.year})`);
+        setSearchNotice(
+          `אותר רכב: ${result.data.make} ${result.data.model} (${result.data.year})`
+        );
       } else {
         setFormData((prev) => ({
           ...prev,
@@ -137,62 +149,40 @@ export default function VehicleWizard({ onComplete, onCancel }) {
   };
 
   return (
-    <Stack spacing="xl" dir="rtl" style={{ maxWidth: 1100, margin: "0 auto" }}>
-      <Title
-        order={2}
-        align="center"
-        style={{
-          fontSize: "1.75rem",
-          fontWeight: 800,
-          color: "#0f172a",
-          fontFamily: "var(--font-hebrew)",
-        }}
-      >
+    <Stack gap="xl" dir="rtl" maw={1100} mx="auto">
+      <Title order={2} ta="center" fw={800}>
         הוספת רכב
       </Title>
 
-      <StepProgress activeStep={activeStep} steps={stepsList} onStepClick={(idx) => setActiveStep(idx)} />
+      <StepProgress
+        activeStep={activeStep}
+        steps={stepsList}
+        onStepClick={(idx) => setActiveStep(idx)}
+      />
 
       {activeStep === 0 && (
-        <Box
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
-            gap: "24px",
-            alignItems: "stretch",
-          }}
-        >
+        <SimpleGrid cols={{ base: 1, md: 2 }} spacing="lg">
           <Card
             shadow="sm"
-            padding="xl"
+            p="xl"
             radius="xl"
             withBorder
+            h="100%"
             style={{
-              backgroundColor: "#ffffff",
-              borderColor: "#e2e8f0",
-              height: "100%",
               display: "flex",
               flexDirection: "column",
               justifyContent: "space-between",
             }}
           >
-            <Stack spacing="lg" align="center">
-              <div style={{ textAlign: "center" }}>
-                <Title
-                  order={3}
-                  style={{
-                    fontSize: "1.5rem",
-                    fontWeight: 800,
-                    color: "#0f172a",
-                    fontFamily: "var(--font-hebrew)",
-                  }}
-                >
+            <Stack gap="lg" align="center">
+              <Stack gap={4} ta="center">
+                <Title order={3} fw={800}>
                   הזנת מספר רכב
                 </Title>
-                <Text size="sm" c="dimmed" mt={4} style={{ fontFamily: "var(--font-hebrew)" }}>
+                <Text size="sm" c="dimmed">
                   הזן מספר רכב ואנחנו נעזור לך למצוא את הפרטים
                 </Text>
-              </div>
+              </Stack>
 
               <IsraeliLicensePlate
                 value={plateInput}
@@ -203,60 +193,51 @@ export default function VehicleWizard({ onComplete, onCancel }) {
               />
 
               {searchError && (
-                <Alert color="red" radius="md" style={{ width: "100%" }}>
+                <Alert color="red" radius="md" w="100%">
                   {searchError}
                 </Alert>
               )}
 
               {searchNotice && (
-                <Alert color="green" radius="md" style={{ width: "100%" }}>
+                <Alert color="green" radius="md" w="100%">
                   {searchNotice}
                 </Alert>
               )}
 
               <Button
                 size="md"
-                color="blue"
                 radius="md"
                 fullWidth
                 loading={isSearching}
                 onClick={() => handlePlateSearch()}
-                leftSection={<i className="ph-bold ph-magnifying-glass" style={{ fontSize: 18 }} />}
-                style={{
-                  backgroundColor: "#2563eb",
-                  height: 48,
-                  fontSize: "1rem",
-                  fontWeight: 700,
-                  fontFamily: "var(--font-hebrew)",
-                }}
+                leftSection={
+                  <i
+                    className="ph-bold ph-magnifying-glass"
+                    style={{ fontSize: 18 }}
+                  />
+                }
               >
                 חיפוש רכב
               </Button>
 
-              <div style={{ width: "100%" }}>
-                <Divider my="xs" label="או" labelPosition="center" />
-              </div>
+              <Divider my="xs" label="או" labelPosition="center" w="100%" />
 
               <Button
-                variant="outline"
-                color="blue"
+                variant="default"
                 radius="md"
                 fullWidth
                 onClick={handleManualContinue}
-                leftSection={<i className="ph-bold ph-pencil-simple" style={{ fontSize: 18 }} />}
-                style={{
-                  height: 46,
-                  fontSize: "0.95rem",
-                  fontWeight: 600,
-                  borderColor: "#2563eb",
-                  color: "#2563eb",
-                  fontFamily: "var(--font-hebrew)",
-                }}
+                leftSection={
+                  <i
+                    className="ph-bold ph-pencil-simple"
+                    style={{ fontSize: 18 }}
+                  />
+                }
               >
                 הזנה ידנית
               </Button>
 
-              <Text size="xs" c="dimmed" align="center" style={{ fontFamily: "var(--font-hebrew)" }}>
+              <Text size="xs" c="dimmed" ta="center">
                 אם הרכב לא נמצא, אפשר להמשיך להזנה ידנית
               </Text>
             </Stack>
@@ -267,17 +248,18 @@ export default function VehicleWizard({ onComplete, onCancel }) {
             subtitle="נמצא את פרטי הרכב שלך ונמלא עבורך את הפרטים הבסיסיים."
             items={guidanceItemsStep1}
           />
-        </Box>
+        </SimpleGrid>
       )}
 
       {activeStep > 0 && (
-        <Card shadow="sm" padding="xl" radius="xl" withBorder style={{ backgroundColor: "#ffffff" }}>
+        <Card shadow="sm" p="xl" radius="xl" withBorder>
           <Stack align="center" py="xl">
-            <Title order={3} style={{ fontFamily: "var(--font-hebrew)" }}>
+            <Title order={3}>
               שלב {activeStep + 1} בפיתוח...
             </Title>
-            <Text c="dimmed" style={{ fontFamily: "var(--font-hebrew)" }}>
-              מספר הרישוי שנבחר: {formatPlateNumber(formData.plateNumber)} ({formData.plateNumber})
+            <Text c="dimmed">
+              מספר הרישוי שנבחר: {formatPlateNumber(formData.plateNumber)} (
+              {formData.plateNumber})
             </Text>
             <Button variant="light" onClick={() => setActiveStep(0)}>
               חזור לשלב 1
@@ -286,40 +268,14 @@ export default function VehicleWizard({ onComplete, onCancel }) {
         </Card>
       )}
 
-      <Box style={{ display: "flex", justifyContent: "flex-end", width: "100%" }}>
-        <Group spacing="md">
-          <Button
-            variant="outline"
-            color="blue"
-            radius="md"
-            onClick={onCancel}
-            style={{
-              height: 46,
-              padding: "0 28px",
-              borderColor: "#cbd5e1",
-              color: "#2563eb",
-              fontFamily: "var(--font-hebrew)",
-            }}
-          >
-            ביטול
-          </Button>
-          <Button
-            size="md"
-            color="blue"
-            radius="md"
-            onClick={handleNextStep}
-            style={{
-              backgroundColor: "#2563eb",
-              height: 46,
-              padding: "0 36px",
-              fontWeight: 700,
-              fontFamily: "var(--font-hebrew)",
-            }}
-          >
-            המשך
-          </Button>
-        </Group>
-      </Box>
+      <Group justify="flex-end" w="100%" gap="md">
+        <Button variant="default" radius="md" onClick={onCancel} px="xl">
+          ביטול
+        </Button>
+        <Button size="md" radius="md" onClick={handleNextStep} px="xl">
+          המשך
+        </Button>
+      </Group>
     </Stack>
   );
 }

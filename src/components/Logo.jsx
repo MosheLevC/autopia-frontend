@@ -1,4 +1,4 @@
-import React from "react";
+import { Group, Text } from "@mantine/core";
 
 /**
  * Autopia Brand Logo Component
@@ -11,14 +11,12 @@ import React from "react";
  */
 export default function Logo({ size = 40, showText = false, className = "" }) {
   return (
-    <div
+    <Group
       className={`autopia-logo ${className}`}
-      style={{
-        display: "inline-flex",
-        alignItems: "center",
-        gap: "10px",
-        direction: "rtl",
-      }}
+      gap={10}
+      wrap="nowrap"
+      align="center"
+      dir="rtl"
     >
       <img
         src="/logo.png"
@@ -31,17 +29,25 @@ export default function Logo({ size = 40, showText = false, className = "" }) {
         }}
       />
       {showText && (
-        <span
+        <Text
+          component="span"
+          fw={800}
           style={{
             fontSize: `${Math.round(size * 0.5)}px`,
-            fontWeight: 800,
-            color: "#1e293b",
-            fontFamily: "system-ui, -apple-system, sans-serif",
           }}
         >
-          אוטופיה <span style={{ color: "#2563eb", fontSize: "0.85em" }}>AUTOPIA</span>
-        </span>
+          אוטופיה{" "}
+          <Text
+            component="span"
+            c="var(--mantine-primary-color)"
+            inherit
+            style={{ fontSize: "0.85em" }}
+          >
+            AUTOPIA
+          </Text>
+        </Text>
       )}
-    </div>
+    </Group>
   );
 }
+

@@ -1,4 +1,4 @@
-import { Card, Group, Paper, Stack, Text, Title } from "@mantine/core";
+import { Card, Group, Paper, Stack, Text, ThemeIcon, Title } from "@mantine/core";
 
 export default function StepGuidanceCard({
   title = "מה קורה אחרי החיפוש?",
@@ -8,54 +8,43 @@ export default function StepGuidanceCard({
   return (
     <Card
       shadow="sm"
-      padding="xl"
+      p="xl"
       radius="xl"
       withBorder
-      style={{
-        backgroundColor: "#ffffff",
-        borderColor: "#e2e8f0",
-        height: "100%"
-      }}
+      h="100%"
     >
-      <Stack spacing="lg">
-        <div style={{ textAlign: "center" }}>
-          <Title order={3} style={{ fontSize: "1.25rem", fontWeight: 700, color: "#0f172a" }}>
+      <Stack gap="lg">
+        <Stack gap={4} ta="center">
+          <Title order={3} fw={700}>
             {title}
           </Title>
           {subtitle && (
-            <Text size="xs" c="dimmed" mt={4}>
+            <Text size="xs" c="dimmed">
               {subtitle}
             </Text>
           )}
-        </div>
+        </Stack>
 
-        <Stack spacing="md">
+        <Stack gap="md">
           {items.map((item, idx) => (
             <Paper
               key={idx}
               p="md"
               radius="lg"
-              style={{ backgroundColor: "#f8fafc", border: "1px solid #f1f5f9" }}
+              bg="gray.0"
+              withBorder
             >
-              <Group noWrap align="flex-start" spacing="md">
-                <div
-                  style={{
-                    width: 40,
-                    height: 40,
-                    borderRadius: "50%",
-                    backgroundColor: "#eff6ff",
-                    color: "#2563eb",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    fontSize: "1.25rem",
-                    flexShrink: 0
-                  }}
+              <Group wrap="nowrap" align="flex-start" gap="md">
+                <ThemeIcon
+                  size={40}
+                  radius="xl"
+                  variant="light"
+                  style={{ flexShrink: 0 }}
                 >
-                  <i className={`ph-bold ${item.icon}`} />
-                </div>
+                  <i className={`ph-bold ${item.icon}`} style={{ fontSize: "1.25rem" }} />
+                </ThemeIcon>
                 <div>
-                  <Text size="sm" weight={700} style={{ color: "#0f172a" }}>
+                  <Text size="sm" fw={700}>
                     {item.title}
                   </Text>
                   <Text size="xs" c="dimmed" mt={2}>
