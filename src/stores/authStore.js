@@ -100,6 +100,14 @@ export function createAuthStore() {
           const storage = rememberMe ? localStorage : sessionStorage;
           storage.setItem(TOKEN_KEY, result.token);
           storage.setItem(USER_KEY, JSON.stringify(result.user));
+
+          if (!rememberMe) {
+            localStorage.removeItem(TOKEN_KEY);
+            localStorage.removeItem(USER_KEY);
+          } else {
+            sessionStorage.removeItem(TOKEN_KEY);
+            sessionStorage.removeItem(USER_KEY);
+          }
         });
         return result;
       } catch (err) {
