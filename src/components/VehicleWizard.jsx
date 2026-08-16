@@ -14,29 +14,30 @@ import StepProgress from "./AddVehicle/StepProgress";
 import IsraeliLicensePlate from "./AddVehicle/IsraeliLicensePlate";
 import StepGuidanceCard from "./AddVehicle/StepGuidanceCard";
 import {
-  formatPlateNumber,
-  cleanPlateNumber,
-  fetchVehicleDetailsByPlate,
-} from "../services/licensePlateService";
+  formatLicensePlate,
+  cleanLicensePlate,
+} from "../utils/plateUtils";
+import vehicleService from "../services/vehicleService";
 
 export default function VehicleWizard({ onComplete, onCancel }) {
   const [activeStep, setActiveStep] = useState(0);
 
   const [formData, setFormData] = useState({
-    plateNumber: "",
-    make: "",
+    licensePlate: "",
+    manufacturer: "",
     model: "",
     year: new Date().getFullYear(),
     color: "",
     fuelType: "",
-    mileage: 0,
+    trimLevel: "",
+    currentMileage: 0,
+    vehicleLicenseValidUntil: "",
+    insuranceExpiryDate: "",
     manualFile: null,
     manualFileName: "",
     lastServiceDate: "",
     lastServiceMileage: 0,
     serviceInterval: "",
-    testExpiryDate: "",
-    insuranceExpiryDate: "",
   });
 
   const [plateInput, setPlateInput] = useState("");
@@ -71,14 +72,14 @@ export default function VehicleWizard({ onComplete, onCancel }) {
   ];
 
   const handlePlateChange = (e) => {
-    const formatted = formatPlateNumber(e.target.value);
+    const formatted = formatLicensePlate(e.target.value);
     setPlateInput(formatted);
     setSearchError("");
     setSearchNotice("");
   };
 
   const handlePlateSearch = async (targetPlate = plateInput) => {
-    const cleanDigits = cleanPlateNumber(targetPlate);
+    const cleanDigits = cleanLicensePlate(targetPlate);
     if (!cleanDigits || (cleanDigits.length !== 7 && cleanDigits.length !== 8)) {
       setSearchError("נא להזין מספר רישוי תקין (7 או 8 ספרות)");
       return;
@@ -89,57 +90,62 @@ export default function VehicleWizard({ onComplete, onCancel }) {
     setSearchNotice("");
 
     try {
-      const result = await fetchVehicleDetailsByPlate(targetPlate);
-      if (result.success && result.found) {
+      const result = await vehicleService.lookupVehicle(cleanDigits);
+      if (result.success && result.found && result.vehicle) {
+        const v = result.vehicle;
         setFormData((prev) => ({
           ...prev,
-          plateNumber: cleanDigits,
-          make: result.data.make || prev.make,
-          model: result.data.model || prev.model,
-          year: result.data.year || prev.year,
-          color: result.data.color || prev.color,
-          fuelType: result.data.fuelType || prev.fuelType,
-          mileage: result.data.mileage || prev.mileage,
-          testExpiryDate: result.data.testExpiryDate || prev.testExpiryDate,
+          licensePlate: cleanDigits,
+          manufacturer: v.manufacturer || prev.manufacturer,
+          model: v.model || prev.model,
+          year: v.year || prev.year,
+          color: v.color || prev.color,
+          fuelType: v.fuelType || prev.fuelType,
+          trimLevel: v.trimLevel || prev.trimLevel,
+          currentMileage: v.currentMileage ?? prev.currentMileage,
+          vehicleLicenseValidUntil: v.vehicleLicenseValidUntil || prev.vehicleLicenseValidUntil,
         }));
         setSearchNotice(
-          `אותר רכב: ${result.data.make} ${result.data.model} (${result.data.year})`
+          `אותר רכב: ${v.manufacturer} ${v.model} (${v.year})`
         );
       } else {
         setFormData((prev) => ({
           ...prev,
-          plateNumber: cleanDigits,
+          licensePlate: cleanDigits,
         }));
-        setSearchNotice("לא נשלפו נתונים אוטומטיים. ניתן להמשיך למילוי ידני.");
+        setSearchNotice("הרכב לא נמצא במאגר. ניתן להמשיך להזנה ידנית.");
       }
-    } catch {
-      setSearchError("שגיאה בחיפוש מספר הרישוי. ניתן להמשיך ידנית.");
+    } catch (err) {
+      setSearchError(err.message || "שגיאה בחיפוש מספר הרישוי. ניתן להמשיך ידנית.");
     } finally {
       setIsSearching(false);
     }
   };
 
   const handleManualContinue = () => {
-    const cleanDigits = cleanPlateNumber(plateInput);
+    const cleanDigits = cleanLicensePlate(plateInput);
     if (!cleanDigits || (cleanDigits.length !== 7 && cleanDigits.length !== 8)) {
       setSearchError("נא להזין מספר רישוי תקין להמשך");
       return;
     }
     setFormData((prev) => ({
       ...prev,
-      plateNumber: cleanDigits,
+      licensePlate: cleanDigits,
     }));
     setActiveStep(1);
   };
 
   const handleNextStep = () => {
     if (activeStep === 0) {
-      const cleanDigits = cleanPlateNumber(plateInput);
+      const cleanDigits = cleanLicensePlate(plateInput);
       if (!cleanDigits || (cleanDigits.length !== 7 && cleanDigits.length !== 8)) {
         setSearchError("נא להזין מספר רישוי תקין לפני המשך");
         return;
       }
-      setFormData((prev) => ({ ...prev, plateNumber: cleanDigits }));
+      setFormData((prev) => ({
+        ...prev,
+        licensePlate: cleanDigits,
+      }));
     }
     if (activeStep < 4) {
       setActiveStep((prev) => prev + 1);
@@ -258,8 +264,8 @@ export default function VehicleWizard({ onComplete, onCancel }) {
               שלב {activeStep + 1} בפיתוח...
             </Title>
             <Text c="dimmed">
-              מספר הרישוי שנבחר: {formatPlateNumber(formData.plateNumber)} (
-              {formData.plateNumber})
+              מספר הרישוי שנבחר: {formatLicensePlate(formData.licensePlate)} (
+              {formData.licensePlate})
             </Text>
             <Button variant="light" onClick={() => setActiveStep(0)}>
               חזור לשלב 1
