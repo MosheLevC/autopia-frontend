@@ -66,8 +66,11 @@ export function createVehicleStore() {
         } else {
           localStorage.removeItem(ACTIVE_VEHICLE_KEY);
         }
-      } catch {
-        // ignore storage errors
+      } catch (error) {
+        console.warn(
+          "[vehicleStore] Failed to save vehicles to localStorage:",
+          error
+        );
       }
     },
 
@@ -75,8 +78,11 @@ export function createVehicleStore() {
       try {
         localStorage.removeItem(STORAGE_KEY);
         localStorage.removeItem(ACTIVE_VEHICLE_KEY);
-      } catch {
-        // ignore storage errors
+      } catch (error) {
+        console.warn(
+          "[vehicleStore] Failed to clear vehicle storage from localStorage:",
+          error
+        );
       }
     },
 
@@ -95,8 +101,11 @@ export function createVehicleStore() {
         if (storedActiveId) {
           store.activeVehicleId = storedActiveId;
         }
-      } catch {
-        // ignore load errors
+      } catch (error) {
+        console.warn(
+          "[vehicleStore] Failed to load vehicles from localStorage:",
+          error
+        );
       }
     }),
   });
