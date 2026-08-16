@@ -34,7 +34,6 @@ function App() {
       <VehicleStoreProvider>
         <BrowserRouter>
           <Routes>
-            {/* Standalone pages without Header and Navbar */}
             <Route path="/" element={<LandingPage />} />
             <Route
               path="/auth"
@@ -45,7 +44,6 @@ function App() {
               }
             />
 
-            {/* Main authenticated application layout */}
             <Route
               element={
                 <ProtectedRoute>
