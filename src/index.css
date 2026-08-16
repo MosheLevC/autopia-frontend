@@ -46,30 +46,3 @@ button {
   border: none;
   outline: none;
 }
-
-/* Animations */
-@keyframes pulseGlow {
-  0%, 100% {
-    box-shadow: 0 0 15px rgba(37, 99, 235, 0.2);
-  }
-  50% {
-    box-shadow: 0 0 30px rgba(37, 99, 235, 0.45);
-  }
-}
-
-@keyframes floatSlow {
-  0%, 100% {
-    transform: translateY(0px);
-  }
-  50% {
-    transform: translateY(-8px);
-  }
-}
-
-.animate-pulse-glow {
-  animation: pulseGlow 3s infinite ease-in-out;
-}
-
-.animate-float {
-  animation: floatSlow 4s infinite ease-in-out;
-}
