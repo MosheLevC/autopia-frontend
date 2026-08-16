@@ -10,7 +10,7 @@ export const ProtectedRoute = observer(function ProtectedRoute({ children }) {
   if (auth.isLoading) {
     return (
       <Center style={{ minHeight: "80vh" }}>
-        <Loader size="lg" color="blue" />
+        <Loader size="lg" />
       </Center>
     );
   }
@@ -28,7 +28,7 @@ export const PublicRoute = observer(function PublicRoute({ children }) {
   if (auth.isLoading) {
     return (
       <Center style={{ minHeight: "80vh" }}>
-        <Loader size="lg" color="blue" />
+        <Loader size="lg" />
       </Center>
     );
   }
@@ -39,3 +39,4 @@ export const PublicRoute = observer(function PublicRoute({ children }) {
 
   return children;
 });
+

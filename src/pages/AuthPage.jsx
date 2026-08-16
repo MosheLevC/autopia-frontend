@@ -8,6 +8,7 @@ import {
   Button,
   Checkbox,
   Container,
+  Divider,
   Group,
   Paper,
   PasswordInput,
@@ -129,13 +130,14 @@ const AuthPage = observer(function AuthPage() {
 
   return (
     <Box
+      bg="gray.0"
+      py="xl"
+      px="md"
       style={{
         minHeight: "100vh",
-        backgroundColor: "#f8fafc",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        padding: "32px 16px",
       }}
       dir="rtl"
     >
@@ -145,15 +147,11 @@ const AuthPage = observer(function AuthPage() {
           p="xl"
           withBorder
           shadow="md"
-          style={{ backgroundColor: "#ffffff" }}
         >
           <Stack align="center" gap="xs" mb="lg">
             <Logo size={72} />
 
-            <Title
-              order={2}
-              style={{ fontSize: 26, fontWeight: 800, color: "#0f172a" }}
-            >
+            <Title order={2} fw={800}>
               Autopia | אוטופיה
             </Title>
             <Text size="sm" c="dimmed">
@@ -189,7 +187,6 @@ const AuthPage = observer(function AuthPage() {
               { label: "הרשמה", value: "signup" },
             ]}
             mb="lg"
-            color="blue"
           />
 
           <form onSubmit={handleSubmit}>
@@ -205,7 +202,10 @@ const AuthPage = observer(function AuthPage() {
                     leftSection={
                       <i
                         className="ph-user"
-                        style={{ fontSize: 18, color: "#94a3b8" }}
+                        style={{
+                          fontSize: 18,
+                          color: "var(--mantine-color-dimmed)",
+                        }}
                       />
                     }
                     radius="md"
@@ -230,7 +230,10 @@ const AuthPage = observer(function AuthPage() {
                 leftSection={
                   <i
                     className="ph-envelope-simple"
-                    style={{ fontSize: 18, color: "#94a3b8" }}
+                    style={{
+                      fontSize: 18,
+                      color: "var(--mantine-color-dimmed)",
+                    }}
                   />
                 }
                 radius="md"
@@ -238,7 +241,7 @@ const AuthPage = observer(function AuthPage() {
 
               <Box>
                 <Group justify="space-between" mb={4}>
-                  <Text size="sm" fw={700} c="gray.7">
+                  <Text size="sm" fw={700}>
                     סיסמה *
                   </Text>
                   {mode === "login" && (
@@ -247,7 +250,6 @@ const AuthPage = observer(function AuthPage() {
                       type="button"
                       size="xs"
                       fw={600}
-                      c="blue.6"
                     >
                       שכחת סיסמה?
                     </Anchor>
@@ -261,7 +263,10 @@ const AuthPage = observer(function AuthPage() {
                   leftSection={
                     <i
                       className="ph-lock-key"
-                      style={{ fontSize: 18, color: "#94a3b8" }}
+                      style={{
+                        fontSize: 18,
+                        color: "var(--mantine-color-dimmed)",
+                      }}
                     />
                   }
                   radius="md"
@@ -280,7 +285,10 @@ const AuthPage = observer(function AuthPage() {
                   leftSection={
                     <i
                       className="ph-lock-key-open"
-                      style={{ fontSize: 18, color: "#94a3b8" }}
+                      style={{
+                        fontSize: 18,
+                        color: "var(--mantine-color-dimmed)",
+                      }}
                     />
                   }
                   radius="md"
@@ -295,7 +303,6 @@ const AuthPage = observer(function AuthPage() {
                   }
                   label="זכור אותי במכשיר זה"
                   size="sm"
-                  color="blue"
                 />
               )}
 
@@ -304,26 +311,17 @@ const AuthPage = observer(function AuthPage() {
                 fullWidth
                 size="md"
                 radius="md"
-                color="blue"
                 mt="xs"
                 loading={isSubmitting}
-                style={{
-                  background: "linear-gradient(135deg, #2563eb, #1d4ed8)",
-                  fontWeight: 700,
-                  fontSize: 16,
-                  boxShadow: "0 6px 16px rgba(37, 99, 235, 0.35)",
-                }}
               >
                 {mode === "login" ? "התחברות לחשבון" : "יצירת חשבון חדש"}
               </Button>
             </Stack>
           </form>
 
-          <Box
-            pt="lg"
-            mt="lg"
-            style={{ borderTop: "1px solid #f1f5f9", textAlign: "center" }}
-          >
+          <Divider my="lg" />
+
+          <Stack align="center" gap="sm">
             {mode === "login" ? (
               <Text size="sm" c="dimmed">
                 עדיין אין לך חשבון?{" "}
@@ -331,7 +329,6 @@ const AuthPage = observer(function AuthPage() {
                   component="button"
                   type="button"
                   fw={700}
-                  c="blue.6"
                   onClick={() => handleModeChange("signup")}
                 >
                   להרשמה בחינם
@@ -344,7 +341,6 @@ const AuthPage = observer(function AuthPage() {
                   component="button"
                   type="button"
                   fw={700}
-                  c="blue.6"
                   onClick={() => handleModeChange("login")}
                 >
                   להתחברות
@@ -352,12 +348,10 @@ const AuthPage = observer(function AuthPage() {
               </Text>
             )}
 
-            <Box mt="md">
-              <Anchor component={Link} to="/" size="xs" c="dimmed" fw={600}>
-                ← חזרה לדף הבית
-              </Anchor>
-            </Box>
-          </Box>
+            <Anchor component={Link} to="/" size="xs" c="dimmed" fw={600}>
+              ← חזרה לדף הבית
+            </Anchor>
+          </Stack>
         </Paper>
       </Container>
     </Box>
