@@ -48,9 +48,9 @@ export const authService = {
     }
   },
 
-  async getMe() {
+  async getUserInfo() {
     try {
-      const response = await apiClient.get("/auth/me");
+      const response = await apiClient.get("/auth/userinfo");
       return response.data.user;
     } catch (err) {
       throw new Error(formatErrorMessage(err, "שגיאה באימות המשתמש"));
