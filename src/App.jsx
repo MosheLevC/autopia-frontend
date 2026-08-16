@@ -1,5 +1,7 @@
-import { BrowserRouter, Route, Routes } from "react-router";
+import { BrowserRouter, Outlet, Route, Routes } from "react-router";
+import { AuthStoreProvider } from "./stores/AuthStoreContext";
 import { VehicleStoreProvider } from "./stores/VehicleStoreContext";
+import { ProtectedRoute, PublicRoute } from "./components/ProtectedRoute";
 import Header from "./components/Header";
 import Navbar from "./components/Navbar";
 import AddReminderPage from "./pages/AddReminderPage";
@@ -14,17 +16,41 @@ import ServicesPage from "./pages/ServicesPage";
 import VehicleProfilePage from "./pages/VehicleProfilePage";
 import VehiclesPage from "./pages/VehiclesPage";
 
+function AppLayout() {
+  return (
+    <div className="app-container" dir="rtl">
+      <Header />
+      <Navbar />
+      <main>
+        <Outlet />
+      </main>
+    </div>
+  );
+}
+
 function App() {
   return (
-    <VehicleStoreProvider>
-      <BrowserRouter>
-        <div className="app-container" dir="rtl">
-          <Header />
-          <Navbar />
-          <main>
-            <Routes>
-              <Route path="/" element={<LandingPage />} />
-              <Route path="/auth" element={<AuthPage />} />
+    <AuthStoreProvider>
+      <VehicleStoreProvider>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<LandingPage />} />
+            <Route
+              path="/auth"
+              element={
+                <PublicRoute>
+                  <AuthPage />
+                </PublicRoute>
+              }
+            />
+
+            <Route
+              element={
+                <ProtectedRoute>
+                  <AppLayout />
+                </ProtectedRoute>
+              }
+            >
               <Route path="/home" element={<HomePage />} />
               <Route path="/vehicles" element={<VehiclesPage />} />
               <Route path="/vehicles/add" element={<AddVehiclePage />} />
@@ -49,11 +75,11 @@ function App() {
                 element={<AddReminderPage />}
               />
               <Route path="/profile" element={<ProfilePage />} />
-            </Routes>
-          </main>
-        </div>
-      </BrowserRouter>
-    </VehicleStoreProvider>
+            </Route>
+          </Routes>
+        </BrowserRouter>
+      </VehicleStoreProvider>
+    </AuthStoreProvider>
   );
 }
 

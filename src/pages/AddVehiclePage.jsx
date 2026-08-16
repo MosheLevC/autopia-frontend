@@ -1,9 +1,10 @@
 import { Container } from "@mantine/core";
 import { useNavigate } from "react-router";
+import { observer } from "mobx-react-lite";
 import VehicleWizard from "../components/VehicleWizard";
 import { useVehicleStore } from "../stores/VehicleStoreContext";
 
-export default function AddVehiclePage() {
+const AddVehiclePage = observer(function AddVehiclePage() {
   const navigate = useNavigate();
   const { addVehicle } = useVehicleStore();
 
@@ -20,4 +21,6 @@ export default function AddVehiclePage() {
       />
     </Container>
   );
-}
+});
+
+export default AddVehiclePage;

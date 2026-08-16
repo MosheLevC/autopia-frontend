@@ -15,7 +15,7 @@ export const formatPlateNumber = (input) => {
   return clean;
 };
 
-export const formatGovDateToDisplay = (dateStr) => {
+const formatGovDateToDisplay = (dateStr) => {
   if (!dateStr) return "";
   const cleanDate = dateStr.slice(0, 10);
   const parts = cleanDate.split("-");

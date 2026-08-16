@@ -47,29 +47,26 @@ button {
   outline: none;
 }
 
-/* Animations */
-@keyframes pulseGlow {
-  0%, 100% {
-    box-shadow: 0 0 15px rgba(37, 99, 235, 0.2);
-  }
-  50% {
-    box-shadow: 0 0 30px rgba(37, 99, 235, 0.45);
-  }
+.auth-expandable-row {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  visibility: hidden;
+  transition: grid-template-rows 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              opacity 0.22s cubic-bezier(0.4, 0, 0.2, 1),
+              visibility 0.3s;
 }
 
-@keyframes floatSlow {
-  0%, 100% {
-    transform: translateY(0px);
-  }
-  50% {
-    transform: translateY(-8px);
-  }
+.auth-expandable-row.expanded {
+  grid-template-rows: 1fr;
+  opacity: 1;
+  visibility: visible;
 }
 
-.animate-pulse-glow {
-  animation: pulseGlow 3s infinite ease-in-out;
+.auth-expandable-content {
+  overflow: hidden;
+  min-height: 0;
 }
 
-.animate-float {
-  animation: floatSlow 4s infinite ease-in-out;
-}
+
+

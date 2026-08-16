@@ -42,11 +42,10 @@ const FEATURES = [
 export default function LandingPage() {
   return (
     <Box
-      style={{
-        minHeight: "100vh",
-        backgroundColor: "#f8fafc",
-        padding: "48px 16px",
-      }}
+      bg="gray.0"
+      py={{ base: "xl", sm: 48 }}
+      px="md"
+      style={{ minHeight: "100vh" }}
       dir="rtl"
     >
       <Container size="md">
@@ -54,15 +53,15 @@ export default function LandingPage() {
           <Stack align="center" gap="sm" ta="center">
             <Logo size={80} />
 
-            <Title order={1} style={{ fontSize: 36, fontWeight: 800, color: "#0f172a" }}>
+            <Title order={1} fw={800}>
               אוטופיה | Autopia
             </Title>
 
-            <Badge variant="light" color="blue" size="lg" radius="xl">
+            <Badge variant="light" size="lg" radius="xl">
               ניהול רכב חכם במקום אחד
             </Badge>
 
-            <Text size="lg" c="dimmed" style={{ maxWidth: 540 }}>
+            <Text size="lg" c="dimmed" maw={540}>
               הפלטפורמה המקיפה לשמירה על תקינות הרכב, מעקב הוצאות, תזכורות וסייען AI אישי לספר הרכב.
             </Text>
           </Stack>
@@ -72,14 +71,14 @@ export default function LandingPage() {
             p={{ base: "lg", sm: "xl" }}
             withBorder
             shadow="sm"
-            style={{ width: "100%", backgroundColor: "#ffffff" }}
+            w="100%"
           >
             <Stack align="center" gap="md" ta="center">
-              <Title order={2} style={{ fontSize: 24, fontWeight: 700, color: "#1e293b" }}>
+              <Title order={2} fw={700}>
                 ברוכים הבאים לניהול הרכב שלכם
               </Title>
 
-              <Text size="md" c="gray.7" style={{ maxWidth: 600, lineHeight: 1.6 }}>
+              <Text size="md" c="dimmed" maw={600} style={{ lineHeight: 1.6 }}>
                 שמרו על סדר ורוגע נפשי. עקבו אחר כל הטיפולים והתזכורות במקום אחד והתייעצו עם עוזר ה-AI שלכם בכל עת.
               </Text>
 
@@ -88,36 +87,29 @@ export default function LandingPage() {
                 to="/auth"
                 size="lg"
                 radius="md"
-                color="blue"
                 leftSection={<i className="ph-bold ph-arrow-left" style={{ fontSize: 20 }} />}
-                style={{
-                  background: "linear-gradient(135deg, #2563eb, #1d4ed8)",
-                  fontWeight: 700,
-                  fontSize: 16,
-                  padding: "0 32px",
-                  boxShadow: "0 6px 18px rgba(37, 99, 235, 0.35)",
-                }}
+                px="xl"
               >
                 התחברות / הרשמה
               </Button>
             </Stack>
           </Paper>
 
-          <Box style={{ width: "100%" }} mt="md">
-            <Title order={2} style={{ fontSize: 22, fontWeight: 700, color: "#0f172a", marginBottom: 20 }} ta="center">
+          <Box w="100%" mt="md">
+            <Title order={2} fw={700} ta="center" mb="lg">
               מה תמצאו באוטופיה?
             </Title>
 
             <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="lg">
               {FEATURES.map((feature, index) => (
-                <Card key={index} radius="lg" p="lg" withBorder shadow="xs" style={{ backgroundColor: "#ffffff" }}>
+                <Card key={index} radius="lg" p="lg" withBorder shadow="xs">
                   <Group align="flex-start" gap="md" wrap="nowrap">
-                    <ThemeIcon size={44} radius="md" color="blue" variant="light">
+                    <ThemeIcon size={44} radius="md" variant="light">
                       <i className={`ph-bold ${feature.icon}`} style={{ fontSize: 24 }} />
                     </ThemeIcon>
 
                     <Stack gap={4} style={{ flex: 1 }}>
-                      <Text fw={700} size="md" c="gray.9">
+                      <Text fw={700} size="md">
                         {feature.title}
                       </Text>
                       <Text size="sm" c="dimmed" style={{ lineHeight: 1.5 }}>
