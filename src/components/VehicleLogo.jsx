@@ -1,11 +1,60 @@
 import { Box } from "@mantine/core";
 import { findMake, VehicleMakes } from "node-vehicle-logos";
 
-export default function VehicleLogo({ make, size = 36, className = "" }) {
-  if (!make) return null;
+const HEBREW_MAKE_MAP = {
+  "טויוטה": "Toyota",
+  "יונדאי": "Hyundai",
+  "קיה": "Kia",
+  "מאזדה": "Mazda",
+  "טסלה": "Tesla",
+  "סקודה": "Skoda",
+  "פיז'ו": "Peugeot",
+  "ניסאן": "Nissan",
+  "מרצדס": "Mercedes-Benz",
+  "ב.מ.וו": "BMW",
+  "שברולט": "Chevrolet",
+  "פולקסווגן": "Volkswagen",
+  "סובארו": "Subaru",
+  "סוזוקי": "Suzuki",
+  "אאודי": "Audi",
+  "סיאט": "Seat",
+  "רנו": "Renault",
+  "וולוו": "Volvo",
+  "ג'יפ": "Jeep",
+  "סיטרואן": "Citroen",
+  "פורד": "Ford",
+  "הונדה": "Honda",
+  "מיצובישי": "Mitsubishi",
+  "קופרה": "Cupra",
+  "ג'אקו": "Jaecoo",
+  "BYD": "BYD",
+  "ג'ילי": "Geely",
+  "MG": "MG",
+};
 
-  const matched = findMake(make, VehicleMakes, "contains") || findMake(make, VehicleMakes);
-  const fallbackInitial = make.charAt(0).toUpperCase();
+const resolveManufacturerName = (name) => {
+  if (!name) return "";
+  const trimmed = String(name).trim();
+  for (const [hebKey, engMake] of Object.entries(HEBREW_MAKE_MAP)) {
+    if (trimmed.includes(hebKey)) {
+      return engMake;
+    }
+  }
+  return trimmed;
+};
+
+export default function VehicleLogo({
+  manufacturer,
+  size = 36,
+  className = "",
+}) {
+  if (!manufacturer) return null;
+
+  const resolved = resolveManufacturerName(manufacturer);
+  const matched =
+    findMake(resolved, VehicleMakes, "contains") ||
+    findMake(resolved, VehicleMakes);
+  const fallbackInitial = resolved.charAt(0).toUpperCase();
 
   return (
     <Box
@@ -31,4 +80,3 @@ export default function VehicleLogo({ make, size = 36, className = "" }) {
     </Box>
   );
 }
-
