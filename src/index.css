@@ -46,3 +46,27 @@ button {
   border: none;
   outline: none;
 }
+
+.auth-expandable-row {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  visibility: hidden;
+  transition: grid-template-rows 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              opacity 0.22s cubic-bezier(0.4, 0, 0.2, 1),
+              visibility 0.3s;
+}
+
+.auth-expandable-row.expanded {
+  grid-template-rows: 1fr;
+  opacity: 1;
+  visibility: visible;
+}
+
+.auth-expandable-content {
+  overflow: hidden;
+  min-height: 0;
+}
+
+
+

@@ -141,12 +141,13 @@ const AuthPage = observer(function AuthPage() {
       }}
       dir="rtl"
     >
-      <Container size="xs" style={{ width: "100%" }}>
+      <Container size="xs" style={{ width: "100%", maxWidth: 440 }}>
         <Paper
           radius="xl"
           p="xl"
           withBorder
           shadow="md"
+          style={{ width: "100%" }}
         >
           <Stack align="center" gap="xs" mb="lg">
             <Logo size={72} />
@@ -191,35 +192,43 @@ const AuthPage = observer(function AuthPage() {
 
           <form onSubmit={handleSubmit}>
             <Stack gap="md">
-              {mode === "signup" && (
-                <Group grow gap="sm">
-                  <TextInput
-                    label="שם פרטי *"
-                    placeholder="דניאל"
-                    value={formData.firstName}
-                    onChange={(e) => handleChange("firstName", e.target.value)}
-                    error={fieldErrors.firstName}
-                    leftSection={
-                      <i
-                        className="ph-user"
-                        style={{
-                          fontSize: 18,
-                          color: "var(--mantine-color-dimmed)",
-                        }}
-                      />
-                    }
-                    radius="md"
-                  />
-                  <TextInput
-                    label="שם משפחה *"
-                    placeholder="ישראלי"
-                    value={formData.lastName}
-                    onChange={(e) => handleChange("lastName", e.target.value)}
-                    error={fieldErrors.lastName}
-                    radius="md"
-                  />
-                </Group>
-              )}
+              <div
+                className={`auth-expandable-row ${
+                  mode === "signup" ? "expanded" : ""
+                }`}
+              >
+                <div className="auth-expandable-content">
+                  <Group grow gap="sm" pb="xs">
+                    <TextInput
+                      label="שם פרטי *"
+                      placeholder="דניאל"
+                      value={formData.firstName}
+                      onChange={(e) =>
+                        handleChange("firstName", e.target.value)
+                      }
+                      error={fieldErrors.firstName}
+                      leftSection={
+                        <i
+                          className="ph-user"
+                          style={{
+                            fontSize: 18,
+                            color: "var(--mantine-color-dimmed)",
+                          }}
+                        />
+                      }
+                      radius="md"
+                    />
+                    <TextInput
+                      label="שם משפחה *"
+                      placeholder="ישראלי"
+                      value={formData.lastName}
+                      onChange={(e) => handleChange("lastName", e.target.value)}
+                      error={fieldErrors.lastName}
+                      radius="md"
+                    />
+                  </Group>
+                </div>
+              </div>
 
               <TextInput
                 label="כתובת אימייל *"
@@ -273,38 +282,54 @@ const AuthPage = observer(function AuthPage() {
                 />
               </Box>
 
-              {mode === "signup" && (
-                <PasswordInput
-                  label="אימות סיסמה *"
-                  placeholder="הזן שוב את הסיסמה"
-                  value={formData.confirmPassword}
-                  onChange={(e) =>
-                    handleChange("confirmPassword", e.target.value)
-                  }
-                  error={fieldErrors.confirmPassword}
-                  leftSection={
-                    <i
-                      className="ph-lock-key-open"
-                      style={{
-                        fontSize: 18,
-                        color: "var(--mantine-color-dimmed)",
-                      }}
+              <div
+                className={`auth-expandable-row ${
+                  mode === "signup" ? "expanded" : ""
+                }`}
+              >
+                <div className="auth-expandable-content">
+                  <Box pt="xs">
+                    <PasswordInput
+                      label="אימות סיסמה *"
+                      placeholder="הזן שוב את הסיסמה"
+                      value={formData.confirmPassword}
+                      onChange={(e) =>
+                        handleChange("confirmPassword", e.target.value)
+                      }
+                      error={fieldErrors.confirmPassword}
+                      leftSection={
+                        <i
+                          className="ph-lock-key-open"
+                          style={{
+                            fontSize: 18,
+                            color: "var(--mantine-color-dimmed)",
+                          }}
+                        />
+                      }
+                      radius="md"
                     />
-                  }
-                  radius="md"
-                />
-              )}
+                  </Box>
+                </div>
+              </div>
 
-              {mode === "login" && (
-                <Checkbox
-                  checked={formData.rememberMe}
-                  onChange={(e) =>
-                    handleChange("rememberMe", e.currentTarget.checked)
-                  }
-                  label="זכור אותי במכשיר זה"
-                  size="sm"
-                />
-              )}
+              <div
+                className={`auth-expandable-row ${
+                  mode === "login" ? "expanded" : ""
+                }`}
+              >
+                <div className="auth-expandable-content">
+                  <Box pt="2px">
+                    <Checkbox
+                      checked={formData.rememberMe}
+                      onChange={(e) =>
+                        handleChange("rememberMe", e.currentTarget.checked)
+                      }
+                      label="זכור אותי במכשיר זה"
+                      size="sm"
+                    />
+                  </Box>
+                </div>
+              </div>
 
               <Button
                 type="submit"
