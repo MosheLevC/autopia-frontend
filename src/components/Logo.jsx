@@ -39,7 +39,7 @@ export default function Logo({ size = 40, showText = false, className = "" }) {
           אוטופיה{" "}
           <Text
             component="span"
-            c="var(--mantine-primary-color)"
+            c="var(--mantine-primary-color-filled, #228be6)"
             inherit
             style={{ fontSize: "0.85em" }}
           >

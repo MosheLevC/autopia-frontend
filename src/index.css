@@ -3,6 +3,7 @@
 
 :root {
   --font-hebrew: 'Assistant', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --mantine-primary-color: var(--mantine-primary-color-filled, #228be6);
   --bg-main: #f8fafc;
   --bg-card: #ffffff;
   --primary-50: #eff6ff;
@@ -94,10 +95,28 @@ button {
 @media (max-width: 768px) {
   .app-container {
     flex-direction: column;
-    padding-bottom: 68px;
+    padding-bottom: 84px;
   }
 
   .app-body {
     padding: 1rem 0.75rem;
   }
 }
+
+.navbar-desktop-link {
+  transition: background-color 150ms ease, color 150ms ease, transform 150ms ease;
+  border-radius: 16px;
+}
+
+.navbar-desktop-link:hover {
+  background-color: var(--mantine-color-gray-0);
+}
+
+.navbar-desktop-link.is-active {
+  background-color: var(--mantine-primary-color-light);
+}
+
+.navbar-desktop-link.is-active:hover {
+  background-color: var(--mantine-primary-color-light);
+}
+
