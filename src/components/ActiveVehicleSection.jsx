@@ -3,7 +3,6 @@ import { Link } from "react-router";
 import { observer } from "mobx-react-lite";
 import {
   ActionIcon,
-  Alert,
   Button,
   Card,
   Center,
@@ -12,16 +11,24 @@ import {
   Group,
   Loader,
   Paper,
-  Popover,
   SimpleGrid,
   Stack,
   Text,
+  ThemeIcon,
   Title,
   Tooltip,
 } from "@mantine/core";
 import VehicleCard from "./VehicleCard";
+import VehicleSwitcher from "./VehicleSwitcher";
 import { formatDateToDisplay } from "../utils/plateUtils";
 import { useVehicleStore } from "../stores/VehicleStoreContext";
+
+const SECTION_CARD_PROPS = {
+  withBorder: true,
+  radius: "xl",
+  shadow: "sm",
+  p: { base: "md", sm: "xl" },
+};
 
 function VehicleDetails({ vehicle }) {
   const details = [
@@ -55,13 +62,12 @@ function VehicleDetails({ vehicle }) {
 const ActiveVehicleSection = observer(function ActiveVehicleSection() {
   const vehicleStore = useVehicleStore();
   const [detailsExpanded, setDetailsExpanded] = useState(false);
-  const [switcherOpened, setSwitcherOpened] = useState(false);
 
   const { vehicles, activeVehicle, isLoading, error } = vehicleStore;
 
   if (isLoading && vehicles.length === 0) {
     return (
-      <Card withBorder radius="xl" shadow="sm" p={{ base: "md", sm: "xl" }}>
+      <Card {...SECTION_CARD_PROPS}>
         <Center py="xl">
           <Stack align="center" gap="sm">
             <Loader size="md" />
@@ -76,14 +82,35 @@ const ActiveVehicleSection = observer(function ActiveVehicleSection() {
 
   if (error && !activeVehicle) {
     return (
-      <Card withBorder radius="xl" shadow="sm" p={{ base: "md", sm: "xl" }}>
-        <Stack gap="md">
-          <Title order={2} size="h3">
-            הרכב הפעיל שלי
+      <Card
+        {...SECTION_CARD_PROPS}
+        component="section"
+        aria-labelledby="active-vehicle-error-title"
+      >
+        <Stack align="center" gap="sm" py="lg" ta="center">
+          <ThemeIcon color="red" variant="light" size={48} radius="xl">
+            <i
+              className="ph-bold ph-warning-circle"
+              aria-hidden="true"
+            />
+          </ThemeIcon>
+          <Title id="active-vehicle-error-title" order={2} size="h3">
+            לא הצלחנו לטעון את הרכבים
           </Title>
-          <Alert color="red" title="לא הצלחנו לטעון את הרכבים" radius="md">
-            {error}
-          </Alert>
+          <Text size="sm" c="dimmed">
+            לא ניתן להציג כרגע את פרטי הרכב.
+          </Text>
+          <Button
+            variant="light"
+            color="red"
+            mt="xs"
+            onClick={() => vehicleStore.fetchVehicles().catch(() => {})}
+            leftSection={
+              <i className="ph-bold ph-arrow-clockwise" aria-hidden="true" />
+            }
+          >
+            נסה שוב
+          </Button>
         </Stack>
       </Card>
     );
@@ -92,12 +119,9 @@ const ActiveVehicleSection = observer(function ActiveVehicleSection() {
   if (!activeVehicle) {
     return (
       <Card
+        {...SECTION_CARD_PROPS}
         component="section"
         aria-labelledby="active-vehicle-empty-title"
-        withBorder
-        radius="xl"
-        shadow="sm"
-        p={{ base: "md", sm: "xl" }}
       >
         <Stack align="center" gap="sm" py="lg" ta="center">
           <Title id="active-vehicle-empty-title" order={2} size="h3">
@@ -122,37 +146,17 @@ const ActiveVehicleSection = observer(function ActiveVehicleSection() {
     );
   }
 
-  const otherVehicles = vehicles.filter(
-    (vehicle) => vehicle._id !== activeVehicle._id,
-  );
-
   const handleVehicleSelect = (vehicleId) => {
     vehicleStore.setActiveVehicle(vehicleId);
-    setSwitcherOpened(false);
   };
 
   return (
     <Card
+      {...SECTION_CARD_PROPS}
       component="section"
       aria-labelledby="active-vehicle-title"
-      withBorder
-      radius="xl"
-      shadow="sm"
-      p={{ base: "md", sm: "xl" }}
     >
       <Stack gap="md">
-        {error && (
-          <Alert
-            color="red"
-            title="לא הצלחנו לעדכן את נתוני הרכב"
-            radius="md"
-            withCloseButton
-            onClose={() => vehicleStore.clearError()}
-          >
-            {error}
-          </Alert>
-        )}
-
         <Group justify="space-between" align="flex-start" wrap="nowrap">
           <Title id="active-vehicle-title" order={2} size="h3">
             הרכב הפעיל שלי
@@ -173,45 +177,11 @@ const ActiveVehicleSection = observer(function ActiveVehicleSection() {
         <VehicleCard vehicle={activeVehicle} />
 
         <Group justify="space-between" gap="sm" wrap="wrap">
-          {otherVehicles.length > 0 && (
-            <Popover
-              opened={switcherOpened}
-              onChange={setSwitcherOpened}
-              position="bottom-start"
-              shadow="md"
-              withinPortal
-            >
-              <Popover.Target>
-                <Button
-                  variant="light"
-                  size="compact-md"
-                  onClick={() => setSwitcherOpened((opened) => !opened)}
-                  leftSection={
-                    <i className="ph-bold ph-caret-down" aria-hidden="true" />
-                  }
-                  aria-expanded={switcherOpened}
-                >
-                  החלפת רכב
-                </Button>
-              </Popover.Target>
-
-              <Popover.Dropdown w={380} maw="calc(100vw - 2rem)" p="sm">
-                <Stack gap="sm">
-                  <Text size="sm" fw={700}>
-                    בחירת רכב אחר
-                  </Text>
-                  {otherVehicles.map((vehicle) => (
-                    <VehicleCard
-                      key={vehicle._id}
-                      vehicle={vehicle}
-                      compact
-                      onClick={() => handleVehicleSelect(vehicle._id)}
-                    />
-                  ))}
-                </Stack>
-              </Popover.Dropdown>
-            </Popover>
-          )}
+          <VehicleSwitcher
+            vehicles={vehicles}
+            activeVehicleId={activeVehicle._id}
+            onVehicleSelect={handleVehicleSelect}
+          />
 
           <Button
             variant="subtle"
