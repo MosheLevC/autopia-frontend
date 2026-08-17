@@ -4,27 +4,19 @@ import { Button, Card, Group, Stack, Text, Title } from "@mantine/core";
 import { useVehicleStore } from "../stores/VehicleStoreContext";
 import MileageUpdateModal from "./MileageUpdateModal";
 
-const MOCK_SAVE_DELAY_MS = 700;
-
 const formatMileage = (value) => Number(value).toLocaleString("he-IL");
 
 const MileageCard = observer(function MileageCard() {
-  const { activeVehicle } = useVehicleStore();
+  const vehicleStore = useVehicleStore();
+  const { activeVehicle } = vehicleStore;
   const [modalOpened, setModalOpened] = useState(false);
-  const [previewMileageByVehicle, setPreviewMileageByVehicle] = useState({});
   const [successVehicleId, setSuccessVehicleId] = useState(null);
 
   if (!activeVehicle) {
     return null;
   }
 
-  const storedMileage = Number(activeVehicle.currentMileage) || 0;
-  const displayedMileage = Object.hasOwn(
-    previewMileageByVehicle,
-    activeVehicle._id,
-  )
-    ? previewMileageByVehicle[activeVehicle._id]
-    : storedMileage;
+  const currentMileage = Number(activeVehicle.currentMileage) || 0;
   const showSuccess = successVehicleId === activeVehicle._id;
 
   const handleOpen = () => {
@@ -32,13 +24,12 @@ const MileageCard = observer(function MileageCard() {
     setModalOpened(true);
   };
 
-  const handleMockSubmit = async (newMileage) => {
-    await new Promise((resolve) => setTimeout(resolve, MOCK_SAVE_DELAY_MS));
-    setPreviewMileageByVehicle((current) => ({
-      ...current,
-      [activeVehicle._id]: newMileage,
-    }));
-    setSuccessVehicleId(activeVehicle._id);
+  const handleSubmit = async (newMileage) => {
+    const vehicleId = activeVehicle._id;
+    await vehicleStore.updateVehicle(vehicleId, {
+      currentMileage: newMileage,
+    });
+    setSuccessVehicleId(vehicleId);
   };
 
   return (
@@ -62,7 +53,7 @@ const MileageCard = observer(function MileageCard() {
               קילומטראז&apos; נוכחי
             </Title>
             <Text fw={800} size="xl" dir="ltr">
-              {formatMileage(displayedMileage)} ק״מ
+              {formatMileage(currentMileage)} ק״מ
             </Text>
             {showSuccess && (
               <Group gap={6} c="green.7">
@@ -89,8 +80,8 @@ const MileageCard = observer(function MileageCard() {
       <MileageUpdateModal
         opened={modalOpened}
         onClose={() => setModalOpened(false)}
-        currentMileage={displayedMileage}
-        onSubmit={handleMockSubmit}
+        currentMileage={currentMileage}
+        onSubmit={handleSubmit}
       />
     </>
   );

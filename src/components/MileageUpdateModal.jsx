@@ -49,10 +49,12 @@ export default function MileageUpdateModal({
 }) {
   const [newMileage, setNewMileage] = useState(currentMileage);
   const [isSaving, setIsSaving] = useState(false);
+  const [submitError, setSubmitError] = useState(null);
 
   useEffect(() => {
     if (opened) {
       setNewMileage(currentMileage);
+      setSubmitError(null);
     }
   }, [currentMileage, opened]);
 
@@ -69,6 +71,12 @@ export default function MileageUpdateModal({
   const handleIncrement = (amount) => {
     const baseMileage = parseMileage(newMileage) ?? currentMileage;
     setNewMileage(baseMileage + amount);
+    setSubmitError(null);
+  };
+
+  const handleMileageChange = (value) => {
+    setNewMileage(value);
+    setSubmitError(null);
   };
 
   const handleSubmit = async (event) => {
@@ -79,9 +87,12 @@ export default function MileageUpdateModal({
     }
 
     setIsSaving(true);
+    setSubmitError(null);
     try {
       await onSubmit(parsedMileage);
       onClose();
+    } catch (error) {
+      setSubmitError(error.message || "לא הצלחנו לעדכן את הקילומטראז'. נסה שוב.");
     } finally {
       setIsSaving(false);
     }
@@ -114,7 +125,7 @@ export default function MileageUpdateModal({
           <NumberInput
             label="קילומטראז' חדש"
             value={newMileage}
-            onChange={setNewMileage}
+            onChange={handleMileageChange}
             error={inputError || undefined}
             thousandSeparator=","
             allowDecimal={false}
@@ -166,6 +177,12 @@ export default function MileageUpdateModal({
               </Text>
             </Stack>
           </Paper>
+
+          {submitError && (
+            <Text size="sm" c="red.7" ta="center">
+              {submitError}
+            </Text>
+          )}
 
           <Group grow gap="sm" mt="xs">
             <Button
