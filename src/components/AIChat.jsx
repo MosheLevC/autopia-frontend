@@ -1,10 +1,10 @@
 import {
-  Box,
   Button,
   Group,
   Modal,
   Stack,
   Text,
+  ThemeIcon,
 } from "@mantine/core";
 
 export default function AIChat({ opened, onClose }) {
@@ -28,7 +28,7 @@ export default function AIChat({ opened, onClose }) {
             }}
           />
           <Text fw={700} size="lg">
-            עוזר AI - אוטופיה
+            עוזר AI - Autopia
           </Text>
         </Group>
       }
@@ -48,20 +48,9 @@ export default function AIChat({ opened, onClose }) {
       }}
     >
       <Stack align="center" gap="md">
-        <Box
-          style={{
-            width: 72,
-            height: 72,
-            borderRadius: "50%",
-            backgroundColor: "var(--mantine-primary-color-light, #e7f5ff)",
-            color: "var(--mantine-primary-color-filled, #228be6)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
+        <ThemeIcon size={72} radius="xl" variant="light">
           <i className="ph-sparkle-fill" style={{ fontSize: "2.5rem" }} />
-        </Box>
+        </ThemeIcon>
         <Text fw={700} size="xl" ta="center">
           עוזר הרכב החכם שלך
         </Text>

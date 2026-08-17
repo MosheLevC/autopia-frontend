@@ -43,7 +43,7 @@ const NAV_ITEMS = [
     activeIcon: "ph-bell-fill",
     getPath: (activeVehicle) => {
       const id = activeVehicle?._id || activeVehicle?.id;
-      return id ? `/vehicles/${id}/reminders` : "/vehicles";
+      return id ? `/vehicles/${id}/reminders` : "/reminders";
     },
     isActive: (path) => path.includes("/reminders"),
   },
@@ -54,7 +54,7 @@ const NAV_ITEMS = [
     activeIcon: "ph-calendar-check-fill",
     getPath: (activeVehicle) => {
       const id = activeVehicle?._id || activeVehicle?.id;
-      return id ? `/vehicles/${id}/services` : "/vehicles";
+      return id ? `/vehicles/${id}/services` : "/services";
     },
     isActive: (path) => path.includes("/services"),
   },

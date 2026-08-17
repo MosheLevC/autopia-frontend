@@ -73,6 +73,7 @@ function App() {
                 path="/vehicles/:vehicleId"
                 element={<VehicleProfilePage />}
               />
+              <Route path="/services" element={<ServicesPage />} />
               <Route
                 path="/vehicles/:vehicleId/services"
                 element={<ServicesPage />}
@@ -81,6 +82,7 @@ function App() {
                 path="/vehicles/:vehicleId/services/add"
                 element={<AddServicePage />}
               />
+              <Route path="/reminders" element={<RemindersPage />} />
               <Route
                 path="/vehicles/:vehicleId/reminders"
                 element={<RemindersPage />}
