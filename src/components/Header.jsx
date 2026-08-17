@@ -14,7 +14,7 @@ export default function Header() {
       bg="white"
       h={64}
       px="md"
-      bd="0 0 1px 0 solid var(--mantine-color-gray-2)"
+      bdb="1px solid var(--mantine-color-gray-2)"
       shadow="xs"
       style={{ zIndex: 100 }}
     >

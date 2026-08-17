@@ -143,7 +143,7 @@ const AuthPage = observer(function AuthPage() {
             <Logo size={72} />
 
             <Title order={2} fw={800}>
-              Autopia | אוטופיה
+              Autopia
             </Title>
             <Text size="sm" c="dimmed">
               {mode === "login"

@@ -54,7 +54,7 @@ export default function LandingPage() {
             <Logo size={80} />
 
             <Title order={1} fw={800}>
-              אוטופיה | Autopia
+              Autopia
             </Title>
 
             <Badge variant="light" size="lg" radius="xl">
