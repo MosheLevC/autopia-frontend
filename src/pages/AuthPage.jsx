@@ -193,9 +193,8 @@ const AuthPage = observer(function AuthPage() {
           <form onSubmit={handleSubmit}>
             <Stack gap="md">
               <div
-                className={`auth-expandable-row ${
-                  mode === "signup" ? "expanded" : ""
-                }`}
+                className={`auth-expandable-row ${mode === "signup" ? "expanded" : ""
+                  }`}
               >
                 <div className="auth-expandable-content">
                   <Group grow gap="sm" pb="xs">
@@ -253,16 +252,6 @@ const AuthPage = observer(function AuthPage() {
                   <Text size="sm" fw={700}>
                     סיסמה *
                   </Text>
-                  {mode === "login" && (
-                    <Anchor
-                      component="button"
-                      type="button"
-                      size="xs"
-                      fw={600}
-                    >
-                      שכחת סיסמה?
-                    </Anchor>
-                  )}
                 </Group>
                 <PasswordInput
                   placeholder="לפחות 8 תווים"
@@ -283,9 +272,8 @@ const AuthPage = observer(function AuthPage() {
               </Box>
 
               <div
-                className={`auth-expandable-row ${
-                  mode === "signup" ? "expanded" : ""
-                }`}
+                className={`auth-expandable-row ${mode === "signup" ? "expanded" : ""
+                  }`}
               >
                 <div className="auth-expandable-content">
                   <Box pt="xs">
@@ -313,9 +301,8 @@ const AuthPage = observer(function AuthPage() {
               </div>
 
               <div
-                className={`auth-expandable-row ${
-                  mode === "login" ? "expanded" : ""
-                }`}
+                className={`auth-expandable-row ${mode === "login" ? "expanded" : ""
+                  }`}
               >
                 <div className="auth-expandable-content">
                   <Box pt="2px">
