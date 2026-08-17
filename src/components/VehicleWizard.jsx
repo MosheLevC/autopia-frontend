@@ -156,10 +156,6 @@ export default function VehicleWizard({ onComplete, onCancel }) {
 
   return (
     <Stack gap="xl" dir="rtl" maw={1100} mx="auto">
-      <Title order={2} ta="center" fw={800}>
-        הוספת רכב
-      </Title>
-
       <StepProgress
         activeStep={activeStep}
         steps={stepsList}

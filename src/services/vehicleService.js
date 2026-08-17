@@ -76,6 +76,15 @@ export const vehicleService = {
       throw new Error(err.response?.data?.message || "שגיאה בעדכון פרטי הרכב");
     }
   },
+
+  async deleteVehicle(vehicleId) {
+    try {
+      const response = await apiClient.delete(`/vehicles/${vehicleId}`);
+      return response.data;
+    } catch (err) {
+      throw new Error(err.response?.data?.message || "שגיאה במחיקת הרכב");
+    }
+  },
 };
 
 export default vehicleService;

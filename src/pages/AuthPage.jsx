@@ -27,8 +27,6 @@ const AuthPage = observer(function AuthPage() {
   const location = useLocation();
 
   const [mode, setMode] = useState("login");
-  const [localError, setLocalError] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [formData, setFormData] = useState({
     firstName: "",
@@ -43,7 +41,6 @@ const AuthPage = observer(function AuthPage() {
 
   const handleModeChange = (newMode) => {
     setMode(newMode);
-    setLocalError("");
     setFieldErrors({});
     auth.clearError();
   };
@@ -89,14 +86,11 @@ const AuthPage = observer(function AuthPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLocalError("");
     auth.clearError();
 
     if (!validate()) {
       return;
     }
-
-    setIsSubmitting(true);
 
     try {
       if (mode === "login") {
@@ -119,14 +113,10 @@ const AuthPage = observer(function AuthPage() {
 
       const redirectPath = location.state?.from?.pathname || "/home";
       navigate(redirectPath, { replace: true });
-    } catch (err) {
-      setLocalError(err.message || "פעולה נכשלה, נא לנסות שוב");
-    } finally {
-      setIsSubmitting(false);
-    }
+    } catch {}
   };
 
-  const currentErrorMessage = localError || auth.error;
+  const currentErrorMessage = auth.error;
 
   return (
     <Box
@@ -324,7 +314,7 @@ const AuthPage = observer(function AuthPage() {
                 size="md"
                 radius="md"
                 mt="xs"
-                loading={isSubmitting}
+                loading={auth.isSubmitting}
               >
                 {mode === "login" ? "התחברות לחשבון" : "יצירת חשבון חדש"}
               </Button>
