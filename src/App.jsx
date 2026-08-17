@@ -1,7 +1,10 @@
+import { useEffect } from "react";
 import { BrowserRouter, Outlet, Route, Routes } from "react-router";
-import { AuthStoreProvider } from "./stores/AuthStoreContext";
-import { VehicleStoreProvider } from "./stores/VehicleStoreContext";
+import { observer } from "mobx-react-lite";
+import { AuthStoreProvider, useAuth } from "./stores/AuthStoreContext";
+import { VehicleStoreProvider, useVehicleStore } from "./stores/VehicleStoreContext";
 import { ProtectedRoute, PublicRoute } from "./components/ProtectedRoute";
+import { HeaderProvider } from "./context/HeaderContext";
 import Header from "./components/Header";
 import Navbar from "./components/Navbar";
 import AddReminderPage from "./pages/AddReminderPage";
@@ -16,24 +19,36 @@ import ServicesPage from "./pages/ServicesPage";
 import VehicleProfilePage from "./pages/VehicleProfilePage";
 import VehiclesPage from "./pages/VehiclesPage";
 
-function AppLayout() {
+const AppLayout = observer(function AppLayout() {
+  const auth = useAuth();
+  const vehicleStore = useVehicleStore();
+
+  useEffect(() => {
+    if (auth.isAuthenticated) {
+      vehicleStore.fetchVehicles().catch(() => {});
+    }
+  }, [auth.isAuthenticated, vehicleStore]);
+
   return (
     <div className="app-container" dir="rtl">
-      <Header />
       <Navbar />
-      <main>
-        <Outlet />
-      </main>
+      <div className="app-content-wrapper">
+        <Header />
+        <main className="app-body">
+          <Outlet />
+        </main>
+      </div>
     </div>
   );
-}
+});
 
 function App() {
   return (
     <AuthStoreProvider>
       <VehicleStoreProvider>
-        <BrowserRouter>
-          <Routes>
+        <HeaderProvider>
+          <BrowserRouter>
+            <Routes>
             <Route path="/" element={<LandingPage />} />
             <Route
               path="/auth"
@@ -78,6 +93,7 @@ function App() {
             </Route>
           </Routes>
         </BrowserRouter>
+        </HeaderProvider>
       </VehicleStoreProvider>
     </AuthStoreProvider>
   );
