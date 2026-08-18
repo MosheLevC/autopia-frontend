@@ -21,7 +21,7 @@ import IsraeliLicensePlate from "./IsraeliLicensePlate";
 
 const CURRENT_YEAR = new Date().getFullYear();
 const MIN_VEHICLE_YEAR = 1900;
-const YEAR_OPTIONS = Array.from({ length: 41 }, (_, index) =>
+const YEAR_OPTIONS = Array.from({ length: 102 }, (_, index) =>
   String(CURRENT_YEAR + 1 - index),
 );
 const FUEL_TYPE_OPTIONS = [
@@ -50,6 +50,19 @@ const getYearValue = (year) => {
   }
 
   return Number.NaN;
+};
+
+const filterYearOptions = ({ options, search }) => {
+  const query = search.trim();
+  const matchesExistingYear = options.some(
+    (option) => option.value === query,
+  );
+
+  if (!query || matchesExistingYear) {
+    return options;
+  }
+
+  return options.filter((option) => option.value.startsWith(query));
 };
 
 export default function VehicleDetailsStep({
@@ -236,9 +249,13 @@ export default function VehicleDetailsStep({
                     }
                     onChange={handleYearChange}
                     data={YEAR_OPTIONS}
-                    limit={8}
+                    filter={filterYearOptions}
                     maxDropdownHeight={240}
                     inputMode="numeric"
+                    rightSection={
+                      <i className="ph-bold ph-caret-down" aria-hidden="true" />
+                    }
+                    rightSectionPointerEvents="none"
                     error={fieldErrors.year}
                     radius="md"
                   />

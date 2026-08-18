@@ -3,6 +3,7 @@ import { Button, Card, Group, Stack, Text, Title } from "@mantine/core";
 import LicensePlateStep from "./AddVehicle/LicensePlateStep";
 import StepProgress from "./AddVehicle/StepProgress";
 import VehicleDetailsStep from "./AddVehicle/VehicleDetailsStep";
+import VehicleManualStep from "./AddVehicle/VehicleManualStep";
 import { formatLicensePlate } from "../utils/plateUtils";
 
 const VEHICLE_DETAILS_FORM_ID = "vehicle-details-form";
@@ -33,7 +34,7 @@ export default function VehicleWizard({ onComplete, onCancel }) {
   const stepsList = [
     { title: "הזנת מספר רכב" },
     { title: "פרטי רכב" },
-    { title: "פרטי בעלים" },
+    { title: "ספר רכב" },
     { title: "העדפות" },
     { title: "סיכום" },
   ];
@@ -103,6 +104,10 @@ export default function VehicleWizard({ onComplete, onCancel }) {
     }
   };
 
+  const handlePreviousStep = () => {
+    setActiveStep((current) => Math.max(current - 1, 0));
+  };
+
   const handleStepClick = (step) => {
     if (step <= furthestStep) {
       setActiveStep(step);
@@ -137,7 +142,9 @@ export default function VehicleWizard({ onComplete, onCancel }) {
         />
       )}
 
-      {activeStep > 1 && (
+      {activeStep === 2 && <VehicleManualStep onContinue={handleNextStep} />}
+
+      {activeStep > 2 && (
         <Card shadow="sm" p="xl" radius="xl" withBorder>
           <Stack align="center" py="xl">
             <Title order={3}>
@@ -165,13 +172,13 @@ export default function VehicleWizard({ onComplete, onCancel }) {
           ביטול
         </Button>
 
-        {activeStep === 1 && (
+        {activeStep > 0 && activeStep <= 2 && (
           <Button
             variant="default"
             size="md"
             radius="md"
             w={{ base: "100%", xs: 128 }}
-            onClick={() => setActiveStep(0)}
+            onClick={handlePreviousStep}
           >
             חזרה
           </Button>
