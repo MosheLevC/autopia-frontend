@@ -2,10 +2,14 @@ import { useState } from "react";
 import { Button, Card, Group, Stack, Text, Title } from "@mantine/core";
 import LicensePlateStep from "./AddVehicle/LicensePlateStep";
 import StepProgress from "./AddVehicle/StepProgress";
+import VehicleDetailsStep from "./AddVehicle/VehicleDetailsStep";
 import { formatLicensePlate } from "../utils/plateUtils";
+
+const VEHICLE_DETAILS_FORM_ID = "vehicle-details-form";
 
 export default function VehicleWizard({ onComplete, onCancel }) {
   const [activeStep, setActiveStep] = useState(0);
+  const [furthestStep, setFurthestStep] = useState(0);
 
   const [formData, setFormData] = useState({
     licensePlate: "",
@@ -64,18 +68,44 @@ export default function VehicleWizard({ onComplete, onCancel }) {
       governmentData: vehicle.governmentData ?? null,
     }));
     setActiveStep(1);
+    setFurthestStep(1);
   };
 
   const handleManualContinue = (licensePlate) => {
     storePlateForManualEntry(licensePlate);
     setActiveStep(1);
+    setFurthestStep(1);
+  };
+
+  const handleLookupNotFound = (licensePlate) => {
+    storePlateForManualEntry(licensePlate);
+    setFurthestStep(0);
+  };
+
+  const handleVehicleFieldChange = (field, value) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
+    setFurthestStep((current) => Math.min(current, 1));
+  };
+
+  const handleVehicleDetailsContinue = (vehicleDetails) => {
+    setFormData((prev) => ({ ...prev, ...vehicleDetails }));
+    setActiveStep(2);
+    setFurthestStep(2);
   };
 
   const handleNextStep = () => {
     if (activeStep < 4) {
-      setActiveStep((prev) => prev + 1);
+      const nextStep = activeStep + 1;
+      setActiveStep(nextStep);
+      setFurthestStep((current) => Math.max(current, nextStep));
     } else {
       onComplete?.(formData);
+    }
+  };
+
+  const handleStepClick = (step) => {
+    if (step <= furthestStep) {
+      setActiveStep(step);
     }
   };
 
@@ -84,19 +114,30 @@ export default function VehicleWizard({ onComplete, onCancel }) {
       <StepProgress
         activeStep={activeStep}
         steps={stepsList}
-        onStepClick={(idx) => setActiveStep(idx)}
+        onStepClick={handleStepClick}
       />
 
       {activeStep === 0 && (
         <LicensePlateStep
           licensePlate={formData.licensePlate}
           onLookupSuccess={handleLookupSuccess}
-          onLookupNotFound={storePlateForManualEntry}
+          onLookupNotFound={handleLookupNotFound}
           onManualContinue={handleManualContinue}
         />
       )}
 
-      {activeStep > 0 && (
+      {activeStep === 1 && (
+        <VehicleDetailsStep
+          formId={VEHICLE_DETAILS_FORM_ID}
+          vehicleData={formData}
+          isGovernmentAssisted={Boolean(formData.governmentData)}
+          onFieldChange={handleVehicleFieldChange}
+          onContinue={handleVehicleDetailsContinue}
+          onChangePlate={() => setActiveStep(0)}
+        />
+      )}
+
+      {activeStep > 1 && (
         <Card shadow="sm" p="xl" radius="xl" withBorder>
           <Stack align="center" py="xl">
             <Title order={3}>
@@ -113,12 +154,48 @@ export default function VehicleWizard({ onComplete, onCancel }) {
         </Card>
       )}
 
-      <Group justify="flex-end" w="100%" gap="md">
-        <Button variant="default" radius="md" onClick={onCancel} px="xl">
+      <Group justify="center" w="100%" gap="md" mt="xs">
+        <Button
+          variant="default"
+          size="md"
+          radius="md"
+          w={{ base: "100%", xs: 128 }}
+          onClick={onCancel}
+        >
           ביטול
         </Button>
-        {activeStep > 0 && (
-          <Button size="md" radius="md" onClick={handleNextStep} px="xl">
+
+        {activeStep === 1 && (
+          <Button
+            variant="default"
+            size="md"
+            radius="md"
+            w={{ base: "100%", xs: 128 }}
+            onClick={() => setActiveStep(0)}
+          >
+            חזרה
+          </Button>
+        )}
+
+        {activeStep === 1 && (
+          <Button
+            type="submit"
+            form={VEHICLE_DETAILS_FORM_ID}
+            size="md"
+            radius="md"
+            w={{ base: "100%", xs: 128 }}
+          >
+            המשך
+          </Button>
+        )}
+
+        {activeStep > 1 && (
+          <Button
+            size="md"
+            radius="md"
+            w={{ base: "100%", xs: 128 }}
+            onClick={handleNextStep}
+          >
             המשך
           </Button>
         )}

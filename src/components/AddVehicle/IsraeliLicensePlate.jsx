@@ -6,7 +6,8 @@ export default function IsraeliLicensePlate({
   onSearch,
   onKeyDown,
   placeholder = "123·45·678",
-  autoFocus = false
+  autoFocus = false,
+  readOnly = false,
 }) {
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
@@ -87,6 +88,8 @@ export default function IsraeliLicensePlate({
         placeholder={placeholder}
         variant="unstyled"
         autoFocus={autoFocus}
+        readOnly={readOnly}
+        style={{ flex: 1, minWidth: 0 }}
         styles={{
           input: {
             textAlign: "center",

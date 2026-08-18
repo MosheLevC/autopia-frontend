@@ -24,6 +24,11 @@ export default function StepProgress({ activeStep, steps, onStepClick }) {
           stepLabel: {
             textAlign: "center",
           },
+          separator: {
+            alignSelf: "flex-start",
+            marginTop:
+              "calc((var(--stepper-icon-size) - var(--stepper-outline-thickness)) / 2)",
+          },
         }}
       >
         {steps.map((step, idx) => (
