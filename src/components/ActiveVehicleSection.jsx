@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { Link } from "react-router";
 import { observer } from "mobx-react-lite";
 import {
   ActionIcon,
@@ -18,8 +17,9 @@ import {
   Title,
   Tooltip,
 } from "@mantine/core";
-import VehicleCard from "./VehicleCard";
-import VehicleSwitcher from "./VehicleSwitcher";
+import HomeVehicleCard from "./HomeVehicleCard";
+import EditVehicleModal from "./EditVehicleModal";
+import NoVehicleSelected from "./NoVehicleSelected";
 import { formatDateToDisplay } from "../utils/plateUtils";
 import { useVehicleStore } from "../stores/VehicleStoreContext";
 
@@ -30,7 +30,7 @@ const SECTION_CARD_PROPS = {
   p: { base: "md", sm: "xl" },
 };
 
-function VehicleDetails({ vehicle }) {
+function ExpandedVehicleDetails({ vehicle }) {
   const details = [
     { label: "רמת גימור", value: vehicle.trimLevel },
     { label: "סוג דלק", value: vehicle.fuelType },
@@ -62,6 +62,7 @@ function VehicleDetails({ vehicle }) {
 const ActiveVehicleSection = observer(function ActiveVehicleSection() {
   const vehicleStore = useVehicleStore();
   const [detailsExpanded, setDetailsExpanded] = useState(false);
+  const [editOpened, setEditOpened] = useState(false);
 
   const { vehicles, activeVehicle, isLoading, error } = vehicleStore;
 
@@ -118,97 +119,79 @@ const ActiveVehicleSection = observer(function ActiveVehicleSection() {
 
   if (!activeVehicle) {
     return (
-      <Card
-        {...SECTION_CARD_PROPS}
-        component="section"
-        aria-labelledby="active-vehicle-empty-title"
-      >
-        <Stack align="center" gap="sm" py="lg" ta="center">
-          <Title id="active-vehicle-empty-title" order={2} size="h3">
-            עדיין לא הוספת רכב
-          </Title>
-          <Text size="sm" c="dimmed">
-            הוספת רכב תאפשר לך לראות כאן את כל הפרטים החשובים.
-          </Text>
-          <Button
-            component={Link}
-            to="/vehicles/add"
-            variant="light"
-            mt="xs"
-            leftSection={
-              <i className="ph-bold ph-plus" aria-hidden="true" />
-            }
-          >
-            הוספת רכב
-          </Button>
-        </Stack>
-      </Card>
+      <NoVehicleSelected
+        title="עדיין לא הוספת רכב"
+        description="הוספת רכב תאפשר לך לראות כאן את כל הפרטים החשובים."
+        icon="ph-car"
+        actionLabel="הוספת רכב"
+        actionPath="/vehicles/add"
+        actionIcon="ph-plus"
+      />
     );
   }
 
-  const handleVehicleSelect = (vehicleId) => {
-    vehicleStore.setActiveVehicle(vehicleId);
-  };
-
   return (
-    <Card
-      {...SECTION_CARD_PROPS}
-      component="section"
-      aria-labelledby="active-vehicle-title"
-    >
-      <Stack gap="md">
-        <Group justify="space-between" align="flex-start" wrap="nowrap">
-          <Title id="active-vehicle-title" order={2} size="h3">
-            הרכב הפעיל שלי
-          </Title>
+    <>
+      <Card
+        {...SECTION_CARD_PROPS}
+        component="section"
+        aria-labelledby="active-vehicle-title"
+      >
+        <Stack gap="md">
+          <Group justify="space-between" align="flex-start" wrap="nowrap">
+            <Title id="active-vehicle-title" order={2} size="h3">
+              הרכב הפעיל שלי
+            </Title>
 
-          <Tooltip label="עריכת רכב תהיה זמינה בהמשך" withArrow>
-            <ActionIcon
+            <Tooltip label="עריכת פרטי הרכב" withArrow>
+              <ActionIcon
+                variant="subtle"
+                color="gray"
+                size="lg"
+                onClick={() => setEditOpened(true)}
+                aria-label="עריכת פרטי הרכב"
+              >
+                <i className="ph-bold ph-pencil-simple" aria-hidden="true" />
+              </ActionIcon>
+            </Tooltip>
+          </Group>
+
+          <HomeVehicleCard vehicle={activeVehicle} />
+
+          <Group justify="flex-start">
+            <Button
               variant="subtle"
               color="gray"
-              size="lg"
-              aria-label="עריכת פרטי הרכב"
+              size="compact-md"
+              onClick={() => setDetailsExpanded((expanded) => !expanded)}
+              leftSection={
+                <i
+                  className={`ph-bold ${detailsExpanded ? "ph-caret-up" : "ph-caret-down"}`}
+                  aria-hidden="true"
+                />
+              }
+              aria-expanded={detailsExpanded}
+              aria-controls="active-vehicle-details"
             >
-              <i className="ph-bold ph-pencil-simple" aria-hidden="true" />
-            </ActionIcon>
-          </Tooltip>
-        </Group>
+              {detailsExpanded ? "הסתרת פרטים" : "הצג פרטים נוספים"}
+            </Button>
+          </Group>
 
-        <VehicleCard vehicle={activeVehicle} />
+          <Collapse expanded={detailsExpanded}>
+            <Stack id="active-vehicle-details" gap="md">
+              <Divider />
+              <ExpandedVehicleDetails vehicle={activeVehicle} />
+            </Stack>
+          </Collapse>
+        </Stack>
+      </Card>
 
-        <Group justify="space-between" gap="sm" wrap="wrap">
-          <VehicleSwitcher
-            vehicles={vehicles}
-            activeVehicleId={activeVehicle._id}
-            onVehicleSelect={handleVehicleSelect}
-          />
-
-          <Button
-            variant="subtle"
-            color="gray"
-            size="compact-md"
-            onClick={() => setDetailsExpanded((expanded) => !expanded)}
-            leftSection={
-              <i
-                className={`ph-bold ${detailsExpanded ? "ph-caret-up" : "ph-caret-down"}`}
-                aria-hidden="true"
-              />
-            }
-            aria-expanded={detailsExpanded}
-            aria-controls="active-vehicle-details"
-          >
-            {detailsExpanded ? "הסתרת פרטים" : "הצג פרטים נוספים"}
-          </Button>
-        </Group>
-
-        <Collapse expanded={detailsExpanded}>
-          <Stack id="active-vehicle-details" gap="md">
-            <Divider />
-            <VehicleDetails vehicle={activeVehicle} />
-          </Stack>
-        </Collapse>
-      </Stack>
-    </Card>
+      <EditVehicleModal
+        opened={editOpened}
+        onClose={() => setEditOpened(false)}
+        vehicle={activeVehicle}
+      />
+    </>
   );
 });
 

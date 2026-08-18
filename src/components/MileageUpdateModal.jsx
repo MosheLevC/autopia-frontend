@@ -79,6 +79,11 @@ export default function MileageUpdateModal({
     setSubmitError(null);
   };
 
+  const handleReset = () => {
+    setNewMileage(currentMileage);
+    setSubmitError(null);
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
 
@@ -151,6 +156,19 @@ export default function MileageUpdateModal({
               </Button>
             ))}
           </SimpleGrid>
+
+          <Group justify="flex-end">
+            <Button
+              type="button"
+              variant="subtle"
+              color="gray"
+              size="compact-sm"
+              onClick={handleReset}
+              disabled={isSaving}
+            >
+              איפוס
+            </Button>
+          </Group>
 
           <Paper withBorder radius="md" p="sm" bg="gray.0">
             <Stack align="center" gap={4}>
