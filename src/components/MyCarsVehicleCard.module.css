@@ -1,0 +1,39 @@
+.card {
+  transition:
+    border-color 160ms ease,
+    box-shadow 160ms ease,
+    transform 160ms ease;
+}
+
+.card:focus-visible {
+  outline: 3px solid var(--mantine-primary-color-light-color);
+  outline-offset: 3px;
+}
+
+.selectHint {
+  opacity: 0;
+  transform: translateY(4px);
+  transition:
+    opacity 160ms ease,
+    transform 160ms ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .card[aria-pressed="false"]:hover {
+    border-color: var(--mantine-primary-color-filled);
+    box-shadow: var(--mantine-shadow-md);
+    transform: translateY(-2px);
+  }
+
+  .card[aria-pressed="false"]:hover .selectHint {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card,
+  .selectHint {
+    transition: none;
+  }
+}
