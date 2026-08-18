@@ -1,18 +1,134 @@
-import { useState } from "react";
-import { Button, Card, Group, Stack, Text, Title } from "@mantine/core";
+import { useRef, useState } from "react";
+import { Alert, Button, Group, Stack } from "@mantine/core";
 import LicensePlateStep from "./AddVehicle/LicensePlateStep";
 import StepProgress from "./AddVehicle/StepProgress";
 import VehicleDetailsStep from "./AddVehicle/VehicleDetailsStep";
 import VehicleManualStep from "./AddVehicle/VehicleManualStep";
+import VehicleSummaryStep from "./AddVehicle/VehicleSummaryStep";
 import VehicleUsageStep from "./AddVehicle/VehicleUsageStep";
-import { formatLicensePlate } from "../utils/plateUtils";
+import { cleanLicensePlate } from "../utils/plateUtils";
 
 const VEHICLE_DETAILS_FORM_ID = "vehicle-details-form";
 const VEHICLE_USAGE_FORM_ID = "vehicle-usage-form";
+const MIN_VEHICLE_YEAR = 1900;
 
-export default function VehicleWizard({ onCancel }) {
+const parseInteger = (value) => {
+  if (typeof value === "number") {
+    return Number.isInteger(value) ? value : null;
+  }
+
+  if (typeof value === "string" && value.trim()) {
+    const parsedValue = Number(value.replaceAll(",", ""));
+    return Number.isInteger(parsedValue) ? parsedValue : null;
+  }
+
+  return null;
+};
+
+const isValidDateInput = (value) => {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) {
+    return false;
+  }
+
+  const [year, month, day] = value.split("-").map(Number);
+  const parsedDate = new Date(Date.UTC(year, month - 1, day));
+
+  return (
+    parsedDate.getUTCFullYear() === year &&
+    parsedDate.getUTCMonth() === month - 1 &&
+    parsedDate.getUTCDate() === day
+  );
+};
+
+const buildFinalVehiclePayload = (formData) => {
+  const licensePlate = cleanLicensePlate(formData.licensePlate);
+  const manufacturer = formData.manufacturer?.trim();
+  const model = formData.model?.trim();
+  const fuelType = formData.fuelType?.trim();
+  const year = parseInteger(formData.year);
+  const currentMileage = parseInteger(formData.currentMileage);
+  const currentYear = new Date().getFullYear();
+
+  if (
+    (licensePlate.length !== 7 && licensePlate.length !== 8) ||
+    !manufacturer ||
+    !model ||
+    !fuelType ||
+    year === null ||
+    year < MIN_VEHICLE_YEAR ||
+    year > currentYear + 1 ||
+    currentMileage === null ||
+    currentMileage < 0
+  ) {
+    return null;
+  }
+
+  const payload = {
+    licensePlate,
+    manufacturer,
+    model,
+    year,
+    fuelType,
+    currentMileage,
+  };
+
+  ["color", "trimLevel"].forEach((field) => {
+    const value = formData[field]?.trim();
+
+    if (value) {
+      payload[field] = value;
+    }
+  });
+
+  for (const field of [
+    "vehicleLicenseValidUntil",
+    "lastServiceDate",
+    "insuranceExpiryDate",
+  ]) {
+    const value = formData[field]?.trim();
+
+    if (value) {
+      if (!isValidDateInput(value)) {
+        return null;
+      }
+
+      payload[field] = value;
+    }
+  }
+
+  if (formData.serviceIntervalKm !== "") {
+    const serviceIntervalKm = parseInteger(formData.serviceIntervalKm);
+
+    if (serviceIntervalKm === null || serviceIntervalKm < 1) {
+      return null;
+    }
+
+    payload.serviceIntervalKm = serviceIntervalKm;
+  }
+
+  if (formData.governmentData !== null) {
+    if (
+      typeof formData.governmentData !== "object" ||
+      Array.isArray(formData.governmentData)
+    ) {
+      return null;
+    }
+
+    payload.governmentData = formData.governmentData;
+  }
+
+  return payload;
+};
+
+export default function VehicleWizard({
+  onComplete,
+  onCancel,
+  isLoading = false,
+}) {
   const [activeStep, setActiveStep] = useState(0);
   const [furthestStep, setFurthestStep] = useState(0);
+  const [finalSubmissionError, setFinalSubmissionError] = useState("");
+  const submissionInFlightRef = useRef(false);
 
   const [formData, setFormData] = useState({
     licensePlate: "",
@@ -52,6 +168,7 @@ export default function VehicleWizard({ onCancel }) {
       trimLevel: "",
       currentMileage: "",
       vehicleLicenseValidUntil: "",
+      insuranceExpiryDate: "",
       lastServiceDate: "",
       serviceIntervalKm: "",
       governmentData: null,
@@ -70,6 +187,7 @@ export default function VehicleWizard({ onCancel }) {
       trimLevel: vehicle.trimLevel || "",
       currentMileage: "",
       vehicleLicenseValidUntil: vehicle.vehicleLicenseValidUntil || "",
+      insuranceExpiryDate: "",
       lastServiceDate: "",
       serviceIntervalKm: "",
       governmentData: vehicle.governmentData ?? null,
@@ -119,12 +237,40 @@ export default function VehicleWizard({ onCancel }) {
   };
 
   const handlePreviousStep = () => {
+    setFinalSubmissionError("");
     setActiveStep((current) => Math.max(current - 1, 0));
   };
 
   const handleStepClick = (step) => {
-    if (step <= furthestStep) {
+    if (!isLoading && step <= furthestStep) {
+      setFinalSubmissionError("");
       setActiveStep(step);
+    }
+  };
+
+  const handleFinalSubmit = async () => {
+    if (isLoading || submissionInFlightRef.current) {
+      return;
+    }
+
+    const payload = buildFinalVehiclePayload(formData);
+
+    if (!payload || typeof onComplete !== "function") {
+      setFinalSubmissionError(
+        "חלק מפרטי החובה אינם תקינים. חזרו לשלבים הקודמים ובדקו את הפרטים.",
+      );
+      return;
+    }
+
+    setFinalSubmissionError("");
+    submissionInFlightRef.current = true;
+
+    try {
+      await onComplete(payload);
+    } catch {
+      // The existing Vehicle store/page error UI reports creation failures.
+    } finally {
+      submissionInFlightRef.current = false;
     }
   };
 
@@ -167,21 +313,12 @@ export default function VehicleWizard({ onCancel }) {
         />
       )}
 
-      {activeStep > 3 && (
-        <Card shadow="sm" p="xl" radius="xl" withBorder>
-          <Stack align="center" py="xl">
-            <Title order={3}>
-              שלב {activeStep + 1} בפיתוח...
-            </Title>
-            <Text c="dimmed">
-              מספר הרישוי שנבחר: {formatLicensePlate(formData.licensePlate)} (
-              {formData.licensePlate})
-            </Text>
-            <Button variant="light" onClick={() => setActiveStep(0)}>
-              חזור לשלב 1
-            </Button>
-          </Stack>
-        </Card>
+      {activeStep === 4 && <VehicleSummaryStep vehicleData={formData} />}
+
+      {activeStep === 4 && finalSubmissionError && (
+        <Alert color="red" radius="md">
+          {finalSubmissionError}
+        </Alert>
       )}
 
       <Group justify="center" w="100%" gap="md" mt="xs">
@@ -191,6 +328,7 @@ export default function VehicleWizard({ onCancel }) {
           radius="md"
           w={{ base: "100%", xs: 128 }}
           onClick={onCancel}
+          disabled={isLoading}
         >
           ביטול
         </Button>
@@ -202,6 +340,7 @@ export default function VehicleWizard({ onCancel }) {
             radius="md"
             w={{ base: "100%", xs: 128 }}
             onClick={handlePreviousStep}
+            disabled={isLoading}
           >
             חזרה
           </Button>
@@ -214,6 +353,7 @@ export default function VehicleWizard({ onCancel }) {
             size="md"
             radius="md"
             w={{ base: "100%", xs: 128 }}
+            disabled={isLoading}
           >
             המשך
           </Button>
@@ -225,6 +365,7 @@ export default function VehicleWizard({ onCancel }) {
             radius="md"
             w={{ base: "100%", xs: 128 }}
             onClick={handleNextStep}
+            disabled={isLoading}
           >
             המשך
           </Button>
@@ -237,8 +378,22 @@ export default function VehicleWizard({ onCancel }) {
             size="md"
             radius="md"
             w={{ base: "100%", xs: 128 }}
+            disabled={isLoading}
           >
             המשך
+          </Button>
+        )}
+
+        {activeStep === 4 && (
+          <Button
+            size="md"
+            radius="md"
+            w={{ base: "100%", xs: 128 }}
+            onClick={handleFinalSubmit}
+            loading={isLoading}
+            disabled={isLoading}
+          >
+            הוספת רכב
           </Button>
         )}
       </Group>

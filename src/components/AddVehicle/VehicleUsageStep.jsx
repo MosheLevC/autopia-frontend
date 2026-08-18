@@ -47,6 +47,28 @@ const isValidDateInput = (value) => {
   );
 };
 
+const toDateInputValue = (value) => {
+  if (!value) {
+    return "";
+  }
+
+  if (typeof value === "string") {
+    const datePrefix = value.match(/^\d{4}-\d{2}-\d{2}/)?.[0];
+
+    if (datePrefix && isValidDateInput(datePrefix)) {
+      return datePrefix;
+    }
+  }
+
+  const parsedDate = new Date(value);
+
+  if (Number.isNaN(parsedDate.getTime())) {
+    return "";
+  }
+
+  return parsedDate.toISOString().slice(0, 10);
+};
+
 const getInitialIntervalSelection = (value) => {
   const parsed = parseInteger(value);
 
@@ -72,7 +94,13 @@ export default function VehicleUsageStep({
     usageData.currentMileage ?? "",
   );
   const [lastServiceDate, setLastServiceDate] = useState(
-    usageData.lastServiceDate || "",
+    toDateInputValue(usageData.lastServiceDate),
+  );
+  const [vehicleLicenseValidUntil, setVehicleLicenseValidUntil] = useState(
+    toDateInputValue(usageData.vehicleLicenseValidUntil),
+  );
+  const [insuranceExpiryDate, setInsuranceExpiryDate] = useState(
+    toDateInputValue(usageData.insuranceExpiryDate),
   );
   const [intervalSelection, setIntervalSelection] = useState(() =>
     getInitialIntervalSelection(usageData.serviceIntervalKm),
@@ -94,9 +122,9 @@ export default function VehicleUsageStep({
     onDirty?.();
   };
 
-  const handleDateChange = (event) => {
-    setLastServiceDate(event.currentTarget.value);
-    clearFieldError("lastServiceDate");
+  const handleDateChange = (field, setValue, value) => {
+    setValue(value);
+    clearFieldError(field);
     onDirty?.();
   };
 
@@ -115,15 +143,34 @@ export default function VehicleUsageStep({
   const validate = () => {
     const errors = {};
     const parsedMileage = parseInteger(currentMileage);
-    const normalizedDate = lastServiceDate.trim();
+    const normalizedLastServiceDate = lastServiceDate.trim();
+    const normalizedVehicleLicenseDate = vehicleLicenseValidUntil.trim();
+    const normalizedInsuranceDate = insuranceExpiryDate.trim();
     let serviceIntervalKm = "";
 
     if (parsedMileage === null || parsedMileage < 0) {
       errors.currentMileage = "נא להזין קילומטראז' נוכחי תקין";
     }
 
-    if (normalizedDate && !isValidDateInput(normalizedDate)) {
+    if (
+      normalizedLastServiceDate &&
+      !isValidDateInput(normalizedLastServiceDate)
+    ) {
       errors.lastServiceDate = "נא להזין תאריך טיפול תקין";
+    }
+
+    if (
+      normalizedVehicleLicenseDate &&
+      !isValidDateInput(normalizedVehicleLicenseDate)
+    ) {
+      errors.vehicleLicenseValidUntil = "נא להזין תאריך תוקף רישיון תקין";
+    }
+
+    if (
+      normalizedInsuranceDate &&
+      !isValidDateInput(normalizedInsuranceDate)
+    ) {
+      errors.insuranceExpiryDate = "נא להזין תאריך תוקף ביטוח תקין";
     }
 
     if (intervalSelection === "custom") {
@@ -146,8 +193,10 @@ export default function VehicleUsageStep({
 
     return {
       currentMileage: parsedMileage,
-      lastServiceDate: normalizedDate,
+      lastServiceDate: normalizedLastServiceDate,
       serviceIntervalKm,
+      vehicleLicenseValidUntil: normalizedVehicleLicenseDate,
+      insuranceExpiryDate: normalizedInsuranceDate,
     };
   };
 
@@ -192,57 +241,107 @@ export default function VehicleUsageStep({
               radius="md"
             />
 
-            <SimpleGrid cols={{ base: 1, md: 2 }} spacing="lg">
-              <TextInput
-                type="date"
-                label="מתי עשית טיפול אחרון?"
-                description="אופציונלי"
-                value={lastServiceDate}
-                onChange={handleDateChange}
-                error={fieldErrors.lastServiceDate}
-                size="md"
-                radius="md"
-                styles={{ input: { direction: "ltr" } }}
-              />
-
-              <Stack gap="sm">
-                <Select
-                  label="מרווח טיפולים בקילומטרים"
+            <Stack gap="sm">
+              <Text fw={700}>תחזוקה ראשונית</Text>
+              <SimpleGrid cols={{ base: 1, md: 2 }} spacing="lg">
+                <TextInput
+                  type="date"
+                  label="מתי עשית טיפול אחרון?"
                   description="אופציונלי"
-                  placeholder="בחרו מרווח"
-                  data={SERVICE_INTERVAL_OPTIONS}
-                  value={intervalSelection}
-                  onChange={handleIntervalSelection}
-                  clearable
+                  value={lastServiceDate}
+                  onChange={(event) =>
+                    handleDateChange(
+                      "lastServiceDate",
+                      setLastServiceDate,
+                      event.currentTarget.value,
+                    )
+                  }
+                  error={fieldErrors.lastServiceDate}
                   size="md"
                   radius="md"
-                  error={
-                    intervalSelection !== "custom"
-                      ? fieldErrors.serviceIntervalKm
-                      : undefined
-                  }
+                  styles={{ input: { direction: "ltr" } }}
                 />
 
-                {intervalSelection === "custom" && (
-                  <NumberInput
-                    label="מרווח מותאם אישית"
-                    value={customInterval}
-                    onChange={handleCustomIntervalChange}
-                    error={fieldErrors.serviceIntervalKm}
-                    placeholder="לדוגמה: 12,000"
-                    suffix=" ק״מ"
-                    thousandSeparator=","
-                    allowDecimal={false}
-                    allowNegative={false}
-                    clampBehavior="none"
-                    hideControls
-                    inputMode="numeric"
+                <Stack gap="sm">
+                  <Select
+                    label="מרווח טיפולים בקילומטרים"
+                    description="אופציונלי"
+                    placeholder="בחרו מרווח"
+                    data={SERVICE_INTERVAL_OPTIONS}
+                    value={intervalSelection}
+                    onChange={handleIntervalSelection}
+                    clearable
                     size="md"
                     radius="md"
+                    error={
+                      intervalSelection !== "custom"
+                        ? fieldErrors.serviceIntervalKm
+                        : undefined
+                    }
                   />
-                )}
-              </Stack>
-            </SimpleGrid>
+
+                  {intervalSelection === "custom" && (
+                    <NumberInput
+                      label="מרווח מותאם אישית"
+                      value={customInterval}
+                      onChange={handleCustomIntervalChange}
+                      error={fieldErrors.serviceIntervalKm}
+                      placeholder="לדוגמה: 12,000"
+                      suffix=" ק״מ"
+                      thousandSeparator=","
+                      allowDecimal={false}
+                      allowNegative={false}
+                      clampBehavior="none"
+                      hideControls
+                      inputMode="numeric"
+                      size="md"
+                      radius="md"
+                    />
+                  )}
+                </Stack>
+              </SimpleGrid>
+            </Stack>
+
+            <Stack gap="sm">
+              <Text fw={700}>תאריכי תוקף</Text>
+              <SimpleGrid cols={{ base: 1, md: 2 }} spacing="lg">
+                <TextInput
+                  type="date"
+                  label="תוקף רישיון רכב / טסט"
+                  description="בתוקף עד · אופציונלי"
+                  value={vehicleLicenseValidUntil}
+                  onChange={(event) =>
+                    handleDateChange(
+                      "vehicleLicenseValidUntil",
+                      setVehicleLicenseValidUntil,
+                      event.currentTarget.value,
+                    )
+                  }
+                  error={fieldErrors.vehicleLicenseValidUntil}
+                  size="md"
+                  radius="md"
+                  styles={{ input: { direction: "ltr" } }}
+                />
+
+                <TextInput
+                  type="date"
+                  label="ביטוח חובה"
+                  description="בתוקף עד · אופציונלי"
+                  value={insuranceExpiryDate}
+                  onChange={(event) =>
+                    handleDateChange(
+                      "insuranceExpiryDate",
+                      setInsuranceExpiryDate,
+                      event.currentTarget.value,
+                    )
+                  }
+                  error={fieldErrors.insuranceExpiryDate}
+                  size="md"
+                  radius="md"
+                  styles={{ input: { direction: "ltr" } }}
+                />
+              </SimpleGrid>
+            </Stack>
           </Stack>
         </Stack>
       </Card>

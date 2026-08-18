@@ -21,7 +21,7 @@ const AddVehiclePage = observer(function AddVehiclePage() {
   const handleWizardComplete = async (vehicleData) => {
     try {
       await createVehicle(vehicleData);
-      navigate("/vehicles");
+      navigate("/home");
     } catch {}
   };
 
