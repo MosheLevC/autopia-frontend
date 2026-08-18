@@ -4,11 +4,13 @@ import LicensePlateStep from "./AddVehicle/LicensePlateStep";
 import StepProgress from "./AddVehicle/StepProgress";
 import VehicleDetailsStep from "./AddVehicle/VehicleDetailsStep";
 import VehicleManualStep from "./AddVehicle/VehicleManualStep";
+import VehicleUsageStep from "./AddVehicle/VehicleUsageStep";
 import { formatLicensePlate } from "../utils/plateUtils";
 
 const VEHICLE_DETAILS_FORM_ID = "vehicle-details-form";
+const VEHICLE_USAGE_FORM_ID = "vehicle-usage-form";
 
-export default function VehicleWizard({ onComplete, onCancel }) {
+export default function VehicleWizard({ onCancel }) {
   const [activeStep, setActiveStep] = useState(0);
   const [furthestStep, setFurthestStep] = useState(0);
 
@@ -20,14 +22,13 @@ export default function VehicleWizard({ onComplete, onCancel }) {
     color: "",
     fuelType: "",
     trimLevel: "",
-    currentMileage: 0,
+    currentMileage: "",
     vehicleLicenseValidUntil: "",
     insuranceExpiryDate: "",
     manualFile: null,
     manualFileName: "",
     lastServiceDate: "",
-    lastServiceMileage: 0,
-    serviceInterval: "",
+    serviceIntervalKm: "",
     governmentData: null,
   });
 
@@ -35,7 +36,7 @@ export default function VehicleWizard({ onComplete, onCancel }) {
     { title: "הזנת מספר רכב" },
     { title: "פרטי רכב" },
     { title: "ספר רכב" },
-    { title: "העדפות" },
+    { title: "תחזוקה ראשונית" },
     { title: "סיכום" },
   ];
 
@@ -49,7 +50,10 @@ export default function VehicleWizard({ onComplete, onCancel }) {
       color: "",
       fuelType: "",
       trimLevel: "",
+      currentMileage: "",
       vehicleLicenseValidUntil: "",
+      lastServiceDate: "",
+      serviceIntervalKm: "",
       governmentData: null,
     }));
   };
@@ -64,8 +68,10 @@ export default function VehicleWizard({ onComplete, onCancel }) {
       color: vehicle.color || "",
       fuelType: vehicle.fuelType || "",
       trimLevel: vehicle.trimLevel || "",
-      currentMileage: vehicle.currentMileage ?? prev.currentMileage,
+      currentMileage: "",
       vehicleLicenseValidUntil: vehicle.vehicleLicenseValidUntil || "",
+      lastServiceDate: "",
+      serviceIntervalKm: "",
       governmentData: vehicle.governmentData ?? null,
     }));
     setActiveStep(1);
@@ -99,9 +105,17 @@ export default function VehicleWizard({ onComplete, onCancel }) {
       const nextStep = activeStep + 1;
       setActiveStep(nextStep);
       setFurthestStep((current) => Math.max(current, nextStep));
-    } else {
-      onComplete?.(formData);
     }
+  };
+
+  const handleVehicleUsageDirty = () => {
+    setFurthestStep((current) => Math.min(current, 3));
+  };
+
+  const handleVehicleUsageContinue = (usageDetails) => {
+    setFormData((prev) => ({ ...prev, ...usageDetails }));
+    setActiveStep(4);
+    setFurthestStep(4);
   };
 
   const handlePreviousStep = () => {
@@ -144,7 +158,16 @@ export default function VehicleWizard({ onComplete, onCancel }) {
 
       {activeStep === 2 && <VehicleManualStep onContinue={handleNextStep} />}
 
-      {activeStep > 2 && (
+      {activeStep === 3 && (
+        <VehicleUsageStep
+          formId={VEHICLE_USAGE_FORM_ID}
+          usageData={formData}
+          onDirty={handleVehicleUsageDirty}
+          onContinue={handleVehicleUsageContinue}
+        />
+      )}
+
+      {activeStep > 3 && (
         <Card shadow="sm" p="xl" radius="xl" withBorder>
           <Stack align="center" py="xl">
             <Title order={3}>
@@ -172,7 +195,7 @@ export default function VehicleWizard({ onComplete, onCancel }) {
           ביטול
         </Button>
 
-        {activeStep > 0 && activeStep <= 2 && (
+        {activeStep > 0 && (
           <Button
             variant="default"
             size="md"
@@ -196,12 +219,24 @@ export default function VehicleWizard({ onComplete, onCancel }) {
           </Button>
         )}
 
-        {activeStep > 1 && (
+        {activeStep === 2 && (
           <Button
             size="md"
             radius="md"
             w={{ base: "100%", xs: 128 }}
             onClick={handleNextStep}
+          >
+            המשך
+          </Button>
+        )}
+
+        {activeStep === 3 && (
+          <Button
+            type="submit"
+            form={VEHICLE_USAGE_FORM_ID}
+            size="md"
+            radius="md"
+            w={{ base: "100%", xs: 128 }}
           >
             המשך
           </Button>
