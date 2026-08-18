@@ -2,6 +2,7 @@ import { useState } from "react";
 import { observer } from "mobx-react-lite";
 import {
   ActionIcon,
+  Box,
   Button,
   Card,
   Center,
@@ -17,8 +18,7 @@ import {
   Title,
   Tooltip,
 } from "@mantine/core";
-import VehicleCard from "./VehicleCard";
-import VehicleSwitcher from "./VehicleSwitcher";
+import HomeVehicleCard from "./HomeVehicleCard";
 import NoVehicleSelected from "./NoVehicleSelected";
 import { formatDateToDisplay } from "../utils/plateUtils";
 import { useVehicleStore } from "../stores/VehicleStoreContext";
@@ -30,7 +30,7 @@ const SECTION_CARD_PROPS = {
   p: { base: "md", sm: "xl" },
 };
 
-function VehicleDetails({ vehicle }) {
+function ExpandedVehicleDetails({ vehicle }) {
   const details = [
     { label: "רמת גימור", value: vehicle.trimLevel },
     { label: "סוג דלק", value: vehicle.fuelType },
@@ -129,10 +129,6 @@ const ActiveVehicleSection = observer(function ActiveVehicleSection() {
     );
   }
 
-  const handleVehicleSelect = (vehicleId) => {
-    vehicleStore.setActiveVehicle(vehicleId);
-  };
-
   return (
     <Card
       {...SECTION_CARD_PROPS}
@@ -146,26 +142,23 @@ const ActiveVehicleSection = observer(function ActiveVehicleSection() {
           </Title>
 
           <Tooltip label="עריכת רכב תהיה זמינה בהמשך" withArrow>
-            <ActionIcon
-              variant="subtle"
-              color="gray"
-              size="lg"
-              aria-label="עריכת פרטי הרכב"
-            >
-              <i className="ph-bold ph-pencil-simple" aria-hidden="true" />
-            </ActionIcon>
+            <Box component="span" style={{ display: "inline-flex" }}>
+              <ActionIcon
+                variant="subtle"
+                color="gray"
+                size="lg"
+                disabled
+                aria-label="עריכת פרטי הרכב תהיה זמינה בהמשך"
+              >
+                <i className="ph-bold ph-pencil-simple" aria-hidden="true" />
+              </ActionIcon>
+            </Box>
           </Tooltip>
         </Group>
 
-        <VehicleCard vehicle={activeVehicle} />
+        <HomeVehicleCard vehicle={activeVehicle} />
 
-        <Group justify="space-between" gap="sm" wrap="wrap">
-          <VehicleSwitcher
-            vehicles={vehicles}
-            activeVehicleId={activeVehicle._id}
-            onVehicleSelect={handleVehicleSelect}
-          />
-
+        <Group justify="flex-start">
           <Button
             variant="subtle"
             color="gray"
@@ -187,7 +180,7 @@ const ActiveVehicleSection = observer(function ActiveVehicleSection() {
         <Collapse expanded={detailsExpanded}>
           <Stack id="active-vehicle-details" gap="md">
             <Divider />
-            <VehicleDetails vehicle={activeVehicle} />
+            <ExpandedVehicleDetails vehicle={activeVehicle} />
           </Stack>
         </Collapse>
       </Stack>
