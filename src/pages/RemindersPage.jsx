@@ -20,7 +20,7 @@ const RemindersPage = observer(function RemindersPage() {
   }
 
   const currentVehicle = vehicleId
-    ? vehicleStore.vehicles.find((v) => (v._id || v.id) === vehicleId)
+    ? vehicleStore.vehicles.find((v) => v._id === vehicleId)
     : vehicleStore.activeVehicle;
 
   if (!currentVehicle) {

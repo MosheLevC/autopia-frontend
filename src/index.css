@@ -119,3 +119,14 @@ button {
   background-color: var(--mantine-primary-color-light);
 }
 
+.maintenance-item-card {
+  transition: transform 150ms ease, box-shadow 150ms ease, border-color 150ms ease;
+}
+
+.maintenance-item-card:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--mantine-color-gray-4);
+}
+
+

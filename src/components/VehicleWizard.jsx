@@ -122,6 +122,8 @@ export default function VehicleWizard({
     lastMaintenanceDate: "",
     maintenanceInterval: "",
     governmentData: null,
+    lastMaintenanceMileage: 0,
+    maintenanceInterval: "",
   });
 
   const stepsList = [
