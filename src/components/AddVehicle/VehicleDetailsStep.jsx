@@ -226,6 +226,7 @@ export default function VehicleDetailsStep({
                       handleTextChange("manufacturer", event.target.value)
                     }
                     error={fieldErrors.manufacturer}
+                    size="md"
                     radius="md"
                   />
                   <TextInput
@@ -236,6 +237,7 @@ export default function VehicleDetailsStep({
                       handleTextChange("model", event.target.value)
                     }
                     error={fieldErrors.model}
+                    size="md"
                     radius="md"
                   />
                   <Autocomplete
@@ -257,6 +259,7 @@ export default function VehicleDetailsStep({
                     }
                     rightSectionPointerEvents="none"
                     error={fieldErrors.year}
+                    size="md"
                     radius="md"
                   />
                   <Select
@@ -271,6 +274,7 @@ export default function VehicleDetailsStep({
                     searchable
                     allowDeselect={false}
                     error={fieldErrors.fuelType}
+                    size="md"
                     radius="md"
                   />
                   <TextInput
@@ -280,6 +284,7 @@ export default function VehicleDetailsStep({
                     onChange={(event) =>
                       handleTextChange("color", event.target.value)
                     }
+                    size="md"
                     radius="md"
                   />
                 </SimpleGrid>

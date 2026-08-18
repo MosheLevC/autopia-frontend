@@ -1,4 +1,4 @@
-import { Card, Paper, SimpleGrid, Stack, Text, Title } from "@mantine/core";
+import { Box, Card, Divider, SimpleGrid, Stack, Text, Title } from "@mantine/core";
 import {
   formatDateToDisplay,
   formatLicensePlate,
@@ -20,24 +20,41 @@ const formatKilometers = (value) => {
     : EMPTY_VALUE;
 };
 
+function SummaryRow({ item, isLast }) {
+  return (
+    <Box py="sm">
+      <SimpleGrid
+        cols={{ base: 1, sm: 2 }}
+        spacing={{ base: 2, sm: "lg" }}
+      >
+        <Text size="sm" c="dimmed">
+          {item.label}
+        </Text>
+        <Text
+          fw={600}
+          dir={item.valueDirection}
+          ta={{ base: "right", sm: "left" }}
+        >
+          {item.value}
+        </Text>
+      </SimpleGrid>
+      {!isLast && <Divider mt="sm" color="gray.2" />}
+    </Box>
+  );
+}
+
 function SummarySection({ title, items }) {
   return (
-    <Stack gap="sm">
+    <Stack gap={0}>
       <Text fw={800}>{title}</Text>
-      <SimpleGrid cols={{ base: 1, sm: 2, md: 3 }} spacing="md">
-        {items.map((item) => (
-          <Paper key={item.label} withBorder radius="lg" p="md" bg="gray.0">
-            <Stack gap={4}>
-              <Text size="xs" c="dimmed">
-                {item.label}
-              </Text>
-              <Text fw={700} dir={item.valueDirection} ta="right">
-                {item.value}
-              </Text>
-            </Stack>
-          </Paper>
-        ))}
-      </SimpleGrid>
+      <Divider mt="xs" mb={4} />
+      {items.map((item, index) => (
+        <SummaryRow
+          key={item.label}
+          item={item}
+          isLast={index === items.length - 1}
+        />
+      ))}
     </Stack>
   );
 }

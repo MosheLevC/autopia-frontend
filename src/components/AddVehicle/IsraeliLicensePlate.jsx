@@ -97,7 +97,7 @@ export default function IsraeliLicensePlate({
             fontWeight: 800,
             letterSpacing: "3px",
             color: "#000000",
-            fontFamily: "var(--font-hebrew), 'Inter', sans-serif",
+            fontFamily: "'Inter', sans-serif",
             width: "100%",
             height: 64,
             padding: "0 12px",

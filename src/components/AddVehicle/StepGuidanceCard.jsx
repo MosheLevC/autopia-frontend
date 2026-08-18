@@ -8,7 +8,7 @@ export default function StepGuidanceCard({
   return (
     <Card
       shadow="sm"
-      p="xl"
+      p={{ base: "md", sm: "xl" }}
       radius="xl"
       withBorder
       h="100%"

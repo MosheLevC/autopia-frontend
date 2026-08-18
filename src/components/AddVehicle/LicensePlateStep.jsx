@@ -119,7 +119,7 @@ export default function LicensePlateStep({
     <SimpleGrid cols={{ base: 1, md: 2 }} spacing="lg">
       <Card
         shadow="sm"
-        p="xl"
+        p={{ base: "md", sm: "xl" }}
         radius="xl"
         withBorder
         h="100%"
@@ -185,6 +185,7 @@ export default function LicensePlateStep({
 
           <Button
             variant="default"
+            size="md"
             radius="md"
             fullWidth
             onClick={handleManualContinue}
