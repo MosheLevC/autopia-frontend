@@ -1,6 +1,7 @@
 import { observable, action, runInAction } from "mobx";
 import authService from "../services/authService";
 import { vehicleStore } from "./vehicleStore";
+import { maintenanceStore } from "./maintenanceStore";
 
 const TOKEN_KEY = "autopia_auth_token";
 const USER_KEY = "autopia_user";
@@ -128,6 +129,7 @@ export function createAuthStore() {
       store.error = null;
       store.clearStorage();
       vehicleStore.clear();
+      maintenanceStore.clear();
     }),
   });
 
@@ -140,6 +142,7 @@ export function createAuthStore() {
         store.token = null;
         store.error = "פג תוקף החיבור, אנא התחבר מחדש";
         vehicleStore.clear();
+        maintenanceStore.clear();
       });
     });
   }

@@ -14,7 +14,7 @@ export function createVehicleStore() {
       if (!store.vehicles || store.vehicles.length === 0) return null;
       return (
         store.vehicles.find(
-          (v) => (v._id || v.id) === store.activeVehicleId
+          (v) => v._id === store.activeVehicleId
         ) ||
         store.vehicles[0] ||
         null
@@ -50,12 +50,12 @@ export function createVehicleStore() {
           store.vehicles = vehicles || [];
           const storedActiveId = localStorage.getItem(ACTIVE_VEHICLE_KEY);
           const activeExists = store.vehicles.some(
-            (v) => (v._id || v.id) === storedActiveId
+            (v) => v._id === storedActiveId
           );
           if (activeExists) {
             store.activeVehicleId = storedActiveId;
           } else if (store.vehicles.length > 0) {
-            store.activeVehicleId = store.vehicles[0]._id || store.vehicles[0].id;
+            store.activeVehicleId = store.vehicles[0]._id;
           } else {
             store.activeVehicleId = null;
           }
@@ -84,7 +84,7 @@ export function createVehicleStore() {
         runInAction(() => {
           if (newVehicle) {
             store.vehicles.push(newVehicle);
-            const id = newVehicle._id || newVehicle.id;
+            const id = newVehicle._id;
             store.activeVehicleId = id;
             try {
               localStorage.setItem(ACTIVE_VEHICLE_KEY, id);
@@ -115,7 +115,7 @@ export function createVehicleStore() {
         runInAction(() => {
           if (updated) {
             const index = store.vehicles.findIndex(
-              (v) => (v._id || v.id) === vehicleId
+              (v) => v._id === vehicleId
             );
             if (index !== -1) {
               store.vehicles[index] = updated;
@@ -145,11 +145,11 @@ export function createVehicleStore() {
         await vehicleService.deleteVehicle(vehicleId);
         runInAction(() => {
           store.vehicles = store.vehicles.filter(
-            (v) => (v._id || v.id) !== vehicleId
+            (v) => v._id !== vehicleId
           );
           if (store.activeVehicleId === vehicleId) {
             const nextActive = store.vehicles[0];
-            const nextId = nextActive ? (nextActive._id || nextActive.id) : null;
+            const nextId = nextActive ? nextActive._id : null;
             store.activeVehicleId = nextId;
             try {
               if (nextId) {

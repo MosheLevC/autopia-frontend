@@ -33,7 +33,7 @@ const NAV_ITEMS = [
       path === "/vehicles" ||
       path === "/vehicles/add" ||
       (path.startsWith("/vehicles/") &&
-        !path.includes("/services") &&
+        !path.includes("/maintenances") &&
         !path.includes("/reminders")),
   },
   {
@@ -42,21 +42,21 @@ const NAV_ITEMS = [
     icon: "ph-bell",
     activeIcon: "ph-bell-fill",
     getPath: (activeVehicle) => {
-      const id = activeVehicle?._id || activeVehicle?.id;
+      const id = activeVehicle?._id;
       return id ? `/vehicles/${id}/reminders` : "/reminders";
     },
     isActive: (path) => path.includes("/reminders"),
   },
   {
-    id: "services",
+    id: "maintenances",
     label: "יומן טיפולים",
     icon: "ph-calendar-blank",
     activeIcon: "ph-calendar-check-fill",
     getPath: (activeVehicle) => {
-      const id = activeVehicle?._id || activeVehicle?.id;
-      return id ? `/vehicles/${id}/services` : "/services";
+      const id = activeVehicle?._id;
+      return id ? `/vehicles/${id}/maintenances` : "/maintenances";
     },
-    isActive: (path) => path.includes("/services"),
+    isActive: (path) => path.includes("/maintenances"),
   },
 ];
 
