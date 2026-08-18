@@ -17,22 +17,16 @@ import {
   cleanLicensePlate,
   formatLicensePlate,
 } from "../../utils/plateUtils";
+import {
+  FUEL_TYPE_OPTIONS,
+  MIN_VEHICLE_YEAR,
+} from "../../utils/vehicleFormUtils";
 import IsraeliLicensePlate from "./IsraeliLicensePlate";
 
 const CURRENT_YEAR = new Date().getFullYear();
-const MIN_VEHICLE_YEAR = 1900;
 const YEAR_OPTIONS = Array.from({ length: 102 }, (_, index) =>
   String(CURRENT_YEAR + 1 - index),
 );
-const FUEL_TYPE_OPTIONS = [
-  "בנזין",
-  "סולר",
-  "היברידי",
-  "חשמלי",
-  'גפ"מ',
-  "אחר",
-];
-
 const getPlateError = (licensePlate) => {
   const cleanPlate = cleanLicensePlate(licensePlate);
   return cleanPlate.length === 7 || cleanPlate.length === 8

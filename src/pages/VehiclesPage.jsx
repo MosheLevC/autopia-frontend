@@ -1,14 +1,17 @@
+import { useState } from "react";
 import {
   Alert,
   Button,
   Center,
   Container,
+  Group,
   Loader,
   Stack,
   Text,
 } from "@mantine/core";
 import { observer } from "mobx-react-lite";
 import { useNavigate } from "react-router";
+import DeleteVehicleModal from "../components/DeleteVehicleModal";
 import MyCarsVehicleCard from "../components/MyCarsVehicleCard";
 import NoVehicleSelected from "../components/NoVehicleSelected";
 import { useHeaderTitle } from "../context/HeaderContext";
@@ -19,6 +22,38 @@ const VehiclesPage = observer(function VehiclesPage() {
   const navigate = useNavigate();
   const vehicleStore = useVehicleStore();
   const { vehicles, activeVehicleId, isLoading, error } = vehicleStore;
+  const [isDeleteMode, setIsDeleteMode] = useState(false);
+  const [vehicleToDeleteId, setVehicleToDeleteId] = useState(null);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+
+  const vehicleToDelete = vehicles.find(
+    (vehicle) => (vehicle._id || vehicle.id) === vehicleToDeleteId,
+  );
+
+  const enterDeleteMode = () => {
+    setVehicleToDeleteId(null);
+    setIsDeleteMode(true);
+  };
+
+  const cancelDeleteMode = () => {
+    setIsDeleteMode(false);
+    setVehicleToDeleteId(null);
+  };
+
+  const handleVehicleSelect = (vehicleId) => {
+    if (isDeleteMode) {
+      setVehicleToDeleteId(vehicleId);
+      return;
+    }
+
+    vehicleStore.setActiveVehicle(vehicleId);
+  };
+
+  const handleDeleteSuccess = () => {
+    setIsDeleteModalOpen(false);
+    setIsDeleteMode(false);
+    setVehicleToDeleteId(null);
+  };
 
   if (isLoading && vehicles.length === 0) {
     return (
@@ -61,10 +96,6 @@ const VehiclesPage = observer(function VehiclesPage() {
     );
   }
 
-  const handleVehicleSelect = (vehicleId) => {
-    vehicleStore.setActiveVehicle(vehicleId);
-  };
-
   return (
     <Container size={900} px={0}>
       <Stack gap="lg">
@@ -79,6 +110,34 @@ const VehiclesPage = observer(function VehiclesPage() {
           </Alert>
         )}
 
+        <Group justify="flex-end">
+          {isDeleteMode ? (
+            <Group gap="sm">
+              <Button variant="default" onClick={cancelDeleteMode}>
+                ביטול
+              </Button>
+              <Button
+                color="red"
+                disabled={!vehicleToDelete}
+                onClick={() => setIsDeleteModalOpen(true)}
+              >
+                מחק
+              </Button>
+            </Group>
+          ) : (
+            <Button
+              variant="subtle"
+              color="red"
+              leftSection={
+                <i className="ph-bold ph-trash" aria-hidden="true" />
+              }
+              onClick={enterDeleteMode}
+            >
+              מחק רכב
+            </Button>
+          )}
+        </Group>
+
         <Stack gap="md">
           {vehicles.map((vehicle) => {
             const vehicleId = vehicle._id || vehicle.id;
@@ -88,24 +147,35 @@ const VehiclesPage = observer(function VehiclesPage() {
                 key={vehicleId}
                 vehicle={vehicle}
                 isActive={vehicleId === activeVehicleId}
+                isDeleteMode={isDeleteMode}
+                isDeleteSelected={vehicleId === vehicleToDeleteId}
                 onSelect={handleVehicleSelect}
               />
             );
           })}
         </Stack>
 
-        <Center>
-          <Button
-            variant="light"
-            size="md"
-            radius="lg"
-            leftSection={<i className="ph-bold ph-plus" aria-hidden="true" />}
-            onClick={() => navigate("/vehicles/add")}
-          >
-            הוסף רכב
-          </Button>
-        </Center>
+        {!isDeleteMode && (
+          <Center>
+            <Button
+              variant="light"
+              size="md"
+              radius="lg"
+              leftSection={<i className="ph-bold ph-plus" aria-hidden="true" />}
+              onClick={() => navigate("/vehicles/add")}
+            >
+              הוסף רכב
+            </Button>
+          </Center>
+        )}
       </Stack>
+
+      <DeleteVehicleModal
+        opened={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        onDeleted={handleDeleteSuccess}
+        vehicle={vehicleToDelete}
+      />
     </Container>
   );
 });

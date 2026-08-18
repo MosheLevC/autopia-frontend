@@ -16,16 +16,19 @@ const VEHICLE_BACKGROUNDS = {
   yellow: yellowVehicleBackground,
 };
 
-const COLOR_TO_BACKGROUND = {
-  "אדום": "red",
-  "אפור": "silver",
-  "ירוק": "green",
-  "כחול": "blue",
-  "כסף": "silver",
-  "כסוף": "silver",
-  "לבן": "white",
-  "צהוב": "yellow",
-  "שחור": "black",
+const HEBREW_COLOR_KEYWORDS = [
+  ["שחור", "black"],
+  ["כחול", "blue"],
+  ["ירוק", "green"],
+  ["אדום", "red"],
+  ["לבן", "white"],
+  ["צהוב", "yellow"],
+  ["כסוף", "silver"],
+  ["כסף", "silver"],
+  ["אפור", "silver"],
+];
+
+const ENGLISH_COLOR_TO_BACKGROUND = {
   black: "black",
   blue: "blue",
   gray: "silver",
@@ -42,8 +45,13 @@ const normalizeVehicleColor = (color) =>
 
 export function getVehicleBackground(color) {
   const normalizedColor = normalizeVehicleColor(color);
-  const backgroundKey = COLOR_TO_BACKGROUND[normalizedColor] || "silver";
+  const hebrewMatch = HEBREW_COLOR_KEYWORDS.find(([keyword]) =>
+    normalizedColor.includes(keyword),
+  );
+  const backgroundKey =
+    hebrewMatch?.[1] ||
+    ENGLISH_COLOR_TO_BACKGROUND[normalizedColor] ||
+    "silver";
 
   return VEHICLE_BACKGROUNDS[backgroundKey] || silverVehicleBackground;
 }
-

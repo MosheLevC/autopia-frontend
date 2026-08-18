@@ -9,6 +9,11 @@ import {
   TextInput,
   Title,
 } from "@mantine/core";
+import {
+  isValidDateInput,
+  parseInteger,
+  toDateInputValue,
+} from "../../utils/vehicleFormUtils";
 
 const SERVICE_INTERVAL_OPTIONS = [
   { value: "8000", label: "8,000 ק״מ" },
@@ -18,56 +23,6 @@ const SERVICE_INTERVAL_OPTIONS = [
 ];
 
 const PRESET_INTERVALS = [8000, 10000, 15000];
-
-const parseInteger = (value) => {
-  if (typeof value === "number") {
-    return Number.isInteger(value) ? value : null;
-  }
-
-  if (typeof value === "string" && value.trim()) {
-    const parsed = Number(value.replaceAll(",", ""));
-    return Number.isInteger(parsed) ? parsed : null;
-  }
-
-  return null;
-};
-
-const isValidDateInput = (value) => {
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) {
-    return false;
-  }
-
-  const [year, month, day] = value.split("-").map(Number);
-  const parsedDate = new Date(Date.UTC(year, month - 1, day));
-
-  return (
-    parsedDate.getUTCFullYear() === year &&
-    parsedDate.getUTCMonth() === month - 1 &&
-    parsedDate.getUTCDate() === day
-  );
-};
-
-const toDateInputValue = (value) => {
-  if (!value) {
-    return "";
-  }
-
-  if (typeof value === "string") {
-    const datePrefix = value.match(/^\d{4}-\d{2}-\d{2}/)?.[0];
-
-    if (datePrefix && isValidDateInput(datePrefix)) {
-      return datePrefix;
-    }
-  }
-
-  const parsedDate = new Date(value);
-
-  if (Number.isNaN(parsedDate.getTime())) {
-    return "";
-  }
-
-  return parsedDate.toISOString().slice(0, 10);
-};
 
 const getInitialIntervalSelection = (value) => {
   const parsed = parseInteger(value);

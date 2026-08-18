@@ -25,6 +25,10 @@
     transform: translateY(-2px);
   }
 
+  .card[data-delete-mode="true"][aria-pressed="false"]:hover {
+    border-color: var(--mantine-color-red-6);
+  }
+
   .card[aria-pressed="false"]:hover .selectHint {
     opacity: 1;
     transform: translateY(0);

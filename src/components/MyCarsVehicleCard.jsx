@@ -1,15 +1,29 @@
-import { Card, Flex, Stack, Text } from "@mantine/core";
+import { Box, Card, Flex, Group, Stack, Text } from "@mantine/core";
 import { formatLicensePlate } from "../utils/plateUtils";
 import { getVehicleBackground } from "../utils/vehicleBackground";
 import classes from "./MyCarsVehicleCard.module.css";
 
-export default function MyCarsVehicleCard({ vehicle, isActive, onSelect }) {
+export default function MyCarsVehicleCard({
+  vehicle,
+  isActive,
+  isDeleteMode = false,
+  isDeleteSelected = false,
+  onSelect,
+}) {
   const vehicleId = vehicle._id || vehicle.id;
   const manufacturer = vehicle.manufacturer?.trim() || "יצרן לא ידוע";
   const model = vehicle.model?.trim() || "דגם לא ידוע";
   const formattedPlate = formatLicensePlate(vehicle.licensePlate);
   const vehicleName = `${manufacturer} ${model}`;
   const vehicleBackground = getVehicleBackground(vehicle.color);
+  const cardIsSelected = isDeleteMode ? isDeleteSelected : isActive;
+  const accessibleLabel = isDeleteMode
+    ? isDeleteSelected
+      ? `${vehicleName}, נבחר למחיקה`
+      : `בחירת ${vehicleName} למחיקה`
+    : isActive
+      ? `${vehicleName}, הרכב הפעיל`
+      : `בחירת ${vehicleName}`;
 
   return (
     <Card
@@ -21,8 +35,9 @@ export default function MyCarsVehicleCard({ vehicle, isActive, onSelect }) {
       radius="xl"
       w="100%"
       onClick={() => onSelect(vehicleId)}
-      aria-label={isActive ? `${vehicleName}, הרכב הפעיל` : `בחירת ${vehicleName}`}
-      aria-pressed={isActive}
+      aria-label={accessibleLabel}
+      aria-pressed={cardIsSelected}
+      data-delete-mode={isDeleteMode || undefined}
       style={{
         backgroundImage: `linear-gradient(to right, rgba(255, 255, 255, 0.98), rgba(255, 255, 255, 0.72) 38%, rgba(255, 255, 255, 0.18) 68%, transparent 82%), url("${vehicleBackground}")`,
         backgroundPosition: "right center",
@@ -50,6 +65,39 @@ export default function MyCarsVehicleCard({ vehicle, isActive, onSelect }) {
           justify="center"
           p={{ base: "md", sm: "xl" }}
         >
+          {isDeleteMode && (
+            <Group gap="xs" wrap="nowrap" aria-hidden="true">
+              <Box
+                w={18}
+                h={18}
+                bd={`2px solid var(--mantine-color-${isDeleteSelected ? "red-6" : "gray-5"})`}
+                style={{
+                  alignItems: "center",
+                  borderRadius: "50%",
+                  display: "flex",
+                  flexShrink: 0,
+                  justifyContent: "center",
+                }}
+              >
+                {isDeleteSelected && (
+                  <Box
+                    w={8}
+                    h={8}
+                    bg="red.6"
+                    style={{ borderRadius: "50%" }}
+                  />
+                )}
+              </Box>
+              <Text
+                size="sm"
+                fw={700}
+                c={isDeleteSelected ? "red.7" : "gray.7"}
+              >
+                {isDeleteSelected ? "נבחר למחיקה" : "בחר למחיקה"}
+              </Text>
+            </Group>
+          )}
+
           <Stack gap={2} align="flex-start">
             <Text size="sm" c="dimmed" fw={600}>
               {manufacturer}
@@ -80,7 +128,7 @@ export default function MyCarsVehicleCard({ vehicle, isActive, onSelect }) {
             {formattedPlate || "לא זמין"}
           </Text>
 
-          {!isActive && (
+          {!isDeleteMode && !isActive && (
             <Text
               className={classes.selectHint}
               visibleFrom="sm"
@@ -89,6 +137,18 @@ export default function MyCarsVehicleCard({ vehicle, isActive, onSelect }) {
               c="blue.7"
             >
               בחר רכב
+            </Text>
+          )}
+
+          {isDeleteMode && !isDeleteSelected && (
+            <Text
+              className={classes.selectHint}
+              visibleFrom="sm"
+              size="sm"
+              fw={700}
+              c="red.7"
+            >
+              בחר למחיקה
             </Text>
           )}
         </Stack>

@@ -7,38 +7,14 @@ import VehicleManualStep from "./AddVehicle/VehicleManualStep";
 import VehicleSummaryStep from "./AddVehicle/VehicleSummaryStep";
 import VehicleUsageStep from "./AddVehicle/VehicleUsageStep";
 import { cleanLicensePlate } from "../utils/plateUtils";
+import {
+  isValidDateInput,
+  MIN_VEHICLE_YEAR,
+  parseInteger,
+} from "../utils/vehicleFormUtils";
 
 const VEHICLE_DETAILS_FORM_ID = "vehicle-details-form";
 const VEHICLE_USAGE_FORM_ID = "vehicle-usage-form";
-const MIN_VEHICLE_YEAR = 1900;
-
-const parseInteger = (value) => {
-  if (typeof value === "number") {
-    return Number.isInteger(value) ? value : null;
-  }
-
-  if (typeof value === "string" && value.trim()) {
-    const parsedValue = Number(value.replaceAll(",", ""));
-    return Number.isInteger(parsedValue) ? parsedValue : null;
-  }
-
-  return null;
-};
-
-const isValidDateInput = (value) => {
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) {
-    return false;
-  }
-
-  const [year, month, day] = value.split("-").map(Number);
-  const parsedDate = new Date(Date.UTC(year, month - 1, day));
-
-  return (
-    parsedDate.getUTCFullYear() === year &&
-    parsedDate.getUTCMonth() === month - 1 &&
-    parsedDate.getUTCDate() === day
-  );
-};
 
 const buildFinalVehiclePayload = (formData) => {
   const licensePlate = cleanLicensePlate(formData.licensePlate);
