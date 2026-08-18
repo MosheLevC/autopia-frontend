@@ -1,23 +1,8 @@
 import { useState } from "react";
-import {
-  Alert,
-  Button,
-  Card,
-  Divider,
-  Group,
-  SimpleGrid,
-  Stack,
-  Text,
-  Title,
-} from "@mantine/core";
+import { Button, Card, Group, Stack, Text, Title } from "@mantine/core";
+import LicensePlateStep from "./AddVehicle/LicensePlateStep";
 import StepProgress from "./AddVehicle/StepProgress";
-import IsraeliLicensePlate from "./AddVehicle/IsraeliLicensePlate";
-import StepGuidanceCard from "./AddVehicle/StepGuidanceCard";
-import {
-  formatLicensePlate,
-  cleanLicensePlate,
-} from "../utils/plateUtils";
-import vehicleService from "../services/vehicleService";
+import { formatLicensePlate } from "../utils/plateUtils";
 
 export default function VehicleWizard({ onComplete, onCancel }) {
   const [activeStep, setActiveStep] = useState(0);
@@ -38,12 +23,8 @@ export default function VehicleWizard({ onComplete, onCancel }) {
     lastServiceDate: "",
     lastServiceMileage: 0,
     serviceInterval: "",
+    governmentData: null,
   });
-
-  const [plateInput, setPlateInput] = useState("");
-  const [isSearching, setIsSearching] = useState(false);
-  const [searchError, setSearchError] = useState("");
-  const [searchNotice, setSearchNotice] = useState("");
 
   const stepsList = [
     { title: "הזנת מספר רכב" },
@@ -53,100 +34,44 @@ export default function VehicleWizard({ onComplete, onCancel }) {
     { title: "סיכום" },
   ];
 
-  const guidanceItemsStep1 = [
-    {
-      title: "נמצא את פרטי הרכב אוטומטית",
-      desc: "נשלוף מידע ממאגרי המידע הרשמיים ונציג לך את פרטי הרכב.",
-      icon: "ph-car",
-    },
-    {
-      title: "נמלא עבורך שדות בסיסיים",
-      desc: "נתוני הרכב יוזנו אוטומטית כדי לחסוך לך זמן ומאמץ.",
-      icon: "ph-clipboard-text",
-    },
-    {
-      title: "תוכל לערוך ולשפר אחר כך",
-      desc: "תמיד תוכל להוסיף, לשנות ולעדכן כל פרט בהמשך.",
-      icon: "ph-pencil-simple-line",
-    },
-  ];
-
-  const handlePlateChange = (e) => {
-    const formatted = formatLicensePlate(e.target.value);
-    setPlateInput(formatted);
-    setSearchError("");
-    setSearchNotice("");
-  };
-
-  const handlePlateSearch = async (targetPlate = plateInput) => {
-    const cleanDigits = cleanLicensePlate(targetPlate);
-    if (!cleanDigits || (cleanDigits.length !== 7 && cleanDigits.length !== 8)) {
-      setSearchError("נא להזין מספר רישוי תקין (7 או 8 ספרות)");
-      return;
-    }
-
-    setIsSearching(true);
-    setSearchError("");
-    setSearchNotice("");
-
-    try {
-      const result = await vehicleService.lookupVehicle(cleanDigits);
-      if (result.success && result.found && result.vehicle) {
-        const v = result.vehicle;
-        setFormData((prev) => ({
-          ...prev,
-          licensePlate: cleanDigits,
-          manufacturer: v.manufacturer || prev.manufacturer,
-          model: v.model || prev.model,
-          year: v.year || prev.year,
-          color: v.color || prev.color,
-          fuelType: v.fuelType || prev.fuelType,
-          trimLevel: v.trimLevel || prev.trimLevel,
-          currentMileage: v.currentMileage ?? prev.currentMileage,
-          vehicleLicenseValidUntil: v.vehicleLicenseValidUntil || prev.vehicleLicenseValidUntil,
-        }));
-        setSearchNotice(
-          `אותר רכב: ${v.manufacturer} ${v.model} (${v.year})`
-        );
-      } else {
-        setFormData((prev) => ({
-          ...prev,
-          licensePlate: cleanDigits,
-        }));
-        setSearchNotice("הרכב לא נמצא במאגר. ניתן להמשיך להזנה ידנית.");
-      }
-    } catch (err) {
-      setSearchError(err.message || "שגיאה בחיפוש מספר הרישוי. ניתן להמשיך ידנית.");
-    } finally {
-      setIsSearching(false);
-    }
-  };
-
-  const handleManualContinue = () => {
-    const cleanDigits = cleanLicensePlate(plateInput);
-    if (!cleanDigits || (cleanDigits.length !== 7 && cleanDigits.length !== 8)) {
-      setSearchError("נא להזין מספר רישוי תקין להמשך");
-      return;
-    }
+  const storePlateForManualEntry = (licensePlate) => {
     setFormData((prev) => ({
       ...prev,
-      licensePlate: cleanDigits,
+      licensePlate,
+      manufacturer: "",
+      model: "",
+      year: new Date().getFullYear(),
+      color: "",
+      fuelType: "",
+      trimLevel: "",
+      vehicleLicenseValidUntil: "",
+      governmentData: null,
+    }));
+  };
+
+  const handleLookupSuccess = (vehicle) => {
+    setFormData((prev) => ({
+      ...prev,
+      licensePlate: vehicle.licensePlate,
+      manufacturer: vehicle.manufacturer || "",
+      model: vehicle.model || "",
+      year: vehicle.year ?? new Date().getFullYear(),
+      color: vehicle.color || "",
+      fuelType: vehicle.fuelType || "",
+      trimLevel: vehicle.trimLevel || "",
+      currentMileage: vehicle.currentMileage ?? prev.currentMileage,
+      vehicleLicenseValidUntil: vehicle.vehicleLicenseValidUntil || "",
+      governmentData: vehicle.governmentData ?? null,
     }));
     setActiveStep(1);
   };
 
+  const handleManualContinue = (licensePlate) => {
+    storePlateForManualEntry(licensePlate);
+    setActiveStep(1);
+  };
+
   const handleNextStep = () => {
-    if (activeStep === 0) {
-      const cleanDigits = cleanLicensePlate(plateInput);
-      if (!cleanDigits || (cleanDigits.length !== 7 && cleanDigits.length !== 8)) {
-        setSearchError("נא להזין מספר רישוי תקין לפני המשך");
-        return;
-      }
-      setFormData((prev) => ({
-        ...prev,
-        licensePlate: cleanDigits,
-      }));
-    }
     if (activeStep < 4) {
       setActiveStep((prev) => prev + 1);
     } else {
@@ -163,94 +88,12 @@ export default function VehicleWizard({ onComplete, onCancel }) {
       />
 
       {activeStep === 0 && (
-        <SimpleGrid cols={{ base: 1, md: 2 }} spacing="lg">
-          <Card
-            shadow="sm"
-            p="xl"
-            radius="xl"
-            withBorder
-            h="100%"
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "space-between",
-            }}
-          >
-            <Stack gap="lg" align="center">
-              <Stack gap={4} ta="center">
-                <Title order={3} fw={800}>
-                  הזנת מספר רכב
-                </Title>
-                <Text size="sm" c="dimmed">
-                  הזן מספר רכב ואנחנו נעזור לך למצוא את הפרטים
-                </Text>
-              </Stack>
-
-              <IsraeliLicensePlate
-                value={plateInput}
-                onChange={handlePlateChange}
-                onSearch={() => handlePlateSearch()}
-                placeholder="123·45·678"
-                autoFocus
-              />
-
-              {searchError && (
-                <Alert color="red" radius="md" w="100%">
-                  {searchError}
-                </Alert>
-              )}
-
-              {searchNotice && (
-                <Alert color="green" radius="md" w="100%">
-                  {searchNotice}
-                </Alert>
-              )}
-
-              <Button
-                size="md"
-                radius="md"
-                fullWidth
-                loading={isSearching}
-                onClick={() => handlePlateSearch()}
-                leftSection={
-                  <i
-                    className="ph-bold ph-magnifying-glass"
-                    style={{ fontSize: 18 }}
-                  />
-                }
-              >
-                חיפוש רכב
-              </Button>
-
-              <Divider my="xs" label="או" labelPosition="center" w="100%" />
-
-              <Button
-                variant="default"
-                radius="md"
-                fullWidth
-                onClick={handleManualContinue}
-                leftSection={
-                  <i
-                    className="ph-bold ph-pencil-simple"
-                    style={{ fontSize: 18 }}
-                  />
-                }
-              >
-                הזנה ידנית
-              </Button>
-
-              <Text size="xs" c="dimmed" ta="center">
-                אם הרכב לא נמצא, אפשר להמשיך להזנה ידנית
-              </Text>
-            </Stack>
-          </Card>
-
-          <StepGuidanceCard
-            title="מה קורה אחרי החיפוש?"
-            subtitle="נמצא את פרטי הרכב שלך ונמלא עבורך את הפרטים הבסיסיים."
-            items={guidanceItemsStep1}
-          />
-        </SimpleGrid>
+        <LicensePlateStep
+          licensePlate={formData.licensePlate}
+          onLookupSuccess={handleLookupSuccess}
+          onLookupNotFound={storePlateForManualEntry}
+          onManualContinue={handleManualContinue}
+        />
       )}
 
       {activeStep > 0 && (
@@ -274,9 +117,11 @@ export default function VehicleWizard({ onComplete, onCancel }) {
         <Button variant="default" radius="md" onClick={onCancel} px="xl">
           ביטול
         </Button>
-        <Button size="md" radius="md" onClick={handleNextStep} px="xl">
-          המשך
-        </Button>
+        {activeStep > 0 && (
+          <Button size="md" radius="md" onClick={handleNextStep} px="xl">
+            המשך
+          </Button>
+        )}
       </Group>
     </Stack>
   );

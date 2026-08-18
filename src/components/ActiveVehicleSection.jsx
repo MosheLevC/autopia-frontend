@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { Link } from "react-router";
 import { observer } from "mobx-react-lite";
 import {
   ActionIcon,
@@ -20,6 +19,7 @@ import {
 } from "@mantine/core";
 import VehicleCard from "./VehicleCard";
 import VehicleSwitcher from "./VehicleSwitcher";
+import NoVehicleSelected from "./NoVehicleSelected";
 import { formatDateToDisplay } from "../utils/plateUtils";
 import { useVehicleStore } from "../stores/VehicleStoreContext";
 
@@ -118,31 +118,14 @@ const ActiveVehicleSection = observer(function ActiveVehicleSection() {
 
   if (!activeVehicle) {
     return (
-      <Card
-        {...SECTION_CARD_PROPS}
-        component="section"
-        aria-labelledby="active-vehicle-empty-title"
-      >
-        <Stack align="center" gap="sm" py="lg" ta="center">
-          <Title id="active-vehicle-empty-title" order={2} size="h3">
-            עדיין לא הוספת רכב
-          </Title>
-          <Text size="sm" c="dimmed">
-            הוספת רכב תאפשר לך לראות כאן את כל הפרטים החשובים.
-          </Text>
-          <Button
-            component={Link}
-            to="/vehicles/add"
-            variant="light"
-            mt="xs"
-            leftSection={
-              <i className="ph-bold ph-plus" aria-hidden="true" />
-            }
-          >
-            הוספת רכב
-          </Button>
-        </Stack>
-      </Card>
+      <NoVehicleSelected
+        title="עדיין לא הוספת רכב"
+        description="הוספת רכב תאפשר לך לראות כאן את כל הפרטים החשובים."
+        icon="ph-car"
+        actionLabel="הוספת רכב"
+        actionPath="/vehicles/add"
+        actionIcon="ph-plus"
+      />
     );
   }
 
