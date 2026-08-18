@@ -82,11 +82,11 @@ export default function VehicleSummaryStep({ vehicleData }) {
     },
     {
       label: "טיפול אחרון",
-      value: formatDate(vehicleData.lastServiceDate),
+      value: formatDate(vehicleData.lastMaintenanceDate),
     },
     {
       label: "מרווח טיפולים",
-      value: formatKilometers(vehicleData.serviceIntervalKm),
+      value: formatKilometers(vehicleData.maintenanceInterval),
     },
   ];
 

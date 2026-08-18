@@ -15,7 +15,7 @@ import {
   toDateInputValue,
 } from "../../utils/vehicleFormUtils";
 
-const SERVICE_INTERVAL_OPTIONS = [
+const MAINTENANCE_INTERVAL_OPTIONS = [
   { value: "8000", label: "8,000 ק״מ" },
   { value: "10000", label: "10,000 ק״מ" },
   { value: "15000", label: "15,000 ק״מ" },
@@ -48,8 +48,8 @@ export default function VehicleUsageStep({
   const [currentMileage, setCurrentMileage] = useState(
     usageData.currentMileage ?? "",
   );
-  const [lastServiceDate, setLastServiceDate] = useState(
-    toDateInputValue(usageData.lastServiceDate),
+  const [lastMaintenanceDate, setLastMaintenanceDate] = useState(
+    toDateInputValue(usageData.lastMaintenanceDate),
   );
   const [vehicleLicenseValidUntil, setVehicleLicenseValidUntil] = useState(
     toDateInputValue(usageData.vehicleLicenseValidUntil),
@@ -58,10 +58,10 @@ export default function VehicleUsageStep({
     toDateInputValue(usageData.insuranceExpiryDate),
   );
   const [intervalSelection, setIntervalSelection] = useState(() =>
-    getInitialIntervalSelection(usageData.serviceIntervalKm),
+    getInitialIntervalSelection(usageData.maintenanceInterval),
   );
   const [customInterval, setCustomInterval] = useState(() =>
-    getInitialCustomInterval(usageData.serviceIntervalKm),
+    getInitialCustomInterval(usageData.maintenanceInterval),
   );
   const [fieldErrors, setFieldErrors] = useState({});
 
@@ -85,33 +85,33 @@ export default function VehicleUsageStep({
 
   const handleIntervalSelection = (value) => {
     setIntervalSelection(value);
-    clearFieldError("serviceIntervalKm");
+    clearFieldError("maintenanceInterval");
     onDirty?.();
   };
 
   const handleCustomIntervalChange = (value) => {
     setCustomInterval(value);
-    clearFieldError("serviceIntervalKm");
+    clearFieldError("maintenanceInterval");
     onDirty?.();
   };
 
   const validate = () => {
     const errors = {};
     const parsedMileage = parseInteger(currentMileage);
-    const normalizedLastServiceDate = lastServiceDate.trim();
+    const normalizedLastMaintenanceDate = lastMaintenanceDate.trim();
     const normalizedVehicleLicenseDate = vehicleLicenseValidUntil.trim();
     const normalizedInsuranceDate = insuranceExpiryDate.trim();
-    let serviceIntervalKm = "";
+    let maintenanceInterval = "";
 
     if (parsedMileage === null || parsedMileage < 0) {
       errors.currentMileage = "נא להזין קילומטראז' נוכחי תקין";
     }
 
     if (
-      normalizedLastServiceDate &&
-      !isValidDateInput(normalizedLastServiceDate)
+      normalizedLastMaintenanceDate &&
+      !isValidDateInput(normalizedLastMaintenanceDate)
     ) {
-      errors.lastServiceDate = "נא להזין תאריך טיפול תקין";
+      errors.lastMaintenanceDate = "נא להזין תאריך טיפול תקין";
     }
 
     if (
@@ -132,12 +132,12 @@ export default function VehicleUsageStep({
       const parsedCustomInterval = parseInteger(customInterval);
 
       if (parsedCustomInterval === null || parsedCustomInterval < 1) {
-        errors.serviceIntervalKm = "נא להזין מרווח טיפולים חיובי";
+        errors.maintenanceInterval = "נא להזין מרווח טיפולים חיובי";
       } else {
-        serviceIntervalKm = parsedCustomInterval;
+        maintenanceInterval = parsedCustomInterval;
       }
     } else if (intervalSelection) {
-      serviceIntervalKm = Number(intervalSelection);
+      maintenanceInterval = Number(intervalSelection);
     }
 
     setFieldErrors(errors);
@@ -148,8 +148,8 @@ export default function VehicleUsageStep({
 
     return {
       currentMileage: parsedMileage,
-      lastServiceDate: normalizedLastServiceDate,
-      serviceIntervalKm,
+      lastMaintenanceDate: normalizedLastMaintenanceDate,
+      maintenanceInterval,
       vehicleLicenseValidUntil: normalizedVehicleLicenseDate,
       insuranceExpiryDate: normalizedInsuranceDate,
     };
@@ -203,15 +203,15 @@ export default function VehicleUsageStep({
                   type="date"
                   label="מתי עשית טיפול אחרון?"
                   description="אופציונלי"
-                  value={lastServiceDate}
+                  value={lastMaintenanceDate}
                   onChange={(event) =>
                     handleDateChange(
-                      "lastServiceDate",
-                      setLastServiceDate,
+                      "lastMaintenanceDate",
+                      setLastMaintenanceDate,
                       event.currentTarget.value,
                     )
                   }
-                  error={fieldErrors.lastServiceDate}
+                  error={fieldErrors.lastMaintenanceDate}
                   size="md"
                   radius="md"
                   styles={{ input: { direction: "ltr" } }}
@@ -222,7 +222,7 @@ export default function VehicleUsageStep({
                     label="מרווח טיפולים בקילומטרים"
                     description="אופציונלי"
                     placeholder="בחרו מרווח"
-                    data={SERVICE_INTERVAL_OPTIONS}
+                    data={MAINTENANCE_INTERVAL_OPTIONS}
                     value={intervalSelection}
                     onChange={handleIntervalSelection}
                     clearable
@@ -230,7 +230,7 @@ export default function VehicleUsageStep({
                     radius="md"
                     error={
                       intervalSelection !== "custom"
-                        ? fieldErrors.serviceIntervalKm
+                        ? fieldErrors.maintenanceInterval
                         : undefined
                     }
                   />
@@ -240,7 +240,7 @@ export default function VehicleUsageStep({
                       label="מרווח מותאם אישית"
                       value={customInterval}
                       onChange={handleCustomIntervalChange}
-                      error={fieldErrors.serviceIntervalKm}
+                      error={fieldErrors.maintenanceInterval}
                       placeholder="לדוגמה: 12,000"
                       suffix=" ק״מ"
                       thousandSeparator=","

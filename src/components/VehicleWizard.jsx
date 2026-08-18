@@ -58,7 +58,7 @@ const buildFinalVehiclePayload = (formData) => {
 
   for (const field of [
     "vehicleLicenseValidUntil",
-    "lastServiceDate",
+    "lastMaintenanceDate",
     "insuranceExpiryDate",
   ]) {
     const value = formData[field]?.trim();
@@ -72,14 +72,14 @@ const buildFinalVehiclePayload = (formData) => {
     }
   }
 
-  if (formData.serviceIntervalKm !== "") {
-    const serviceIntervalKm = parseInteger(formData.serviceIntervalKm);
+  if (formData.maintenanceInterval !== "") {
+    const maintenanceInterval = parseInteger(formData.maintenanceInterval);
 
-    if (serviceIntervalKm === null || serviceIntervalKm < 1) {
+    if (maintenanceInterval === null || maintenanceInterval < 1) {
       return null;
     }
 
-    payload.serviceIntervalKm = serviceIntervalKm;
+    payload.maintenanceInterval = maintenanceInterval;
   }
 
   if (formData.governmentData !== null) {
@@ -119,8 +119,8 @@ export default function VehicleWizard({
     insuranceExpiryDate: "",
     manualFile: null,
     manualFileName: "",
-    lastServiceDate: "",
-    serviceIntervalKm: "",
+    lastMaintenanceDate: "",
+    maintenanceInterval: "",
     governmentData: null,
   });
 
@@ -145,8 +145,8 @@ export default function VehicleWizard({
       currentMileage: "",
       vehicleLicenseValidUntil: "",
       insuranceExpiryDate: "",
-      lastServiceDate: "",
-      serviceIntervalKm: "",
+      lastMaintenanceDate: "",
+      maintenanceInterval: "",
       governmentData: null,
     }));
   };
@@ -164,8 +164,8 @@ export default function VehicleWizard({
       currentMileage: "",
       vehicleLicenseValidUntil: vehicle.vehicleLicenseValidUntil || "",
       insuranceExpiryDate: "",
-      lastServiceDate: "",
-      serviceIntervalKm: "",
+      lastMaintenanceDate: "",
+      maintenanceInterval: "",
       governmentData: vehicle.governmentData ?? null,
     }));
     setActiveStep(1);

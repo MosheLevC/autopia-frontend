@@ -19,7 +19,7 @@ import {
 
 const DATE_FIELDS = [
   {
-    field: "lastServiceDate",
+    field: "lastMaintenanceDate",
     label: "תאריך טיפול אחרון",
   },
   {
@@ -182,11 +182,11 @@ export default function VehicleEditForm({
             <NumberInput
               label="מרווח טיפולים"
               description="אופציונלי"
-              value={draft.serviceIntervalKm}
+              value={draft.maintenanceInterval}
               onChange={(value) =>
-                handleFieldChange("serviceIntervalKm", value)
+                handleFieldChange("maintenanceInterval", value)
               }
-              error={fieldErrors.serviceIntervalKm}
+              error={fieldErrors.maintenanceInterval}
               suffix=" ק״מ"
               thousandSeparator=","
               allowDecimal={false}
@@ -244,4 +244,3 @@ export default function VehicleEditForm({
     </form>
   );
 }
-

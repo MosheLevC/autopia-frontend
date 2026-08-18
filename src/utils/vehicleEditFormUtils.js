@@ -13,14 +13,14 @@ const EDITABLE_FIELDS = [
   "trimLevel",
   "color",
   "currentMileage",
-  "lastServiceDate",
-  "serviceIntervalKm",
+  "lastMaintenanceDate",
+  "maintenanceInterval",
   "vehicleLicenseValidUntil",
   "insuranceExpiryDate",
 ];
 
 const DATE_FIELDS = [
-  "lastServiceDate",
+  "lastMaintenanceDate",
   "vehicleLicenseValidUntil",
   "insuranceExpiryDate",
 ];
@@ -36,8 +36,8 @@ export const createVehicleEditDraft = (vehicle) => ({
   trimLevel: vehicle.trimLevel || "",
   color: vehicle.color || "",
   currentMileage: vehicle.currentMileage ?? "",
-  lastServiceDate: toDateInputValue(vehicle.lastServiceDate),
-  serviceIntervalKm: vehicle.serviceIntervalKm ?? "",
+  lastMaintenanceDate: toDateInputValue(vehicle.lastMaintenanceDate),
+  maintenanceInterval: vehicle.maintenanceInterval ?? "",
   vehicleLicenseValidUntil: toDateInputValue(
     vehicle.vehicleLicenseValidUntil,
   ),
@@ -45,10 +45,10 @@ export const createVehicleEditDraft = (vehicle) => ({
 });
 
 const normalizeDraft = (draft) => {
-  const serviceIntervalValue =
-    draft.serviceIntervalKm === "" || draft.serviceIntervalKm == null
+  const maintenanceIntervalValue =
+    draft.maintenanceInterval === "" || draft.maintenanceInterval == null
       ? null
-      : parseInteger(draft.serviceIntervalKm);
+      : parseInteger(draft.maintenanceInterval);
 
   return {
     manufacturer: trimValue(draft.manufacturer),
@@ -58,8 +58,8 @@ const normalizeDraft = (draft) => {
     trimLevel: trimValue(draft.trimLevel),
     color: trimValue(draft.color),
     currentMileage: parseInteger(draft.currentMileage),
-    lastServiceDate: trimValue(draft.lastServiceDate) || null,
-    serviceIntervalKm: serviceIntervalValue,
+    lastMaintenanceDate: trimValue(draft.lastMaintenanceDate) || null,
+    maintenanceInterval: maintenanceIntervalValue,
     vehicleLicenseValidUntil:
       trimValue(draft.vehicleLicenseValidUntil) || null,
     insuranceExpiryDate: trimValue(draft.insuranceExpiryDate) || null,
@@ -74,8 +74,8 @@ const comparableDraft = (draft) => ({
   trimLevel: trimValue(draft.trimLevel),
   color: trimValue(draft.color),
   currentMileage: String(draft.currentMileage ?? "").replaceAll(",", "").trim(),
-  lastServiceDate: trimValue(draft.lastServiceDate),
-  serviceIntervalKm: String(draft.serviceIntervalKm ?? "")
+  lastMaintenanceDate: trimValue(draft.lastMaintenanceDate),
+  maintenanceInterval: String(draft.maintenanceInterval ?? "")
     .replaceAll(",", "")
     .trim(),
   vehicleLicenseValidUntil: trimValue(draft.vehicleLicenseValidUntil),
@@ -122,12 +122,12 @@ export const validateVehicleEditDraft = (vehicle, draft) => {
   }
 
   if (
-    (draft.serviceIntervalKm !== "" &&
-      draft.serviceIntervalKm != null &&
-      values.serviceIntervalKm === null) ||
-    (values.serviceIntervalKm !== null && values.serviceIntervalKm < 1)
+    (draft.maintenanceInterval !== "" &&
+      draft.maintenanceInterval != null &&
+      values.maintenanceInterval === null) ||
+    (values.maintenanceInterval !== null && values.maintenanceInterval < 1)
   ) {
-    errors.serviceIntervalKm = "נא להזין מרווח טיפולים חיובי";
+    errors.maintenanceInterval = "נא להזין מרווח טיפולים חיובי";
   }
 
   for (const field of DATE_FIELDS) {
