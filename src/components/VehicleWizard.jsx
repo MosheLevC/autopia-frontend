@@ -35,9 +35,9 @@ export default function VehicleWizard({ onComplete, onCancel }) {
     insuranceExpiryDate: "",
     manualFile: null,
     manualFileName: "",
-    lastServiceDate: "",
-    lastServiceMileage: 0,
-    serviceInterval: "",
+    lastMaintenanceDate: "",
+    lastMaintenanceMileage: 0,
+    maintenanceInterval: "",
   });
 
   const [plateInput, setPlateInput] = useState("");

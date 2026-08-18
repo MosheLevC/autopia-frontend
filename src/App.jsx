@@ -8,14 +8,14 @@ import { HeaderProvider } from "./context/HeaderContext";
 import Header from "./components/Header";
 import Navbar from "./components/Navbar";
 import AddReminderPage from "./pages/AddReminderPage";
-import AddServicePage from "./pages/AddServicePage";
+import AddMaintenancePage from "./pages/AddMaintenancePage";
 import AddVehiclePage from "./pages/AddVehiclePage";
 import AuthPage from "./pages/AuthPage";
 import HomePage from "./pages/HomePage";
 import LandingPage from "./pages/LandingPage";
 import ProfilePage from "./pages/ProfilePage";
+import MaintenancesPage from "./pages/MaintenancesPage";
 import RemindersPage from "./pages/RemindersPage";
-import ServicesPage from "./pages/ServicesPage";
 import VehicleProfilePage from "./pages/VehicleProfilePage";
 import VehiclesPage from "./pages/VehiclesPage";
 
@@ -73,14 +73,14 @@ function App() {
                 path="/vehicles/:vehicleId"
                 element={<VehicleProfilePage />}
               />
-              <Route path="/services" element={<ServicesPage />} />
+              <Route path="/maintenances" element={<MaintenancesPage />} />
               <Route
-                path="/vehicles/:vehicleId/services"
-                element={<ServicesPage />}
+                path="/vehicles/:vehicleId/maintenances"
+                element={<MaintenancesPage />}
               />
               <Route
-                path="/vehicles/:vehicleId/services/add"
-                element={<AddServicePage />}
+                path="/vehicles/:vehicleId/maintenances/add"
+                element={<AddMaintenancePage />}
               />
               <Route path="/reminders" element={<RemindersPage />} />
               <Route

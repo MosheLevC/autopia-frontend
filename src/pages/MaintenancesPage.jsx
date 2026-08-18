@@ -4,9 +4,9 @@ import { observer } from "mobx-react-lite";
 import { useHeaderTitle } from "../context/HeaderContext";
 import { useVehicleStore } from "../stores/VehicleStoreContext";
 import NoVehicleSelected from "../components/NoVehicleSelected";
-import ServiceLog from "../components/ServiceLog";
+import MaintenanceLog from "../components/MaintenanceLog";
 
-const ServicesPage = observer(function ServicesPage() {
+const MaintenancesPage = observer(function MaintenancesPage() {
   useHeaderTitle("יומן טיפולים");
   const { vehicleId } = useParams();
   const vehicleStore = useVehicleStore();
@@ -35,9 +35,9 @@ const ServicesPage = observer(function ServicesPage() {
 
   return (
     <Container size="lg" py="md">
-      <ServiceLog vehicle={currentVehicle} />
+      <MaintenanceLog vehicle={currentVehicle} />
     </Container>
   );
 });
 
-export default ServicesPage;
+export default MaintenancesPage;
