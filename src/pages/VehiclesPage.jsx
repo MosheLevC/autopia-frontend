@@ -1,11 +1,13 @@
 import { useState } from "react";
 import {
   Alert,
+  Box,
   Button,
   Center,
   Container,
   Group,
   Loader,
+  Radio,
   Stack,
   Text,
 } from "@mantine/core";
@@ -141,16 +143,38 @@ const VehiclesPage = observer(function VehiclesPage() {
         <Stack gap="md">
           {vehicles.map((vehicle) => {
             const vehicleId = vehicle._id || vehicle.id;
+            const vehicleName = `${vehicle.manufacturer?.trim() || "יצרן לא ידוע"} ${vehicle.model?.trim() || "דגם לא ידוע"}`;
 
             return (
-              <MyCarsVehicleCard
+              <Group
                 key={vehicleId}
-                vehicle={vehicle}
-                isActive={vehicleId === activeVehicleId}
-                isDeleteMode={isDeleteMode}
-                isDeleteSelected={vehicleId === vehicleToDeleteId}
-                onSelect={handleVehicleSelect}
-              />
+                align="center"
+                gap="sm"
+                wrap="nowrap"
+                w="100%"
+                dir="ltr"
+              >
+                {isDeleteMode && (
+                  <Radio
+                    name="vehicle-to-delete"
+                    color="red"
+                    size="md"
+                    checked={vehicleId === vehicleToDeleteId}
+                    onChange={() => setVehicleToDeleteId(vehicleId)}
+                    aria-label={`בחירת ${vehicleName} למחיקה`}
+                  />
+                )}
+
+                <Box style={{ flex: 1, minWidth: 0 }}>
+                  <MyCarsVehicleCard
+                    vehicle={vehicle}
+                    isActive={vehicleId === activeVehicleId}
+                    isDeleteMode={isDeleteMode}
+                    isDeleteSelected={vehicleId === vehicleToDeleteId}
+                    onSelect={handleVehicleSelect}
+                  />
+                </Box>
+              </Group>
             );
           })}
         </Stack>

@@ -1,4 +1,4 @@
-import { Box, Card, Flex, Group, Stack, Text } from "@mantine/core";
+import { Card, Flex, Stack, Text } from "@mantine/core";
 import { formatLicensePlate } from "../utils/plateUtils";
 import { getVehicleBackground } from "../utils/vehicleBackground";
 import classes from "./MyCarsVehicleCard.module.css";
@@ -65,39 +65,6 @@ export default function MyCarsVehicleCard({
           justify="center"
           p={{ base: "md", sm: "xl" }}
         >
-          {isDeleteMode && (
-            <Group gap="xs" wrap="nowrap" aria-hidden="true">
-              <Box
-                w={18}
-                h={18}
-                bd={`2px solid var(--mantine-color-${isDeleteSelected ? "red-6" : "gray-5"})`}
-                style={{
-                  alignItems: "center",
-                  borderRadius: "50%",
-                  display: "flex",
-                  flexShrink: 0,
-                  justifyContent: "center",
-                }}
-              >
-                {isDeleteSelected && (
-                  <Box
-                    w={8}
-                    h={8}
-                    bg="red.6"
-                    style={{ borderRadius: "50%" }}
-                  />
-                )}
-              </Box>
-              <Text
-                size="sm"
-                fw={700}
-                c={isDeleteSelected ? "red.7" : "gray.7"}
-              >
-                {isDeleteSelected ? "נבחר למחיקה" : "בחר למחיקה"}
-              </Text>
-            </Group>
-          )}
-
           <Stack gap={2} align="flex-start">
             <Text size="sm" c="dimmed" fw={600}>
               {manufacturer}
