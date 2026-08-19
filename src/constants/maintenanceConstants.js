@@ -6,6 +6,17 @@ export const MAINTENANCE_TYPES = [
   { value: "other", label: "אחר" },
 ];
 
+export const MAINTENANCE_TYPE_CONFIG = {
+  periodic: { label: "תקופתי", color: "orange" },
+  repair: { label: "תיקון", color: "red" },
+  replacement: { label: "החלפה", color: "grape" },
+  inspection: { label: "בדיקה", color: "blue" },
+  other: { label: "אחר", color: "gray" },
+};
+
+export const getMaintenanceTypeInfo = (type) =>
+  MAINTENANCE_TYPE_CONFIG[type] || MAINTENANCE_TYPE_CONFIG.other;
+
 export const QUICK_PARTS = [
   { value: "engineOil", label: "שמן מנוע" },
   { value: "oilFilter", label: "פילטר שמן" },

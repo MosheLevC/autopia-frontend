@@ -1,0 +1,66 @@
+import { Group, Paper, SimpleGrid, Stack, Text, ThemeIcon } from "@mantine/core";
+import { formatDateToDisplay } from "../../utils/plateUtils";
+
+export default function MaintenanceMetricsGrid({ maintenance }) {
+  const formattedMileage =
+    maintenance.mileageAtMaintenance !== undefined &&
+    maintenance.mileageAtMaintenance !== null &&
+    maintenance.mileageAtMaintenance !== ""
+      ? `${Number(maintenance.mileageAtMaintenance).toLocaleString("he-IL")} ק״מ`
+      : "לא צוין";
+
+  const formattedDate =
+    formatDateToDisplay(maintenance.maintenanceDate || maintenance.date) || "לא צוין";
+
+  return (
+    <SimpleGrid cols={{ base: 1, sm: 3 }} spacing="md">
+      <Paper withBorder radius="lg" p="md" bg="gray.0">
+        <Stack gap={4}>
+          <Group gap={6} align="center">
+            <ThemeIcon size="sm" variant="transparent" color="blue">
+              <i className="ph-currency-ils" style={{ fontSize: "1.1rem" }} aria-hidden="true" />
+            </ThemeIcon>
+            <Text size="xs" c="dimmed" fw={600}>
+              עלות כוללת
+            </Text>
+          </Group>
+          <Text fw={800} size="xl" c="blue.7">
+            ₪{Number(maintenance.totalCost || 0).toLocaleString("he-IL")}
+          </Text>
+        </Stack>
+      </Paper>
+
+      <Paper withBorder radius="lg" p="md" bg="gray.0">
+        <Stack gap={4}>
+          <Group gap={6} align="center">
+            <ThemeIcon size="sm" variant="transparent" color="gray.6">
+              <i className="ph-calendar" style={{ fontSize: "1.1rem" }} aria-hidden="true" />
+            </ThemeIcon>
+            <Text size="xs" c="dimmed" fw={600}>
+              תאריך טיפול
+            </Text>
+          </Group>
+          <Text fw={700} size="md" c="gray.9">
+            {formattedDate}
+          </Text>
+        </Stack>
+      </Paper>
+
+      <Paper withBorder radius="lg" p="md" bg="gray.0">
+        <Stack gap={4}>
+          <Group gap={6} align="center">
+            <ThemeIcon size="sm" variant="transparent" color="gray.6">
+              <i className="ph-gauge" style={{ fontSize: "1.1rem" }} aria-hidden="true" />
+            </ThemeIcon>
+            <Text size="xs" c="dimmed" fw={600}>
+              קילומטראז'
+            </Text>
+          </Group>
+          <Text fw={700} size="md" c="gray.9">
+            {formattedMileage}
+          </Text>
+        </Stack>
+      </Paper>
+    </SimpleGrid>
+  );
+}
