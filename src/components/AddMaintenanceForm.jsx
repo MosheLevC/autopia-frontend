@@ -131,26 +131,29 @@ export default function AddMaintenanceForm({
             radius="md"
           />
 
-          <DateInput
-            label="תאריך"
-            placeholder="DD/MM/YYYY"
-            valueFormat="DD/MM/YYYY"
-            withAsterisk
-            value={maintenanceDate}
-            onChange={(val) => {
-              setMaintenanceDate(val);
-              if (errors.maintenanceDate) {
-                setErrors((prev) => ({ ...prev, maintenanceDate: null }));
-              }
-            }}
-            maxDate={new Date()}
-            error={errors.maintenanceDate}
-            leftSection={<i className="ph-calendar" aria-hidden="true" />}
-            leftSectionPointerEvents="none"
-            size="md"
-            radius="md"
-            locale="he"
-          />
+            <DateInput
+              label="תאריך"
+              placeholder="DD/MM/YYYY"
+              valueFormat="DD/MM/YYYY"
+              withAsterisk
+              value={maintenanceDate}
+              onChange={(val) => {
+                setMaintenanceDate(val);
+                if (errors.maintenanceDate) {
+                  setErrors((prev) => ({ ...prev, maintenanceDate: null }));
+                }
+              }}
+              maxDate={new Date()}
+              firstDayOfWeek={0}
+              weekendDays={[5, 6]}
+              error={errors.maintenanceDate}
+              leftSection={<i className="ph-calendar" aria-hidden="true" />}
+              leftSectionPointerEvents="none"
+              size="md"
+              radius="md"
+              locale="he"
+              styles={{ weekday: { textAlign: "center" } }}
+            />
 
           <Stack gap="xs">
             <Text size="sm" fw={500}>
