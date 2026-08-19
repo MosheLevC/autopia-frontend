@@ -13,15 +13,8 @@ import {
   Title,
   UnstyledButton,
 } from "@mantine/core";
+import { getMaintenanceTypeInfo } from "../constants/maintenanceConstants";
 import { formatDateToDisplay } from "../utils/plateUtils";
-
-const TYPE_CONFIG = {
-  periodic: { label: "תקופתי", color: "orange" },
-  repair: { label: "תיקון", color: "red" },
-  replacement: { label: "החלפה", color: "grape" },
-  inspection: { label: "בדיקה", color: "blue" },
-  other: { label: "אחר", color: "gray" },
-};
 
 function formatMileage(mileage) {
   if (mileage === undefined || mileage === null || mileage === "") return null;
@@ -98,7 +91,7 @@ const MaintenanceLog = observer(function MaintenanceLog({ vehicle, maintenances 
       ) : (
         <Stack gap="sm">
           {sortedMaintenances.map((item) => {
-            const typeInfo = TYPE_CONFIG[item.type] || TYPE_CONFIG.other;
+            const typeInfo = getMaintenanceTypeInfo(item.type);
             const displayDate = formatDateToDisplay(item.maintenanceDate || item.date) || "תאריך לא צוין";
             const mileageText = formatMileage(item.mileageAtMaintenance || item.mileage);
 
