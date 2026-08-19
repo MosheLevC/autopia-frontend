@@ -129,4 +129,14 @@ button {
   border-color: var(--mantine-color-gray-4);
 }
 
+.mantine-DatePicker-weekday,
+.mantine-Month-weekday,
+.mantine-DateInput-weekday,
+.mantine-Calendar-weekday,
+table[class*="month"] th,
+th[class*="weekday"],
+[class*="weekday"] {
+  text-align: center;
+}
+
 

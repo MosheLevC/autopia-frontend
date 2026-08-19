@@ -53,7 +53,7 @@ const MaintenanceLog = observer(function MaintenanceLog({ vehicle, maintenances 
   };
 
   return (
-    <Stack gap="lg" pb={80}>
+    <Stack gap="lg" pb={sortedMaintenances.length > 0 ? 80 : 0}>
       <Group justify="space-between" align="center">
         <Group gap="xs" align="center">
           <ThemeIcon size={36} radius="md" variant="light" color="blue">
@@ -164,25 +164,27 @@ const MaintenanceLog = observer(function MaintenanceLog({ vehicle, maintenances 
         </Stack>
       )}
 
-      <Box
-        pos="sticky"
-        bottom={{ base: "5.5rem", sm: "1rem" }}
-        pt="xs"
-        style={{ zIndex: 10 }}
-      >
-        <Button
-          fullWidth
-          size="lg"
-          radius="lg"
-          h={50}
-          fw={700}
-          onClick={handleAddClick}
-          leftSection={<i className="ph-plus-circle" style={{ fontSize: "1.3rem" }} aria-hidden="true" />}
-          shadow="sm"
+      {sortedMaintenances.length > 0 && (
+        <Box
+          pos="sticky"
+          bottom={{ base: "5.5rem", sm: "1rem" }}
+          pt="xs"
+          style={{ zIndex: 10 }}
         >
-          הוסף טיפול
-        </Button>
-      </Box>
+          <Button
+            fullWidth
+            size="lg"
+            radius="lg"
+            h={50}
+            fw={700}
+            onClick={handleAddClick}
+            leftSection={<i className="ph-plus-circle" style={{ fontSize: "1.3rem" }} aria-hidden="true" />}
+            shadow="sm"
+          >
+            הוסף טיפול
+          </Button>
+        </Box>
+      )}
     </Stack>
   );
 });

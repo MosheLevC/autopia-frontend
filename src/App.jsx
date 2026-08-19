@@ -78,6 +78,10 @@ function App() {
                   />
                   <Route path="/maintenances" element={<MaintenancesPage />} />
                   <Route
+                    path="/maintenances/add"
+                    element={<AddMaintenancePage />}
+                  />
+                  <Route
                     path="/vehicles/:vehicleId/maintenances"
                     element={<MaintenancesPage />}
                   />
