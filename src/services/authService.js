@@ -56,6 +56,20 @@ export const authService = {
       throw new Error(formatErrorMessage(err, "שגיאה באימות המשתמש"));
     }
   },
+
+  async updateUserInfo(profileData) {
+    try {
+      const response = await apiClient.patch("/auth/userinfo", profileData);
+      return response.data.user;
+    } catch (err) {
+      const error = new Error(
+        formatErrorMessage(err, "שגיאה בעדכון פרטי החשבון"),
+      );
+      error.status = err.response?.status;
+      error.fieldErrors = err.response?.data?.errors || {};
+      throw error;
+    }
+  },
 };
 
 export default authService;

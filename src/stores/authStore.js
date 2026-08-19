@@ -6,6 +6,16 @@ import { maintenanceStore } from "./maintenanceStore";
 const TOKEN_KEY = "autopia_auth_token";
 const USER_KEY = "autopia_user";
 
+function persistUserForActiveSession(user) {
+  const serializedUser = JSON.stringify(user);
+
+  if (localStorage.getItem(TOKEN_KEY)) {
+    localStorage.setItem(USER_KEY, serializedUser);
+  } else if (sessionStorage.getItem(TOKEN_KEY)) {
+    sessionStorage.setItem(USER_KEY, serializedUser);
+  }
+}
+
 export function createAuthStore() {
   const store = observable({
     user: null,
@@ -114,6 +124,45 @@ export function createAuthStore() {
       } catch (err) {
         runInAction(() => {
           store.error = err.message || "ההרשמה נכשלה";
+        });
+        throw err;
+      } finally {
+        runInAction(() => {
+          store.isSubmitting = false;
+        });
+      }
+    },
+
+    async refreshUserInfo() {
+      const user = await authService.getUserInfo();
+
+      runInAction(() => {
+        persistUserForActiveSession(user);
+        store.user = user;
+      });
+
+      return user;
+    },
+
+    async updateUserInfo(profileData) {
+      runInAction(() => {
+        store.isSubmitting = true;
+        store.error = null;
+      });
+
+      try {
+        const user = await authService.updateUserInfo(profileData);
+
+        runInAction(() => {
+          persistUserForActiveSession(user);
+          store.user = user;
+          store.error = null;
+        });
+
+        return user;
+      } catch (err) {
+        runInAction(() => {
+          store.error = err.message || "עדכון פרטי החשבון נכשל";
         });
         throw err;
       } finally {
