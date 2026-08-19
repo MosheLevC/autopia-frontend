@@ -63,7 +63,14 @@ const getBackendFieldErrors = (error) => {
   return fieldErrors;
 };
 
-export default function UserProfile({ user, isSaving, onSave }) {
+export default function UserProfile({
+  user,
+  isSaving,
+  passwordChangeSuccess,
+  onSave,
+  onChangePassword,
+  onStartEditing,
+}) {
   const [isEditing, setIsEditing] = useState(false);
   const [draft, setDraft] = useState(() => createDraft(user));
   const [fieldErrors, setFieldErrors] = useState({});
@@ -86,6 +93,7 @@ export default function UserProfile({ user, isSaving, onSave }) {
   );
 
   const handleEdit = () => {
+    onStartEditing?.();
     setDraft(createDraft(user));
     setFieldErrors({});
     setSubmitError(null);
@@ -163,15 +171,29 @@ export default function UserProfile({ user, isSaving, onSave }) {
           </Stack>
 
           {!isEditing && (
-            <Button
-              variant="light"
-              onClick={handleEdit}
-              leftSection={
-                <i className="ph-bold ph-pencil-simple" aria-hidden="true" />
-              }
-            >
-              עריכת פרטים
-            </Button>
+            <Group gap="sm">
+              <Button
+                variant="default"
+                onClick={() => {
+                  setShowSuccess(false);
+                  onChangePassword?.();
+                }}
+                leftSection={
+                  <i className="ph-bold ph-lock-key" aria-hidden="true" />
+                }
+              >
+                שינוי סיסמה
+              </Button>
+              <Button
+                variant="light"
+                onClick={handleEdit}
+                leftSection={
+                  <i className="ph-bold ph-pencil-simple" aria-hidden="true" />
+                }
+              >
+                עריכת פרטים
+              </Button>
+            </Group>
           )}
         </Group>
 
@@ -180,6 +202,15 @@ export default function UserProfile({ user, isSaving, onSave }) {
             <i className="ph-bold ph-check-circle" aria-hidden="true" />
             <Text size="sm" fw={600}>
               הפרטים עודכנו בהצלחה
+            </Text>
+          </Group>
+        )}
+
+        {passwordChangeSuccess && !isEditing && (
+          <Group gap={6} c="green.7">
+            <i className="ph-bold ph-check-circle" aria-hidden="true" />
+            <Text size="sm" fw={600}>
+              הסיסמה שונתה בהצלחה
             </Text>
           </Group>
         )}

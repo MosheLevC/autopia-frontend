@@ -22,6 +22,7 @@ export function createAuthStore() {
     token: null,
     isLoading: true,
     isSubmitting: false,
+    isChangingPassword: false,
     error: null,
 
     get isAuthenticated() {
@@ -172,10 +173,37 @@ export function createAuthStore() {
       }
     },
 
+    async changePassword(passwordData) {
+      runInAction(() => {
+        store.isChangingPassword = true;
+        store.error = null;
+      });
+
+      try {
+        const result = await authService.changePassword(passwordData);
+
+        runInAction(() => {
+          store.error = null;
+        });
+
+        return result;
+      } catch (err) {
+        runInAction(() => {
+          store.error = err.message || "שינוי הסיסמה נכשל";
+        });
+        throw err;
+      } finally {
+        runInAction(() => {
+          store.isChangingPassword = false;
+        });
+      }
+    },
+
     logout: action(function () {
       store.user = null;
       store.token = null;
       store.error = null;
+      store.isChangingPassword = false;
       store.clearStorage();
       vehicleStore.clear();
       maintenanceStore.clear();
