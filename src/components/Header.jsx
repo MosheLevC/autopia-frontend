@@ -30,11 +30,25 @@ export default function Header() {
         justify="space-between"
         h="100%"
         w="100%"
-        maw={1200}
-        mx="auto"
       >
-        <Flex align="center" justify="flex-start" w={44}>
-          <Menu position="bottom-start" offset={8} width={180} shadow="md">
+        <Box style={{ flex: 1 }} />
+
+        {title ? (
+          <Text
+            fw={700}
+            size="lg"
+            c="gray.9"
+            style={{
+              letterSpacing: "-0.01em",
+              userSelect: "none",
+            }}
+          >
+            {title}
+          </Text>
+        ) : null}
+
+        <Flex align="center" justify="flex-end" style={{ flex: 1 }}>
+          <Menu position="bottom-end" offset={8} width={180} shadow="md">
             <Menu.Target>
               <Tooltip label="פרופיל משתמש" position="bottom" withArrow>
                 <ActionIcon
@@ -60,24 +74,6 @@ export default function Header() {
             </Menu.Dropdown>
           </Menu>
         </Flex>
-
-        <Flex align="center" justify="center" style={{ flex: 1 }}>
-          {title ? (
-            <Text
-              fw={700}
-              size="lg"
-              c="gray.9"
-              style={{
-                letterSpacing: "-0.01em",
-                userSelect: "none",
-              }}
-            >
-              {title}
-            </Text>
-          ) : null}
-        </Flex>
-
-        <Box w={44} />
       </Flex>
     </Box>
   );
