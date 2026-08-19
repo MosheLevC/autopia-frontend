@@ -1,16 +1,30 @@
 import { useEffect, useState } from "react";
 import {
+  ActionIcon,
+  Alert,
+  Box,
   Button,
+  Center,
+  Grid,
   Group,
+  Loader,
   Modal,
   NumberInput,
   Paper,
+  SegmentedControl,
   SimpleGrid,
   Stack,
   Text,
+  ThemeIcon,
 } from "@mantine/core";
+import { useMediaQuery } from "@mantine/hooks";
 
-const QUICK_INCREMENTS = [50, 100, 500, 1000];
+const INPUT_MODES = {
+  newMileage: "newMileage",
+  addedMileage: "addedMileage",
+};
+
+const QUICK_INCREMENTS = [10, 50, 100, 500];
 
 const formatMileage = (value) => Number(value).toLocaleString("he-IL");
 
@@ -27,19 +41,157 @@ const parseMileage = (value) => {
   return null;
 };
 
-const getMileageError = (value, currentMileage) => {
+const getMileageError = (value, mode, currentMileage) => {
   const parsed = parseMileage(value);
 
-  if (parsed === null || !Number.isInteger(parsed) || parsed < 0) {
-    return "נא להזין קילומטראז' תקין";
+  if (parsed === null || !Number.isSafeInteger(parsed) || parsed < 0) {
+    return "נא להזין מספר קילומטרים תקין";
   }
 
-  if (parsed < currentMileage) {
-    return "הקילומטראז' החדש לא יכול להיות נמוך מהקילומטראז' הנוכחי";
+  if (mode === INPUT_MODES.newMileage && parsed < currentMileage) {
+    return "הקילומטראז׳ החדש לא יכול להיות נמוך מהקילומטראז׳ הנוכחי";
   }
 
   return null;
 };
+
+function MileageFlowSummary({
+  currentMileage,
+  finalMileage,
+  difference,
+  hasError,
+}) {
+  const hasValidSummary = !hasError && finalMileage !== null;
+  const addedMileage =
+    hasValidSummary && difference > 0 ? difference : 0;
+
+  return (
+    <Stack gap="xs">
+      <Paper
+        component="section"
+        aria-label="סיכום הקילומטראז׳ הנוכחי"
+        withBorder
+        radius="lg"
+        shadow="xs"
+        p={{ base: "lg", sm: "xl" }}
+        bg="gray.0"
+      >
+        <Stack gap={4} align="center" ta="center">
+          <ThemeIcon color="blue" variant="light" size={40} radius="xl">
+            <i className="ph-bold ph-gauge" aria-hidden="true" />
+          </ThemeIcon>
+          <Text size="sm" c="dimmed" fw={600}>
+            קילומטראז׳ נוכחי
+          </Text>
+          <Text
+            fw={800}
+            fz={{ base: "2rem", sm: "2.25rem" }}
+            c="gray.9"
+            dir="ltr"
+            lh={1.15}
+          >
+            {formatMileage(currentMileage)} ק״מ
+          </Text>
+        </Stack>
+      </Paper>
+
+      <Center aria-hidden="true">
+        <ThemeIcon color="gray" variant="transparent" size="lg">
+          <i className="ph-bold ph-arrow-down" />
+        </ThemeIcon>
+      </Center>
+
+      <Grid gutter="sm">
+        <Grid.Col span={{ base: 12, xs: 8 }}>
+          <Paper
+            component="section"
+            aria-label="סיכום הקילומטראז׳ החדש"
+            withBorder
+            radius="lg"
+            shadow="xs"
+            p={{ base: "md", sm: "lg" }}
+            h="100%"
+          >
+            <Stack gap={4} align="center" ta="center">
+              <Text size="sm" c="dimmed" fw={600}>
+                קילומטראז׳ חדש
+              </Text>
+              <Text
+                fw={800}
+                fz={{ base: "1.55rem", sm: "1.85rem" }}
+                c="gray.9"
+                dir="ltr"
+                lh={1.2}
+              >
+                {hasValidSummary
+                  ? `${formatMileage(finalMileage)} ק״מ`
+                  : "—"}
+              </Text>
+            </Stack>
+          </Paper>
+        </Grid.Col>
+
+        <Grid.Col span={{ base: 12, xs: 4 }}>
+          <Paper
+            component="section"
+            aria-label="סיכום הקילומטרים שנוספו"
+            withBorder
+            radius="lg"
+            p={{ base: "md", sm: "lg" }}
+            bg="gray.0"
+            h="100%"
+          >
+            <Stack gap={4} align="center" ta="center">
+              <Text size="sm" c="dimmed" fw={600}>
+                תוספת
+              </Text>
+              <Text
+                fw={800}
+                fz={{ base: "1.35rem", sm: "1.5rem" }}
+                c={hasValidSummary && addedMileage > 0 ? "blue.7" : "gray.7"}
+                dir="ltr"
+                lh={1.2}
+              >
+                {hasValidSummary
+                  ? `+${formatMileage(addedMileage)} ק״מ`
+                  : "—"}
+              </Text>
+            </Stack>
+          </Paper>
+        </Grid.Col>
+      </Grid>
+    </Stack>
+  );
+}
+
+function UpdateFeedback({ error, isSaving }) {
+  return (
+    <Box
+      mih={58}
+      w="100%"
+      aria-live="polite"
+      style={{ display: "flex", alignItems: "center" }}
+    >
+      {error ? (
+        <Alert
+          color="red"
+          title="הקילומטראז׳ לא עודכן"
+          radius="md"
+          w="100%"
+        >
+          {error}
+        </Alert>
+      ) : isSaving ? (
+        <Group justify="center" gap="xs" w="100%">
+          <Loader size="xs" />
+          <Text size="sm" c="dimmed">
+            מעדכנים את הקילומטראז׳...
+          </Text>
+        </Group>
+      ) : null}
+    </Box>
+  );
+}
 
 export default function MileageUpdateModal({
   opened,
@@ -47,20 +199,35 @@ export default function MileageUpdateModal({
   currentMileage,
   onSubmit,
 }) {
-  const [newMileage, setNewMileage] = useState(currentMileage);
+  const isMobile = useMediaQuery("(max-width: 48em)", false, {
+    getInitialValueInEffect: false,
+  });
+  const [mode, setMode] = useState(INPUT_MODES.newMileage);
+  const [inputValue, setInputValue] = useState(currentMileage);
   const [isSaving, setIsSaving] = useState(false);
   const [submitError, setSubmitError] = useState(null);
 
   useEffect(() => {
     if (opened) {
-      setNewMileage(currentMileage);
+      setMode(INPUT_MODES.newMileage);
+      setInputValue(currentMileage);
       setSubmitError(null);
     }
   }, [currentMileage, opened]);
 
-  const parsedMileage = parseMileage(newMileage);
-  const inputError = getMileageError(newMileage, currentMileage);
-  const difference = parsedMileage === null ? null : parsedMileage - currentMileage;
+  const parsedInput = parseMileage(inputValue);
+  const inputError = getMileageError(inputValue, mode, currentMileage);
+  const finalMileage =
+    parsedInput === null
+      ? null
+      : mode === INPUT_MODES.addedMileage
+        ? currentMileage + parsedInput
+        : parsedInput;
+  const difference =
+    finalMileage === null ? null : finalMileage - currentMileage;
+  const canSubmit = !inputError && difference !== null && difference > 0;
+  const minimumValue =
+    mode === INPUT_MODES.newMileage ? currentMileage : 0;
 
   const handleClose = () => {
     if (!isSaving) {
@@ -68,36 +235,55 @@ export default function MileageUpdateModal({
     }
   };
 
-  const handleIncrement = (amount) => {
-    const baseMileage = parseMileage(newMileage) ?? currentMileage;
-    setNewMileage(baseMileage + amount);
+  const handleModeChange = (nextMode) => {
+    const parsed = parseMileage(inputValue);
+
+    if (nextMode === INPUT_MODES.addedMileage) {
+      setInputValue(
+        parsed !== null && parsed >= currentMileage
+          ? parsed - currentMileage
+          : 0,
+      );
+    } else {
+      setInputValue(currentMileage + (parsed ?? 0));
+    }
+
+    setMode(nextMode);
     setSubmitError(null);
   };
 
   const handleMileageChange = (value) => {
-    setNewMileage(value);
+    setInputValue(value);
+    setSubmitError(null);
+  };
+
+  const handleAdjustment = (amount) => {
+    const parsed = parseMileage(inputValue) ?? minimumValue;
+    setInputValue(Math.max(minimumValue, parsed + amount));
     setSubmitError(null);
   };
 
   const handleReset = () => {
-    setNewMileage(currentMileage);
+    setInputValue(minimumValue);
     setSubmitError(null);
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    if (inputError || parsedMileage === null || isSaving) {
+    if (!canSubmit || finalMileage === null || isSaving) {
       return;
     }
 
     setIsSaving(true);
     setSubmitError(null);
     try {
-      await onSubmit(parsedMileage);
+      await onSubmit(finalMileage);
       onClose();
     } catch (error) {
-      setSubmitError(error.message || "לא הצלחנו לעדכן את הקילומטראז'. נסה שוב.");
+      setSubmitError(
+        error.message || "לא הצלחנו לעדכן את הקילומטראז׳. נסה שוב.",
+      );
     } finally {
       setIsSaving(false);
     }
@@ -107,9 +293,10 @@ export default function MileageUpdateModal({
     <Modal
       opened={opened}
       onClose={handleClose}
-      title="עדכון קילומטראז'"
-      centered
-      size="sm"
+      title="עדכון קילומטראז׳"
+      centered={!isMobile}
+      fullScreen={isMobile}
+      size={560}
       radius="lg"
       padding={{ base: "md", sm: "xl" }}
       closeOnClickOutside={!isSaving}
@@ -117,95 +304,171 @@ export default function MileageUpdateModal({
       withCloseButton={!isSaving}
     >
       <form onSubmit={handleSubmit}>
-        <Stack gap="md">
-          <Stack gap={2}>
-            <Text size="sm" c="dimmed">
-              קילומטראז&apos; נוכחי
-            </Text>
-            <Text fw={700} size="lg" dir="ltr">
-              {formatMileage(currentMileage)} ק״מ
-            </Text>
-          </Stack>
-
-          <NumberInput
-            label="קילומטראז' חדש"
-            value={newMileage}
-            onChange={handleMileageChange}
-            error={inputError || undefined}
-            thousandSeparator=","
-            allowDecimal={false}
-            allowNegative={false}
-            clampBehavior="none"
-            hideControls
-            inputMode="numeric"
-            selectAllOnFocus
-            size="md"
-            disabled={isSaving}
+        <Stack gap={{ base: "md", sm: "lg" }}>
+          <MileageFlowSummary
+            currentMileage={currentMileage}
+            finalMileage={finalMileage}
+            difference={difference}
+            hasError={Boolean(inputError)}
           />
 
-          <SimpleGrid cols={{ base: 2, xs: 4 }} spacing="xs">
-            {QUICK_INCREMENTS.map((increment) => (
-              <Button
-                key={increment}
+          <SegmentedControl
+            fullWidth
+            value={mode}
+            onChange={handleModeChange}
+            disabled={isSaving}
+            radius="md"
+            size="md"
+            color="blue"
+            autoContrast
+            bg="gray.1"
+            styles={{
+              root: {
+                border: "1px solid var(--mantine-color-gray-2)",
+              },
+              indicator: {
+                boxShadow: "var(--mantine-shadow-sm)",
+              },
+              label: {
+                fontWeight: 600,
+              },
+            }}
+            data={[
+              {
+                value: INPUT_MODES.newMileage,
+                label: "קילומטראז׳ חדש",
+              },
+              {
+                value: INPUT_MODES.addedMileage,
+                label: "הוספת ק״מ",
+              },
+            ]}
+          />
+
+          <Stack gap="xs">
+            <Text size="sm" fw={700}>
+              {mode === INPUT_MODES.newMileage
+                ? "הזנת קריאת מד המרחק החדשה"
+                : "כמה קילומטרים נוספו?"}
+            </Text>
+
+            <Group gap="xs" wrap="nowrap" align="flex-start" dir="ltr">
+              <ActionIcon
                 type="button"
                 variant="default"
-                onClick={() => handleIncrement(increment)}
+                size={56}
+                radius="md"
+                shadow="xs"
+                aria-label="הפחתת קילומטר אחד"
+                onClick={() => handleAdjustment(-1)}
+                disabled={
+                  isSaving ||
+                  parsedInput === null ||
+                  parsedInput <= minimumValue
+                }
+              >
+                <i className="ph-bold ph-minus" aria-hidden="true" />
+              </ActionIcon>
+
+              <NumberInput
+                dir="rtl"
+                aria-label={
+                  mode === INPUT_MODES.newMileage
+                    ? "קילומטראז׳ חדש"
+                    : "מספר הקילומטרים שנוספו"
+                }
+                value={inputValue}
+                onChange={handleMileageChange}
+                error={inputError || undefined}
+                thousandSeparator=","
+                suffix=" ק״מ"
+                min={minimumValue}
+                step={1}
+                allowDecimal={false}
+                allowNegative={false}
+                clampBehavior="none"
+                hideControls
+                inputMode="numeric"
+                selectAllOnFocus
+                size="xl"
+                disabled={isSaving}
+                style={{ flex: 1 }}
+                styles={{
+                  input: {
+                    height: 56,
+                    direction: "ltr",
+                    textAlign: "center",
+                    fontSize: "var(--mantine-font-size-xl)",
+                    fontWeight: 800,
+                    boxShadow: "var(--mantine-shadow-xs)",
+                  },
+                  error: {
+                    direction: "rtl",
+                    textAlign: "right",
+                  },
+                }}
+              />
+
+              <ActionIcon
+                type="button"
+                variant="default"
+                size={56}
+                radius="md"
+                shadow="xs"
+                aria-label="הוספת קילומטר אחד"
+                onClick={() => handleAdjustment(1)}
                 disabled={isSaving}
               >
-                +{formatMileage(increment)}
-              </Button>
-            ))}
-          </SimpleGrid>
+                <i className="ph-bold ph-plus" aria-hidden="true" />
+              </ActionIcon>
+            </Group>
 
-          <Group justify="flex-end">
-            <Button
-              type="button"
-              variant="subtle"
-              color="gray"
-              size="compact-sm"
-              onClick={handleReset}
-              disabled={isSaving}
-            >
-              איפוס
-            </Button>
-          </Group>
+            <SimpleGrid cols={4} spacing="xs">
+              {QUICK_INCREMENTS.map((increment) => (
+                <Button
+                  key={increment}
+                  type="button"
+                  variant="default"
+                  onClick={() => handleAdjustment(increment)}
+                  disabled={isSaving}
+                  px="xs"
+                  h={44}
+                  radius="md"
+                  shadow="xs"
+                  dir="ltr"
+                >
+                  +{formatMileage(increment)}
+                </Button>
+              ))}
+            </SimpleGrid>
 
-          <Paper withBorder radius="md" p="sm" bg="gray.0">
-            <Stack align="center" gap={4}>
-              <Group gap="xs" wrap="nowrap" dir="ltr">
-                <Text size="sm" c="dimmed">
-                  {formatMileage(currentMileage)}
-                </Text>
-                <Text size="sm" c="dimmed" aria-hidden="true">
-                  →
-                </Text>
-                <Text size="sm" fw={700}>
-                  {parsedMileage === null ? "—" : formatMileage(parsedMileage)}
-                </Text>
-              </Group>
-              <Text
-                size="xs"
-                fw={600}
-                c={difference !== null && difference < 0 ? "red.7" : "dimmed"}
-                dir="ltr"
+            <Group justify="flex-start">
+              <Button
+                type="button"
+                variant="subtle"
+                color="gray"
+                size="sm"
+                radius="md"
+                onClick={handleReset}
+                disabled={isSaving}
+                leftSection={
+                  <i className="ph-bold ph-arrow-counter-clockwise" aria-hidden="true" />
+                }
               >
-                {difference === null
-                  ? "—"
-                  : `${difference >= 0 ? "+" : ""}${formatMileage(difference)} ק״מ`}
-              </Text>
-            </Stack>
-          </Paper>
+                איפוס לנוכחי
+              </Button>
+            </Group>
+          </Stack>
 
-          {submitError && (
-            <Text size="sm" c="red.7" ta="center">
-              {submitError}
-            </Text>
-          )}
+          <UpdateFeedback error={submitError} isSaving={isSaving} />
 
-          <Group grow gap="sm" mt="xs">
+          <Group grow gap="sm">
             <Button
               type="button"
               variant="default"
+              size="lg"
+              radius="md"
+              fw={600}
               onClick={handleClose}
               disabled={isSaving}
             >
@@ -213,10 +476,13 @@ export default function MileageUpdateModal({
             </Button>
             <Button
               type="submit"
+              size="lg"
+              radius="md"
+              fw={700}
               loading={isSaving}
-              disabled={Boolean(inputError)}
+              disabled={!canSubmit || isSaving}
             >
-              עדכון
+              שמור ועדכן
             </Button>
           </Group>
         </Stack>
