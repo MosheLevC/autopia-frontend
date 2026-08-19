@@ -2,8 +2,12 @@ import { useEffect, useState } from "react";
 import {
   ActionIcon,
   Alert,
+  Box,
   Button,
+  Center,
+  Grid,
   Group,
+  Loader,
   Modal,
   NumberInput,
   Paper,
@@ -50,6 +54,144 @@ const getMileageError = (value, mode, currentMileage) => {
 
   return null;
 };
+
+function MileageFlowSummary({
+  currentMileage,
+  finalMileage,
+  difference,
+  hasError,
+}) {
+  const hasValidSummary = !hasError && finalMileage !== null;
+  const addedMileage =
+    hasValidSummary && difference > 0 ? difference : 0;
+
+  return (
+    <Stack gap="xs">
+      <Paper
+        component="section"
+        aria-label="סיכום הקילומטראז׳ הנוכחי"
+        withBorder
+        radius="lg"
+        shadow="xs"
+        p={{ base: "lg", sm: "xl" }}
+        bg="gray.0"
+      >
+        <Stack gap={4} align="center" ta="center">
+          <ThemeIcon color="blue" variant="light" size={40} radius="xl">
+            <i className="ph-bold ph-gauge" aria-hidden="true" />
+          </ThemeIcon>
+          <Text size="sm" c="dimmed" fw={600}>
+            קילומטראז׳ נוכחי
+          </Text>
+          <Text
+            fw={800}
+            fz={{ base: "2rem", sm: "2.25rem" }}
+            c="gray.9"
+            dir="ltr"
+            lh={1.15}
+          >
+            {formatMileage(currentMileage)} ק״מ
+          </Text>
+        </Stack>
+      </Paper>
+
+      <Center aria-hidden="true">
+        <ThemeIcon color="gray" variant="transparent" size="lg">
+          <i className="ph-bold ph-arrow-down" />
+        </ThemeIcon>
+      </Center>
+
+      <Grid gutter="sm">
+        <Grid.Col span={{ base: 12, xs: 8 }}>
+          <Paper
+            component="section"
+            aria-label="סיכום הקילומטראז׳ החדש"
+            withBorder
+            radius="lg"
+            shadow="xs"
+            p={{ base: "md", sm: "lg" }}
+            h="100%"
+          >
+            <Stack gap={4} align="center" ta="center">
+              <Text size="sm" c="dimmed" fw={600}>
+                קילומטראז׳ חדש
+              </Text>
+              <Text
+                fw={800}
+                fz={{ base: "1.55rem", sm: "1.85rem" }}
+                c="gray.9"
+                dir="ltr"
+                lh={1.2}
+              >
+                {hasValidSummary
+                  ? `${formatMileage(finalMileage)} ק״מ`
+                  : "—"}
+              </Text>
+            </Stack>
+          </Paper>
+        </Grid.Col>
+
+        <Grid.Col span={{ base: 12, xs: 4 }}>
+          <Paper
+            component="section"
+            aria-label="סיכום הקילומטרים שנוספו"
+            withBorder
+            radius="lg"
+            p={{ base: "md", sm: "lg" }}
+            bg="gray.0"
+            h="100%"
+          >
+            <Stack gap={4} align="center" ta="center">
+              <Text size="sm" c="dimmed" fw={600}>
+                תוספת
+              </Text>
+              <Text
+                fw={800}
+                fz={{ base: "1.35rem", sm: "1.5rem" }}
+                c={hasValidSummary && addedMileage > 0 ? "blue.7" : "gray.7"}
+                dir="ltr"
+                lh={1.2}
+              >
+                {hasValidSummary
+                  ? `+${formatMileage(addedMileage)} ק״מ`
+                  : "—"}
+              </Text>
+            </Stack>
+          </Paper>
+        </Grid.Col>
+      </Grid>
+    </Stack>
+  );
+}
+
+function UpdateFeedback({ error, isSaving }) {
+  return (
+    <Box
+      mih={58}
+      w="100%"
+      aria-live="polite"
+      style={{ display: "flex", alignItems: "center" }}
+    >
+      {error ? (
+        <Alert
+          color="red"
+          title="הקילומטראז׳ לא עודכן"
+          radius="md"
+          w="100%"
+        >
+          {error}
+        </Alert>
+      ) : isSaving ? (
+        <Group justify="center" gap="xs" w="100%">
+          <Loader size="xs" />
+          <Text size="sm" c="dimmed">
+            מעדכנים את הקילומטראז׳...
+          </Text>
+        </Group>
+      ) : null}
+    </Box>
+  );
+}
 
 export default function MileageUpdateModal({
   opened,
@@ -147,17 +289,6 @@ export default function MileageUpdateModal({
     }
   };
 
-  const previewColor = inputError
-    ? "red"
-    : difference > 0
-      ? "green"
-      : "gray";
-  const previewIcon = inputError
-    ? "ph-warning-circle"
-    : difference > 0
-      ? "ph-check-circle"
-      : "ph-minus-circle";
-
   return (
     <Modal
       opened={opened}
@@ -165,7 +296,7 @@ export default function MileageUpdateModal({
       title="עדכון קילומטראז׳"
       centered={!isMobile}
       fullScreen={isMobile}
-      size={540}
+      size={560}
       radius="lg"
       padding={{ base: "md", sm: "xl" }}
       closeOnClickOutside={!isSaving}
@@ -173,23 +304,13 @@ export default function MileageUpdateModal({
       withCloseButton={!isSaving}
     >
       <form onSubmit={handleSubmit}>
-        <Stack gap="lg">
-          <Paper withBorder radius="lg" p="md" bg="blue.0">
-            <Stack gap={2} align="center" ta="center">
-              <Text size="sm" c="blue.8" fw={600}>
-                קילומטראז׳ נוכחי
-              </Text>
-              <Text
-                fw={800}
-                fz={{ base: "1.75rem", sm: "2rem" }}
-                c="gray.9"
-                dir="ltr"
-                lh={1.2}
-              >
-                {formatMileage(currentMileage)} ק״מ
-              </Text>
-            </Stack>
-          </Paper>
+        <Stack gap={{ base: "md", sm: "lg" }}>
+          <MileageFlowSummary
+            currentMileage={currentMileage}
+            finalMileage={finalMileage}
+            difference={difference}
+            hasError={Boolean(inputError)}
+          />
 
           <SegmentedControl
             fullWidth
@@ -197,6 +318,21 @@ export default function MileageUpdateModal({
             onChange={handleModeChange}
             disabled={isSaving}
             radius="md"
+            size="md"
+            color="blue"
+            autoContrast
+            bg="gray.1"
+            styles={{
+              root: {
+                border: "1px solid var(--mantine-color-gray-2)",
+              },
+              indicator: {
+                boxShadow: "var(--mantine-shadow-sm)",
+              },
+              label: {
+                fontWeight: 600,
+              },
+            }}
             data={[
               {
                 value: INPUT_MODES.newMileage,
@@ -210,7 +346,7 @@ export default function MileageUpdateModal({
           />
 
           <Stack gap="xs">
-            <Text size="sm" fw={600}>
+            <Text size="sm" fw={700}>
               {mode === INPUT_MODES.newMileage
                 ? "הזנת קריאת מד המרחק החדשה"
                 : "כמה קילומטרים נוספו?"}
@@ -220,8 +356,9 @@ export default function MileageUpdateModal({
               <ActionIcon
                 type="button"
                 variant="default"
-                size="xl"
+                size={56}
                 radius="md"
+                shadow="xs"
                 aria-label="הפחתת קילומטר אחד"
                 onClick={() => handleAdjustment(-1)}
                 disabled={
@@ -258,9 +395,16 @@ export default function MileageUpdateModal({
                 style={{ flex: 1 }}
                 styles={{
                   input: {
+                    height: 56,
                     direction: "ltr",
                     textAlign: "center",
-                    fontWeight: 700,
+                    fontSize: "var(--mantine-font-size-xl)",
+                    fontWeight: 800,
+                    boxShadow: "var(--mantine-shadow-xs)",
+                  },
+                  error: {
+                    direction: "rtl",
+                    textAlign: "right",
                   },
                 }}
               />
@@ -268,8 +412,9 @@ export default function MileageUpdateModal({
               <ActionIcon
                 type="button"
                 variant="default"
-                size="xl"
+                size={56}
                 radius="md"
+                shadow="xs"
                 aria-label="הוספת קילומטר אחד"
                 onClick={() => handleAdjustment(1)}
                 disabled={isSaving}
@@ -283,10 +428,13 @@ export default function MileageUpdateModal({
                 <Button
                   key={increment}
                   type="button"
-                  variant="light"
+                  variant="default"
                   onClick={() => handleAdjustment(increment)}
                   disabled={isSaving}
                   px="xs"
+                  h={44}
+                  radius="md"
+                  shadow="xs"
                   dir="ltr"
                 >
                   +{formatMileage(increment)}
@@ -299,7 +447,8 @@ export default function MileageUpdateModal({
                 type="button"
                 variant="subtle"
                 color="gray"
-                size="compact-sm"
+                size="sm"
+                radius="md"
                 onClick={handleReset}
                 disabled={isSaving}
                 leftSection={
@@ -311,53 +460,15 @@ export default function MileageUpdateModal({
             </Group>
           </Stack>
 
-          <Paper
-            withBorder
-            radius="lg"
-            p="md"
-            bg={`${previewColor}.0`}
-            style={{
-              borderColor: `var(--mantine-color-${previewColor}-2)`,
-            }}
-          >
-            <Group gap="sm" wrap="nowrap" align="flex-start">
-              <ThemeIcon
-                color={previewColor}
-                variant="light"
-                radius="xl"
-                size="lg"
-                style={{ flexShrink: 0 }}
-              >
-                <i className={`ph-bold ${previewIcon}`} aria-hidden="true" />
-              </ThemeIcon>
-
-              <Stack gap={2}>
-                <Text fw={700} c={`${previewColor}.8`}>
-                  {inputError
-                    ? "יש לתקן את הערך שהוזן"
-                    : difference > 0
-                      ? `נוספו ${formatMileage(difference)} ק״מ מאז העדכון הקודם`
-                      : "לא בוצע שינוי בקילומטראז׳"}
-                </Text>
-                {!inputError && difference > 0 && (
-                  <Text size="sm" c="dimmed">
-                    הקילומטראז׳ החדש יהיה {formatMileage(finalMileage)} ק״מ
-                  </Text>
-                )}
-              </Stack>
-            </Group>
-          </Paper>
-
-          {submitError && (
-            <Alert color="red" title="הקילומטראז׳ לא עודכן" radius="md">
-              {submitError}
-            </Alert>
-          )}
+          <UpdateFeedback error={submitError} isSaving={isSaving} />
 
           <Group grow gap="sm">
             <Button
               type="button"
               variant="default"
+              size="lg"
+              radius="md"
+              fw={600}
               onClick={handleClose}
               disabled={isSaving}
             >
@@ -365,6 +476,9 @@ export default function MileageUpdateModal({
             </Button>
             <Button
               type="submit"
+              size="lg"
+              radius="md"
+              fw={700}
               loading={isSaving}
               disabled={!canSubmit || isSaving}
             >
