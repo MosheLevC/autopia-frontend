@@ -6,12 +6,23 @@ import { maintenanceStore } from "./maintenanceStore";
 const TOKEN_KEY = "autopia_auth_token";
 const USER_KEY = "autopia_user";
 
+function persistUserForActiveSession(user) {
+  const serializedUser = JSON.stringify(user);
+
+  if (localStorage.getItem(TOKEN_KEY)) {
+    localStorage.setItem(USER_KEY, serializedUser);
+  } else if (sessionStorage.getItem(TOKEN_KEY)) {
+    sessionStorage.setItem(USER_KEY, serializedUser);
+  }
+}
+
 export function createAuthStore() {
   const store = observable({
     user: null,
     token: null,
     isLoading: true,
     isSubmitting: false,
+    isChangingPassword: false,
     error: null,
 
     get isAuthenticated() {
@@ -123,10 +134,76 @@ export function createAuthStore() {
       }
     },
 
+    async refreshUserInfo() {
+      const user = await authService.getUserInfo();
+
+      runInAction(() => {
+        persistUserForActiveSession(user);
+        store.user = user;
+      });
+
+      return user;
+    },
+
+    async updateUserInfo(profileData) {
+      runInAction(() => {
+        store.isSubmitting = true;
+        store.error = null;
+      });
+
+      try {
+        const user = await authService.updateUserInfo(profileData);
+
+        runInAction(() => {
+          persistUserForActiveSession(user);
+          store.user = user;
+          store.error = null;
+        });
+
+        return user;
+      } catch (err) {
+        runInAction(() => {
+          store.error = err.message || "עדכון פרטי החשבון נכשל";
+        });
+        throw err;
+      } finally {
+        runInAction(() => {
+          store.isSubmitting = false;
+        });
+      }
+    },
+
+    async changePassword(passwordData) {
+      runInAction(() => {
+        store.isChangingPassword = true;
+        store.error = null;
+      });
+
+      try {
+        const result = await authService.changePassword(passwordData);
+
+        runInAction(() => {
+          store.error = null;
+        });
+
+        return result;
+      } catch (err) {
+        runInAction(() => {
+          store.error = err.message || "שינוי הסיסמה נכשל";
+        });
+        throw err;
+      } finally {
+        runInAction(() => {
+          store.isChangingPassword = false;
+        });
+      }
+    },
+
     logout: action(function () {
       store.user = null;
       store.token = null;
       store.error = null;
+      store.isChangingPassword = false;
       store.clearStorage();
       vehicleStore.clear();
       maintenanceStore.clear();

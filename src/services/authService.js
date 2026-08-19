@@ -8,6 +8,9 @@ const ERROR_TRANSLATIONS = {
   "Authentication token has expired": "פג תוקף החיבור, נא להתחבר מחדש",
   "Authentication token is invalid": "טוקן אימות אינו תקין",
   "Account no longer exists": "החשבון אינו קיים עוד",
+  "Current password is incorrect": "הסיסמה הנוכחית שגויה",
+  "New password must differ from the current password":
+    "הסיסמה החדשה חייבת להיות שונה מהסיסמה הנוכחית",
 };
 
 function formatErrorMessage(err, defaultMessage) {
@@ -54,6 +57,32 @@ export const authService = {
       return response.data.user;
     } catch (err) {
       throw new Error(formatErrorMessage(err, "שגיאה באימות המשתמש"));
+    }
+  },
+
+  async updateUserInfo(profileData) {
+    try {
+      const response = await apiClient.patch("/auth/userinfo", profileData);
+      return response.data.user;
+    } catch (err) {
+      const error = new Error(
+        formatErrorMessage(err, "שגיאה בעדכון פרטי החשבון"),
+      );
+      error.status = err.response?.status;
+      error.fieldErrors = err.response?.data?.errors || {};
+      throw error;
+    }
+  },
+
+  async changePassword({ currentPassword, newPassword }) {
+    try {
+      const response = await apiClient.patch("/auth/password", {
+        currentPassword,
+        newPassword,
+      });
+      return response.data;
+    } catch (err) {
+      throw new Error(formatErrorMessage(err, "שגיאה בשינוי הסיסמה"));
     }
   },
 };

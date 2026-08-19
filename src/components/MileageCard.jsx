@@ -66,7 +66,6 @@ const MileageCard = observer(function MileageCard() {
           </Stack>
 
           <Button
-            variant="light"
             onClick={handleOpen}
             leftSection={
               <i className="ph-bold ph-gauge" aria-hidden="true" />
