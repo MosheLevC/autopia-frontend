@@ -24,7 +24,7 @@ export const maintenanceService = {
   async createMaintenance(vehicleId, data) {
     try {
       const response = await apiClient.post(`/vehicles/${vehicleId}/maintenances`, data);
-      return response.data?.data?.maintenance || response.data?.maintenance || null;
+      return response.data?.data || { maintenance: response.data?.maintenance, vehicle: null };
     } catch (err) {
       throw new Error(err.response?.data?.message || "שגיאה בהוספת טיפול חדש");
     }
@@ -33,7 +33,7 @@ export const maintenanceService = {
   async updateMaintenance(vehicleId, maintenanceId, data) {
     try {
       const response = await apiClient.patch(`/vehicles/${vehicleId}/maintenances/${maintenanceId}`, data);
-      return response.data?.data?.maintenance || response.data?.maintenance || null;
+      return response.data?.data || { maintenance: response.data?.maintenance, vehicle: null };
     } catch (err) {
       throw new Error(err.response?.data?.message || "שגיאה בעדכון פרטי הטיפול");
     }

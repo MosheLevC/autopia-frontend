@@ -59,26 +59,10 @@ const AddMaintenancePage = observer(function AddMaintenancePage() {
     setSubmitError(null);
 
     try {
-      await maintenanceStore.createMaintenance(currentVehicleId, payload);
+      const result = await maintenanceStore.createMaintenance(currentVehicleId, payload);
 
-      const vehicleUpdates = {};
-      if (
-        payload.mileageAtMaintenance !== undefined &&
-        Number(payload.mileageAtMaintenance) > Number(currentVehicle.currentMileage || 0)
-      ) {
-        vehicleUpdates.currentMileage = Number(payload.mileageAtMaintenance);
-      }
-
-      if (
-        payload.maintenanceDate &&
-        (!currentVehicle.lastMaintenanceDate ||
-          new Date(payload.maintenanceDate) >= new Date(currentVehicle.lastMaintenanceDate))
-      ) {
-        vehicleUpdates.lastMaintenanceDate = payload.maintenanceDate;
-      }
-
-      if (Object.keys(vehicleUpdates).length > 0) {
-        await vehicleStore.updateVehicle(currentVehicleId, vehicleUpdates).catch(() => {});
+      if (result?.vehicle) {
+        vehicleStore.updateVehicleLocally(result.vehicle);
       }
 
       navigate(`/vehicles/${currentVehicleId}/maintenances`);
