@@ -38,6 +38,16 @@ export function createVehicleStore() {
       }
     }),
 
+    updateVehicleLocally: action(function (updatedVehicle) {
+      if (!updatedVehicle?._id) return;
+      const index = store.vehicles.findIndex(
+        (v) => v._id === updatedVehicle._id
+      );
+      if (index !== -1) {
+        store.vehicles[index] = updatedVehicle;
+      }
+    }),
+
     async fetchVehicles() {
       runInAction(() => {
         store.isLoading = true;

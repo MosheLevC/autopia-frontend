@@ -132,29 +132,12 @@ const MaintenanceDetailPage = observer(function MaintenanceDetailPage() {
     setPageError(null);
 
     try {
-      await maintenanceStore.updateMaintenance(currentVehicleId, maintenanceId, payload);
+      const result = await maintenanceStore.updateMaintenance(currentVehicleId, maintenanceId, payload);
 
-      const vehicleUpdates = {};
-      if (
-        payload.mileageAtMaintenance !== undefined &&
-        Number(payload.mileageAtMaintenance) > Number(currentVehicle.currentMileage || 0)
-      ) {
-        vehicleUpdates.currentMileage = Number(payload.mileageAtMaintenance);
+      if (result?.vehicle) {
+        vehicleStore.updateVehicleLocally(result.vehicle);
       }
 
-      if (
-        payload.maintenanceDate &&
-        (!currentVehicle.lastMaintenanceDate ||
-          new Date(payload.maintenanceDate) >= new Date(currentVehicle.lastMaintenanceDate))
-      ) {
-        vehicleUpdates.lastMaintenanceDate = payload.maintenanceDate;
-      }
-
-      if (Object.keys(vehicleUpdates).length > 0) {
-        await vehicleStore.updateVehicle(currentVehicleId, vehicleUpdates).catch(() => {});
-      }
-
-      await maintenanceStore.fetchMaintenanceById(currentVehicleId, maintenanceId);
       setIsEditing(false);
     } catch (err) {
       setPageError(err.message || "שגיאה בעדכון הטיפול. נא לנסות שוב.");

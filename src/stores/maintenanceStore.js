@@ -76,13 +76,16 @@ export function createMaintenanceStore() {
       });
 
       try {
-        const newRecord = await maintenanceService.createMaintenance(vehicleId, maintenanceData);
+        const result = await maintenanceService.createMaintenance(vehicleId, maintenanceData);
+        const maintenance = result?.maintenance || result;
+        const vehicle = result?.vehicle || null;
+
         runInAction(() => {
-          if (newRecord) {
-            store.maintenances.unshift(newRecord);
+          if (maintenance) {
+            store.maintenances.unshift(maintenance);
           }
         });
-        return newRecord;
+        return { maintenance, vehicle };
       } catch (err) {
         runInAction(() => {
           store.error = err.message || "שגיאה בהוספת הטיפול";
@@ -102,19 +105,22 @@ export function createMaintenanceStore() {
       });
 
       try {
-        const updated = await maintenanceService.updateMaintenance(vehicleId, maintenanceId, updateData);
+        const result = await maintenanceService.updateMaintenance(vehicleId, maintenanceId, updateData);
+        const maintenance = result?.maintenance || result;
+        const vehicle = result?.vehicle || null;
+
         runInAction(() => {
-          if (updated) {
+          if (maintenance) {
             const index = store.maintenances.findIndex((m) => m._id === maintenanceId);
             if (index !== -1) {
-              store.maintenances[index] = updated;
+              store.maintenances[index] = maintenance;
             }
             if (store.activeMaintenance?._id === maintenanceId) {
-              store.activeMaintenance = updated;
+              store.activeMaintenance = maintenance;
             }
           }
         });
-        return updated;
+        return { maintenance, vehicle };
       } catch (err) {
         runInAction(() => {
           store.error = err.message || "שגיאה בעדכון הטיפול";
