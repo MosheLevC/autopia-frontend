@@ -5,6 +5,7 @@ import {
   Button,
   Card,
   Center,
+  Collapse,
   Divider,
   Group,
   Loader,
@@ -15,11 +16,13 @@ import {
   ThemeIcon,
   Title,
   Tooltip,
+  UnstyledButton,
 } from "@mantine/core";
 import HomeVehicleCard from "./HomeVehicleCard";
 import EditVehicleModal from "./EditVehicleModal";
 import NoVehicleSelected from "./NoVehicleSelected";
 import { formatDateToDisplay } from "../utils/plateUtils";
+import { getAdditionalVehicleDetails } from "../utils/governmentVehicleDetails";
 import { useVehicleStore } from "../stores/VehicleStoreContext";
 
 const SECTION_CARD_PROPS = {
@@ -56,6 +59,65 @@ function VehicleDetails({ vehicle }) {
         </Paper>
       ))}
     </SimpleGrid>
+  );
+}
+
+function AdditionalVehicleDetails({ vehicle }) {
+  const [opened, setOpened] = useState(false);
+  const details = getAdditionalVehicleDetails(vehicle);
+
+  if (details.length === 0) {
+    return null;
+  }
+
+  return (
+    <Stack gap="sm">
+      <Divider />
+      <UnstyledButton
+        type="button"
+        w="100%"
+        onClick={() => setOpened((current) => !current)}
+        aria-expanded={opened}
+        aria-controls="additional-vehicle-details"
+      >
+        <Group justify="space-between" gap="sm" wrap="nowrap">
+          <Text size="sm" fw={700}>
+            פרטים נוספים
+          </Text>
+          <ThemeIcon variant="transparent" color="gray" size="sm">
+            <i
+              className="ph-bold ph-caret-down"
+              aria-hidden="true"
+              style={{
+                transition: "transform 150ms ease",
+                transform: opened ? "rotate(180deg)" : "rotate(0deg)",
+              }}
+            />
+          </ThemeIcon>
+        </Group>
+      </UnstyledButton>
+
+      <Collapse expanded={opened} keepMountedMode="display-none">
+        <SimpleGrid
+          id="additional-vehicle-details"
+          cols={{ base: 2, md: 4 }}
+          spacing="sm"
+        >
+          {details.map((detail) => (
+            <Paper key={detail.key} withBorder radius="md" p="sm" miw={0}>
+              <Stack gap={2}>
+                <Text size="xs" c="dimmed">
+                  {detail.label}
+                </Text>
+                <Text size="sm" fw={600} style={{ overflowWrap: "anywhere" }}>
+                  {detail.value}
+                </Text>
+              </Stack>
+            </Paper>
+          ))}
+        </SimpleGrid>
+      </Collapse>
+    </Stack>
   );
 }
 
@@ -164,6 +226,8 @@ const ActiveVehicleSection = observer(function ActiveVehicleSection() {
             </Text>
             <VehicleDetails vehicle={activeVehicle} />
           </Stack>
+
+          <AdditionalVehicleDetails vehicle={activeVehicle} />
         </Stack>
       </Card>
 
