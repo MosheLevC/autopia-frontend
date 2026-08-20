@@ -1,18 +1,17 @@
-export const MAINTENANCE_TYPES = [
-  { value: "periodic", label: "תקופתי" },
-  { value: "repair", label: "תיקון" },
-  { value: "replacement", label: "החלפה" },
-  { value: "inspection", label: "בדיקה" },
-  { value: "other", label: "אחר" },
-];
-
 export const MAINTENANCE_TYPE_CONFIG = {
-  periodic: { label: "תקופתי", color: "orange" },
-  repair: { label: "תיקון", color: "red" },
-  replacement: { label: "החלפה", color: "grape" },
-  inspection: { label: "בדיקה", color: "blue" },
-  other: { label: "אחר", color: "gray" },
+  periodic: { label: "תקופתי", color: "orange", icon: "ph-clock-counter-clockwise" },
+  repair: { label: "תיקון", color: "red", icon: "ph-wrench" },
+  replacement: { label: "החלפה", color: "grape", icon: "ph-arrows-left-right" },
+  inspection: { label: "בדיקה", color: "teal", icon: "ph-magnifying-glass" },
+  other: { label: "אחר", color: "gray", icon: "ph-dots-three-circle" },
 };
+
+export const MAINTENANCE_TYPES = Object.entries(MAINTENANCE_TYPE_CONFIG).map(
+  ([value, config]) => ({
+    value,
+    ...config,
+  }),
+);
 
 export const getMaintenanceTypeInfo = (type) =>
   MAINTENANCE_TYPE_CONFIG[type] || MAINTENANCE_TYPE_CONFIG.other;

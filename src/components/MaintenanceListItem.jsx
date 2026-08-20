@@ -46,21 +46,37 @@ export default function MaintenanceListItem({ maintenance, onClick }) {
       className="maintenance-item-card"
     >
       <Group justify="space-between" align="center" wrap="nowrap" gap="md">
-        <Stack gap={6} style={{ flex: 1, minWidth: 0 }}>
-          <Text fw={700} size="md" c="gray.9" truncate>
-            {maintenance.title}
-          </Text>
-          <Group gap="xs">
-            <Badge
-              color={typeInfo.color}
-              variant="light"
-              size="sm"
-              radius="sm"
-            >
-              {typeInfo.label}
-            </Badge>
-          </Group>
-        </Stack>
+        <Group align="center" gap="sm" wrap="nowrap" style={{ flex: 1, minWidth: 0 }}>
+          <ThemeIcon
+            size={40}
+            radius="md"
+            variant="light"
+            color="blue"
+            style={{ flexShrink: 0 }}
+          >
+            <i
+              className={typeInfo.icon}
+              style={{ fontSize: "1.3rem" }}
+              aria-hidden="true"
+            />
+          </ThemeIcon>
+
+          <Stack gap={4} style={{ flex: 1, minWidth: 0 }}>
+            <Text fw={700} size="md" c="gray.9" truncate>
+              {maintenance.title}
+            </Text>
+            <Group gap="xs">
+              <Badge
+                color={typeInfo.color}
+                variant="light"
+                size="sm"
+                radius="sm"
+              >
+                {typeInfo.label}
+              </Badge>
+            </Group>
+          </Stack>
+        </Group>
 
         <Group
           gap="sm"

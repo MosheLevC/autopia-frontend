@@ -202,9 +202,10 @@ export default function AddMaintenanceForm({
                         if (errors.type) setErrors((prev) => ({ ...prev, type: null }));
                       }}
                       leftSection={
-                        isSelected ? (
-                          <i className="ph-check" aria-hidden="true" />
-                        ) : undefined
+                        <i
+                          className={isSelected ? "ph-check" : t.icon}
+                          aria-hidden="true"
+                        />
                       }
                     >
                       {t.label}

@@ -38,7 +38,17 @@ export default function MaintenanceDetailView({
                 {maintenance.title}
               </Title>
             </Stack>
-            <Badge color={typeInfo.color} variant="light" size="lg" radius="md">
+            <Badge
+              color={typeInfo.color}
+              variant="light"
+              size="lg"
+              radius="md"
+              leftSection={
+                typeInfo.icon ? (
+                  <i className={typeInfo.icon} style={{ fontSize: "1rem" }} aria-hidden="true" />
+                ) : undefined
+              }
+            >
               {typeInfo.label}
             </Badge>
           </Group>
@@ -52,7 +62,7 @@ export default function MaintenanceDetailView({
           {maintenance.description && (
             <Stack gap="xs">
               <Group gap="xs" align="center">
-                <ThemeIcon size="sm" variant="transparent" color="gray.6">
+                <ThemeIcon size="sm" variant="transparent" color="blue">
                   <i className="ph-note-pencil" style={{ fontSize: "1.1rem" }} aria-hidden="true" />
                 </ThemeIcon>
                 <Text fw={700} size="sm" c="gray.9">
