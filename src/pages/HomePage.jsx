@@ -7,8 +7,8 @@ export default function HomePage() {
   useHeaderTitle("ראשי");
 
   return (
-    <Container size="lg" px={0}>
-      <Stack gap="lg">
+    <Container size="lg" px={0} w="100%">
+      <Stack gap="lg" w="100%">
         <ActiveVehicleSection />
         <MileageCard />
       </Stack>

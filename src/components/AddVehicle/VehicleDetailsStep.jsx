@@ -21,7 +21,7 @@ import {
   FUEL_TYPE_OPTIONS,
   MIN_VEHICLE_YEAR,
 } from "../../utils/vehicleFormUtils";
-import IsraeliLicensePlate from "./IsraeliLicensePlate";
+import LicensePlate from "../LicensePlate/LicensePlate";
 
 const CURRENT_YEAR = new Date().getFullYear();
 const YEAR_OPTIONS = Array.from({ length: 102 }, (_, index) =>
@@ -179,7 +179,7 @@ export default function VehicleDetailsStep({
                   <Text size="sm" fw={700}>
                     מספר רישוי
                   </Text>
-                  <IsraeliLicensePlate
+                  <LicensePlate
                     value={plateInput}
                     onChange={handlePlateChange}
                     readOnly={isGovernmentAssisted}

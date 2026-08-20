@@ -1,6 +1,6 @@
 import { Card, Flex, Stack, Text } from "@mantine/core";
-import { formatLicensePlate } from "../utils/plateUtils";
 import { getVehicleBackground } from "../utils/vehicleBackground";
+import LicensePlate from "./LicensePlate/LicensePlate";
 import classes from "./MyCarsVehicleCard.module.css";
 
 export default function MyCarsVehicleCard({
@@ -13,7 +13,6 @@ export default function MyCarsVehicleCard({
   const vehicleId = vehicle._id || vehicle.id;
   const manufacturer = vehicle.manufacturer?.trim() || "יצרן לא ידוע";
   const model = vehicle.model?.trim() || "דגם לא ידוע";
-  const formattedPlate = formatLicensePlate(vehicle.licensePlate);
   const vehicleName = `${manufacturer} ${model}`;
   const vehicleBackground = getVehicleBackground(vehicle.color);
   const cardIsSelected = isDeleteMode ? isDeleteSelected : isActive;
@@ -52,18 +51,20 @@ export default function MyCarsVehicleCard({
           : undefined,
         color: "var(--mantine-color-gray-9)",
         cursor: "pointer",
+        minWidth: 0,
         overflow: "hidden",
         textAlign: "right",
       }}
     >
-      <Flex dir="ltr" mih={{ base: 168, sm: 220 }}>
+      <Flex dir="ltr" mih={{ base: 168, sm: 220 }} w="100%" miw={0}>
         <Stack
           dir="rtl"
-          w="50%"
+          w={{ base: "62%", xs: "50%" }}
+          miw={0}
           gap="sm"
           align="center"
           justify="center"
-          p={{ base: "md", sm: "xl" }}
+          p={{ base: "sm", sm: "xl" }}
         >
           <Stack gap={2} align="flex-start">
             <Text size="sm" c="dimmed" fw={600}>
@@ -74,26 +75,7 @@ export default function MyCarsVehicleCard({
             </Text>
           </Stack>
 
-          <Text
-            dir="ltr"
-            fw={700}
-            c="dark.8"
-            bg="#ffd43b"
-            px={{ base: 9, sm: 14 }}
-            py={{ base: 4, sm: 6 }}
-            fz={{ base: "sm", sm: "md" }}
-            style={{
-              alignItems: "center",
-              border: "2px solid var(--mantine-color-dark-8)",
-              borderRadius: "var(--mantine-radius-sm)",
-              boxShadow: "var(--mantine-shadow-xs)",
-              display: "inline-flex",
-              justifyContent: "center",
-              letterSpacing: "0.08em",
-            }}
-          >
-            {formattedPlate || "לא זמין"}
-          </Text>
+          <LicensePlate value={vehicle.licensePlate} displayOnly size="md" />
 
           {!isDeleteMode && !isActive && (
             <Text

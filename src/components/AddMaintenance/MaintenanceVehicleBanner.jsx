@@ -1,15 +1,12 @@
 import { Card, Flex, Stack, Text } from "@mantine/core";
-import { formatLicensePlate } from "../../utils/plateUtils";
 import { getVehicleBackground } from "../../utils/vehicleBackground";
+import LicensePlate from "../LicensePlate/LicensePlate";
 
 export default function MaintenanceVehicleBanner({ vehicle }) {
   if (!vehicle) return null;
 
   const manufacturer = vehicle.manufacturer || vehicle.make || "";
   const model = vehicle.model || "";
-  const formattedPlate = vehicle.licensePlate
-    ? formatLicensePlate(vehicle.licensePlate)
-    : "";
   const vehicleBackground = getVehicleBackground(vehicle.color);
 
   return (
@@ -43,26 +40,8 @@ export default function MaintenanceVehicleBanner({ vehicle }) {
               {model}
             </Text>
           )}
-          {formattedPlate && (
-            <Text
-              dir="ltr"
-              fw={700}
-              c="dark.8"
-              bg="#ffd43b"
-              px={8}
-              py={2}
-              fz="xs"
-              mt={2}
-              style={{
-                border: "1.5px solid var(--mantine-color-dark-8)",
-                borderRadius: "var(--mantine-radius-xs)",
-                boxShadow: "var(--mantine-shadow-xs)",
-                letterSpacing: "0.08em",
-                display: "inline-flex",
-              }}
-            >
-              {formattedPlate}
-            </Text>
+          {vehicle.licensePlate && (
+            <LicensePlate value={vehicle.licensePlate} displayOnly size="sm" />
           )}
         </Stack>
       </Flex>

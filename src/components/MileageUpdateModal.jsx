@@ -4,7 +4,6 @@ import {
   Alert,
   Box,
   Button,
-  Center,
   Grid,
   Group,
   Loader,
@@ -66,108 +65,106 @@ function MileageFlowSummary({
     hasValidSummary && difference > 0 ? difference : 0;
 
   return (
-    <Stack gap="xs">
-      <Paper
-        component="section"
-        aria-label="סיכום הקילומטראז׳ הנוכחי"
-        withBorder
-        radius="lg"
-        shadow="xs"
-        p={{ base: "lg", sm: "xl" }}
-        bg="gray.0"
-      >
-        <Stack gap={4} align="center" ta="center">
-          <ThemeIcon color="blue" variant="light" size={40} radius="xl">
-            <i className="ph-bold ph-gauge" aria-hidden="true" />
-          </ThemeIcon>
-          <Text size="sm" c="dimmed" fw={600}>
-            קילומטראז׳ נוכחי
-          </Text>
-          <Text
-            fw={800}
-            fz={{ base: "2rem", sm: "2.25rem" }}
-            c="gray.9"
-            dir="ltr"
-            lh={1.15}
-          >
-            {formatMileage(currentMileage)} ק״מ
-          </Text>
-        </Stack>
-      </Paper>
+    <Grid gutter="sm">
+      <Grid.Col span={{ base: 12, xs: 4 }}>
+        <Paper
+          component="section"
+          aria-label="סיכום הקילומטראז׳ הנוכחי"
+          withBorder
+          radius="lg"
+          shadow="xs"
+          p="md"
+          bg="gray.0"
+          h="100%"
+        >
+          <Stack gap={4} align="center" justify="center" ta="center" h="100%">
+            <ThemeIcon color="blue" variant="light" size={36} radius="xl">
+              <i className="ph-bold ph-gauge" aria-hidden="true" />
+            </ThemeIcon>
+            <Text size="xs" c="dimmed" fw={600}>
+              קילומטראז׳ נוכחי
+            </Text>
+            <Text
+              fw={800}
+              fz={{ base: "1.6rem", sm: "1.45rem" }}
+              c="gray.9"
+              dir="ltr"
+              lh={1.15}
+            >
+              {formatMileage(currentMileage)} ק״מ
+            </Text>
+          </Stack>
+        </Paper>
+      </Grid.Col>
 
-      <Center aria-hidden="true">
-        <ThemeIcon color="gray" variant="transparent" size="lg">
-          <i className="ph-bold ph-arrow-down" />
-        </ThemeIcon>
-      </Center>
+      <Grid.Col span={{ base: 6, xs: 4 }}>
+        <Paper
+          component="section"
+          aria-label="סיכום הקילומטראז׳ החדש"
+          withBorder
+          radius="lg"
+          shadow="xs"
+          p="md"
+          h="100%"
+        >
+          <Stack gap={4} align="center" justify="center" ta="center" h="100%">
+            <Text size="xs" c="dimmed" fw={600}>
+              קילומטראז׳ חדש
+            </Text>
+            <Text
+              fw={800}
+              fz={{ base: "1.15rem", sm: "1.35rem" }}
+              c="gray.9"
+              dir="ltr"
+              lh={1.2}
+            >
+              {hasValidSummary
+                ? `${formatMileage(finalMileage)} ק״מ`
+                : "—"}
+            </Text>
+          </Stack>
+        </Paper>
+      </Grid.Col>
 
-      <Grid gutter="sm">
-        <Grid.Col span={{ base: 12, xs: 8 }}>
-          <Paper
-            component="section"
-            aria-label="סיכום הקילומטראז׳ החדש"
-            withBorder
-            radius="lg"
-            shadow="xs"
-            p={{ base: "md", sm: "lg" }}
-            h="100%"
-          >
-            <Stack gap={4} align="center" ta="center">
-              <Text size="sm" c="dimmed" fw={600}>
-                קילומטראז׳ חדש
-              </Text>
-              <Text
-                fw={800}
-                fz={{ base: "1.55rem", sm: "1.85rem" }}
-                c="gray.9"
-                dir="ltr"
-                lh={1.2}
-              >
-                {hasValidSummary
-                  ? `${formatMileage(finalMileage)} ק״מ`
-                  : "—"}
-              </Text>
-            </Stack>
-          </Paper>
-        </Grid.Col>
-
-        <Grid.Col span={{ base: 12, xs: 4 }}>
-          <Paper
-            component="section"
-            aria-label="סיכום הקילומטרים שנוספו"
-            withBorder
-            radius="lg"
-            p={{ base: "md", sm: "lg" }}
-            bg="gray.0"
-            h="100%"
-          >
-            <Stack gap={4} align="center" ta="center">
-              <Text size="sm" c="dimmed" fw={600}>
-                תוספת
-              </Text>
-              <Text
-                fw={800}
-                fz={{ base: "1.35rem", sm: "1.5rem" }}
-                c={hasValidSummary && addedMileage > 0 ? "blue.7" : "gray.7"}
-                dir="ltr"
-                lh={1.2}
-              >
-                {hasValidSummary
-                  ? `+${formatMileage(addedMileage)} ק״מ`
-                  : "—"}
-              </Text>
-            </Stack>
-          </Paper>
-        </Grid.Col>
-      </Grid>
-    </Stack>
+      <Grid.Col span={{ base: 6, xs: 4 }}>
+        <Paper
+          component="section"
+          aria-label="סיכום הקילומטרים שנוספו"
+          withBorder
+          radius="lg"
+          p="md"
+          bg="gray.0"
+          h="100%"
+        >
+          <Stack gap={4} align="center" justify="center" ta="center" h="100%">
+            <Text size="xs" c="dimmed" fw={600}>
+              תוספת
+            </Text>
+            <Text
+              fw={800}
+              fz={{ base: "1.15rem", sm: "1.35rem" }}
+              c={hasValidSummary && addedMileage > 0 ? "blue.7" : "gray.7"}
+              dir="ltr"
+              lh={1.2}
+            >
+              {hasValidSummary
+                ? `+${formatMileage(addedMileage)} ק״מ`
+                : "—"}
+            </Text>
+          </Stack>
+        </Paper>
+      </Grid.Col>
+    </Grid>
   );
 }
 
 function UpdateFeedback({ error, isSaving }) {
+  if (!error && !isSaving) {
+    return null;
+  }
+
   return (
     <Box
-      mih={58}
       w="100%"
       aria-live="polite"
       style={{ display: "flex", alignItems: "center" }}
@@ -295,16 +292,20 @@ export default function MileageUpdateModal({
       onClose={handleClose}
       title="עדכון קילומטראז׳"
       centered={!isMobile}
-      fullScreen={isMobile}
-      size={560}
+      size={680}
       radius="lg"
-      padding={{ base: "md", sm: "xl" }}
+      padding={{ base: "md", sm: "lg" }}
+      xOffset={
+        isMobile ? "var(--mantine-spacing-xs)" : "var(--mantine-spacing-md)"
+      }
+      yOffset={isMobile ? "var(--mantine-spacing-xs)" : "5dvh"}
+      removeScrollProps={{ removeScrollBar: false }}
       closeOnClickOutside={!isSaving}
       closeOnEscape={!isSaving}
       withCloseButton={!isSaving}
     >
       <form onSubmit={handleSubmit}>
-        <Stack gap={{ base: "md", sm: "lg" }}>
+        <Stack gap={{ base: "sm", sm: "md" }}>
           <MileageFlowSummary
             currentMileage={currentMileage}
             finalMileage={finalMileage}

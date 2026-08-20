@@ -99,8 +99,8 @@ const VehiclesPage = observer(function VehiclesPage() {
   }
 
   return (
-    <Container size={900} px={0}>
-      <Stack gap="lg">
+    <Container size={900} px={0} w="100%">
+      <Stack gap="lg" pb={!isDeleteMode ? 80 : 0} w="100%">
         {error && (
           <Alert
             color="red"
@@ -152,6 +152,7 @@ const VehiclesPage = observer(function VehiclesPage() {
                 gap="sm"
                 wrap="nowrap"
                 w="100%"
+                miw={0}
                 dir="ltr"
               >
                 {isDeleteMode && (
@@ -180,17 +181,31 @@ const VehiclesPage = observer(function VehiclesPage() {
         </Stack>
 
         {!isDeleteMode && (
-          <Center>
-            <Button
-              variant="light"
-              size="md"
-              radius="lg"
-              leftSection={<i className="ph-bold ph-plus" aria-hidden="true" />}
-              onClick={() => navigate("/vehicles/add")}
-            >
-              הוסף רכב
-            </Button>
-          </Center>
+          <Box
+            pos="sticky"
+            bottom={{ base: "5.5rem", sm: "1rem" }}
+            pt="xs"
+            w="100%"
+            style={{ pointerEvents: "none", zIndex: 10 }}
+          >
+            <Group justify="flex-start">
+              <Button
+                w={{ base: 180, xs: 240, sm: 280 }}
+                size="lg"
+                radius="lg"
+                h={50}
+                fw={700}
+                leftSection={
+                  <i className="ph-bold ph-plus" aria-hidden="true" />
+                }
+                onClick={() => navigate("/vehicles/add")}
+                shadow="sm"
+                style={{ pointerEvents: "auto" }}
+              >
+                הוסף רכב
+              </Button>
+            </Group>
+          </Box>
         )}
       </Stack>
 

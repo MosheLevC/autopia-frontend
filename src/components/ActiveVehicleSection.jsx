@@ -16,11 +16,13 @@ import {
   ThemeIcon,
   Title,
   Tooltip,
+  UnstyledButton,
 } from "@mantine/core";
 import HomeVehicleCard from "./HomeVehicleCard";
 import EditVehicleModal from "./EditVehicleModal";
 import NoVehicleSelected from "./NoVehicleSelected";
 import { formatDateToDisplay } from "../utils/plateUtils";
+import { getAdditionalVehicleDetails } from "../utils/governmentVehicleDetails";
 import { useVehicleStore } from "../stores/VehicleStoreContext";
 
 const SECTION_CARD_PROPS = {
@@ -28,9 +30,10 @@ const SECTION_CARD_PROPS = {
   radius: "xl",
   shadow: "sm",
   p: { base: "md", sm: "xl" },
+  w: "100%",
 };
 
-function ExpandedVehicleDetails({ vehicle }) {
+function VehicleDetails({ vehicle }) {
   const details = [
     { label: "רמת גימור", value: vehicle.trimLevel },
     { label: "סוג דלק", value: vehicle.fuelType },
@@ -42,7 +45,7 @@ function ExpandedVehicleDetails({ vehicle }) {
   ];
 
   return (
-    <SimpleGrid cols={{ base: 1, xs: 2, md: 4 }} spacing="sm">
+    <SimpleGrid cols={{ base: 2, md: 4 }} spacing="sm">
       {details.map((detail) => (
         <Paper key={detail.label} withBorder radius="md" p="sm">
           <Stack gap={2}>
@@ -59,9 +62,67 @@ function ExpandedVehicleDetails({ vehicle }) {
   );
 }
 
+function AdditionalVehicleDetails({ vehicle }) {
+  const [opened, setOpened] = useState(false);
+  const details = getAdditionalVehicleDetails(vehicle);
+
+  if (details.length === 0) {
+    return null;
+  }
+
+  return (
+    <Stack gap="sm">
+      <Divider />
+      <UnstyledButton
+        type="button"
+        w="100%"
+        onClick={() => setOpened((current) => !current)}
+        aria-expanded={opened}
+        aria-controls="additional-vehicle-details"
+      >
+        <Group justify="space-between" gap="sm" wrap="nowrap">
+          <Text size="sm" fw={700}>
+            פרטים נוספים
+          </Text>
+          <ThemeIcon variant="transparent" color="gray" size="sm">
+            <i
+              className="ph-bold ph-caret-down"
+              aria-hidden="true"
+              style={{
+                transition: "transform 150ms ease",
+                transform: opened ? "rotate(180deg)" : "rotate(0deg)",
+              }}
+            />
+          </ThemeIcon>
+        </Group>
+      </UnstyledButton>
+
+      <Collapse expanded={opened} keepMountedMode="display-none">
+        <SimpleGrid
+          id="additional-vehicle-details"
+          cols={{ base: 2, md: 4 }}
+          spacing="sm"
+        >
+          {details.map((detail) => (
+            <Paper key={detail.key} withBorder radius="md" p="sm" miw={0}>
+              <Stack gap={2}>
+                <Text size="xs" c="dimmed">
+                  {detail.label}
+                </Text>
+                <Text size="sm" fw={600} style={{ overflowWrap: "anywhere" }}>
+                  {detail.value}
+                </Text>
+              </Stack>
+            </Paper>
+          ))}
+        </SimpleGrid>
+      </Collapse>
+    </Stack>
+  );
+}
+
 const ActiveVehicleSection = observer(function ActiveVehicleSection() {
   const vehicleStore = useVehicleStore();
-  const [detailsExpanded, setDetailsExpanded] = useState(false);
   const [editOpened, setEditOpened] = useState(false);
 
   const { vehicles, activeVehicle, isLoading, error } = vehicleStore;
@@ -158,31 +219,15 @@ const ActiveVehicleSection = observer(function ActiveVehicleSection() {
 
           <HomeVehicleCard vehicle={activeVehicle} />
 
-          <Group justify="flex-start">
-            <Button
-              variant="subtle"
-              color="gray"
-              size="compact-md"
-              onClick={() => setDetailsExpanded((expanded) => !expanded)}
-              leftSection={
-                <i
-                  className={`ph-bold ${detailsExpanded ? "ph-caret-up" : "ph-caret-down"}`}
-                  aria-hidden="true"
-                />
-              }
-              aria-expanded={detailsExpanded}
-              aria-controls="active-vehicle-details"
-            >
-              {detailsExpanded ? "הסתרת פרטים" : "הצג פרטים נוספים"}
-            </Button>
-          </Group>
+          <Stack gap="sm">
+            <Divider />
+            <Text size="sm" fw={700}>
+              פרטי הרכב
+            </Text>
+            <VehicleDetails vehicle={activeVehicle} />
+          </Stack>
 
-          <Collapse expanded={detailsExpanded}>
-            <Stack id="active-vehicle-details" gap="md">
-              <Divider />
-              <ExpandedVehicleDetails vehicle={activeVehicle} />
-            </Stack>
-          </Collapse>
+          <AdditionalVehicleDetails vehicle={activeVehicle} />
         </Stack>
       </Card>
 

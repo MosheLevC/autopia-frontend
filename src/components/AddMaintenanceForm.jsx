@@ -9,8 +9,8 @@ import {
   TextInput,
   Textarea,
 } from "@mantine/core";
-import { DateInput } from "@mantine/dates";
 import { MAINTENANCE_TYPES } from "../constants/maintenanceConstants";
+import AppDateInput from "./AppDateInput";
 import MaintenanceVehicleBanner from "./AddMaintenance/MaintenanceVehicleBanner";
 import MaintenancePartsPicker from "./AddMaintenance/MaintenancePartsPicker";
 import MaintenanceDeleteModal from "./AddMaintenance/MaintenanceDeleteModal";
@@ -167,10 +167,8 @@ export default function AddMaintenanceForm({
               radius="md"
             />
 
-            <DateInput
+            <AppDateInput
               label="תאריך"
-              placeholder="DD/MM/YYYY"
-              valueFormat="DD/MM/YYYY"
               withAsterisk
               value={maintenanceDate}
               onChange={(val) => {
@@ -180,15 +178,9 @@ export default function AddMaintenanceForm({
                 }
               }}
               maxDate={new Date()}
-              firstDayOfWeek={0}
-              weekendDays={[5, 6]}
               error={errors.maintenanceDate}
-              leftSection={<i className="ph-calendar" aria-hidden="true" />}
-              leftSectionPointerEvents="none"
               size="md"
               radius="md"
-              locale="he"
-              styles={{ weekday: { textAlign: "center" } }}
             />
 
             <Stack gap="xs">

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Alert, Button, Group, Modal, Paper, Stack, Text } from "@mantine/core";
 import { useVehicleStore } from "../stores/VehicleStoreContext";
-import { formatLicensePlate } from "../utils/plateUtils";
+import LicensePlate from "./LicensePlate/LicensePlate";
 
 export default function DeleteVehicleModal({
   opened,
@@ -15,7 +15,6 @@ export default function DeleteVehicleModal({
   const vehicleId = vehicle?._id || vehicle?.id;
   const manufacturer = vehicle?.manufacturer?.trim() || "יצרן לא ידוע";
   const model = vehicle?.model?.trim() || "דגם לא ידוע";
-  const formattedPlate = formatLicensePlate(vehicle?.licensePlate);
 
   useEffect(() => {
     if (opened) {
@@ -56,6 +55,7 @@ export default function DeleteVehicleModal({
       size="sm"
       radius="lg"
       padding={{ base: "md", sm: "xl" }}
+      removeScrollProps={{ removeScrollBar: false }}
       closeOnClickOutside={!isDeleting}
       closeOnEscape={!isDeleting}
       withCloseButton={!isDeleting}
@@ -69,9 +69,12 @@ export default function DeleteVehicleModal({
               <Text fw={700} size="lg">
                 {manufacturer} {model}
               </Text>
-              <Text fw={700} dir="ltr">
-                {formattedPlate || "מספר רישוי לא זמין"}
-              </Text>
+              <LicensePlate
+                value={vehicle.licensePlate}
+                displayOnly
+                size="md"
+                emptyLabel="מספר רישוי לא זמין"
+              />
             </Stack>
           </Paper>
 
