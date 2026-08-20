@@ -42,7 +42,7 @@ function VehicleDetails({ vehicle }) {
   ];
 
   return (
-    <SimpleGrid cols={{ base: 1, xs: 2, md: 4 }} spacing="sm">
+    <SimpleGrid cols={{ base: 2, md: 4 }} spacing="sm">
       {details.map((detail) => (
         <Paper key={detail.label} withBorder radius="md" p="sm">
           <Stack gap={2}>
