@@ -1,10 +1,11 @@
 import { useMemo, useState } from "react";
 import {
+  Box,
   Button,
+  Grid,
   Group,
   NumberInput,
   Select,
-  SimpleGrid,
   Stack,
   Text,
   TextInput,
@@ -23,14 +24,17 @@ const DATE_FIELDS = [
     label: "תאריך טיפול אחרון",
   },
   {
-    field: "vehicleLicenseValidUntil",
-    label: "תוקף רישיון רכב / טסט",
-  },
-  {
     field: "insuranceExpiryDate",
     label: "תוקף ביטוח חובה",
   },
+  {
+    field: "vehicleLicenseValidUntil",
+    label: "תוקף רישיון רכב / טסט",
+    fullWidthOnMobile: true,
+  },
 ];
+
+const FIELD_GRID_GUTTER = { base: "sm", sm: "md" };
 
 export default function VehicleEditForm({
   vehicle,
@@ -78,80 +82,102 @@ export default function VehicleEditForm({
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <Stack gap="xl">
-        <Stack gap="md">
+    <Box component="form" w="100%" onSubmit={handleSubmit}>
+      <Stack gap={{ base: "md", sm: "lg" }}>
+        <Stack gap="sm">
           <Title order={3} size="h4">
             פרטים כלליים
           </Title>
 
-          <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="md">
-            <TextInput
-              label="יצרן"
-              withAsterisk
-              value={draft.manufacturer}
-              onChange={(event) =>
-                handleFieldChange("manufacturer", event.currentTarget.value)
-              }
-              error={fieldErrors.manufacturer}
-              disabled={isSaving}
-            />
-            <TextInput
-              label="דגם"
-              withAsterisk
-              value={draft.model}
-              onChange={(event) =>
-                handleFieldChange("model", event.currentTarget.value)
-              }
-              error={fieldErrors.model}
-              disabled={isSaving}
-            />
-            <NumberInput
-              label="שנת ייצור"
-              withAsterisk
-              value={draft.year}
-              onChange={(value) => handleFieldChange("year", value)}
-              error={fieldErrors.year}
-              allowDecimal={false}
-              allowNegative={false}
-              clampBehavior="none"
-              hideControls
-              inputMode="numeric"
-              disabled={isSaving}
-            />
-            <Select
-              label="סוג דלק"
-              withAsterisk
-              value={draft.fuelType || null}
-              onChange={(value) => handleFieldChange("fuelType", value || "")}
-              data={fuelTypeOptions}
-              searchable
-              allowDeselect={false}
-              error={fieldErrors.fuelType}
-              disabled={isSaving}
-            />
-            <TextInput
-              label="רמת גימור"
-              description="אופציונלי"
-              value={draft.trimLevel}
-              onChange={(event) =>
-                handleFieldChange("trimLevel", event.currentTarget.value)
-              }
-              disabled={isSaving}
-            />
-            <TextInput
-              label="צבע"
-              description="אופציונלי"
-              value={draft.color}
-              onChange={(event) =>
-                handleFieldChange("color", event.currentTarget.value)
-              }
-              disabled={isSaving}
-            />
-          </SimpleGrid>
+          <Grid gutter={FIELD_GRID_GUTTER} w="100%">
+            <Grid.Col span={{ base: 6, sm: 4 }} miw={0}>
+              <TextInput
+                w="100%"
+                label="יצרן"
+                description="שדה חובה"
+                withAsterisk
+                value={draft.manufacturer}
+                onChange={(event) =>
+                  handleFieldChange("manufacturer", event.currentTarget.value)
+                }
+                error={fieldErrors.manufacturer}
+                disabled={isSaving}
+              />
+            </Grid.Col>
+            <Grid.Col span={{ base: 6, sm: 4 }} miw={0}>
+              <TextInput
+                w="100%"
+                label="דגם"
+                description="שדה חובה"
+                withAsterisk
+                value={draft.model}
+                onChange={(event) =>
+                  handleFieldChange("model", event.currentTarget.value)
+                }
+                error={fieldErrors.model}
+                disabled={isSaving}
+              />
+            </Grid.Col>
+            <Grid.Col span={{ base: 6, sm: 4 }} miw={0}>
+              <NumberInput
+                w="100%"
+                label="שנת ייצור"
+                description="שדה חובה"
+                withAsterisk
+                value={draft.year}
+                onChange={(value) => handleFieldChange("year", value)}
+                error={fieldErrors.year}
+                allowDecimal={false}
+                allowNegative={false}
+                clampBehavior="none"
+                hideControls
+                inputMode="numeric"
+                disabled={isSaving}
+              />
+            </Grid.Col>
+            <Grid.Col span={{ base: 6, sm: 4 }} miw={0}>
+              <Select
+                w="100%"
+                label="סוג דלק"
+                description="שדה חובה"
+                withAsterisk
+                value={draft.fuelType || null}
+                onChange={(value) => handleFieldChange("fuelType", value || "")}
+                data={fuelTypeOptions}
+                searchable
+                allowDeselect={false}
+                error={fieldErrors.fuelType}
+                disabled={isSaving}
+              />
+            </Grid.Col>
+            <Grid.Col span={{ base: 6, sm: 4 }} miw={0}>
+              <TextInput
+                w="100%"
+                label="רמת גימור"
+                description="אופציונלי"
+                value={draft.trimLevel}
+                onChange={(event) =>
+                  handleFieldChange("trimLevel", event.currentTarget.value)
+                }
+                disabled={isSaving}
+              />
+            </Grid.Col>
+            <Grid.Col span={{ base: 6, sm: 4 }} miw={0}>
+              <TextInput
+                w="100%"
+                label="צבע"
+                description="אופציונלי"
+                value={draft.color}
+                onChange={(event) =>
+                  handleFieldChange("color", event.currentTarget.value)
+                }
+                disabled={isSaving}
+              />
+            </Grid.Col>
+          </Grid>
         </Stack>
 
-        <Stack gap="md">
+        <Stack gap="sm">
           <Stack gap={2}>
             <Title order={3} size="h4">
               קילומטראז׳ ותחזוקה
@@ -161,70 +187,84 @@ export default function VehicleEditForm({
             </Text>
           </Stack>
 
-          <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="md">
-            <NumberInput
-              label="קילומטראז׳ נוכחי"
-              withAsterisk
-              value={draft.currentMileage}
-              onChange={(value) =>
-                handleFieldChange("currentMileage", value)
-              }
-              error={fieldErrors.currentMileage}
-              suffix=" ק״מ"
-              thousandSeparator=","
-              allowDecimal={false}
-              allowNegative={false}
-              clampBehavior="none"
-              hideControls
-              inputMode="numeric"
-              disabled={isSaving}
-            />
-            <NumberInput
-              label="מרווח טיפולים"
-              description="אופציונלי"
-              value={draft.maintenanceInterval}
-              onChange={(value) =>
-                handleFieldChange("maintenanceInterval", value)
-              }
-              error={fieldErrors.maintenanceInterval}
-              suffix=" ק״מ"
-              thousandSeparator=","
-              allowDecimal={false}
-              allowNegative={false}
-              clampBehavior="none"
-              hideControls
-              inputMode="numeric"
-              disabled={isSaving}
-            />
-          </SimpleGrid>
+          <Grid gutter={FIELD_GRID_GUTTER} w="100%">
+            <Grid.Col span={6} miw={0}>
+              <NumberInput
+                w="100%"
+                label="קילומטראז׳ נוכחי"
+                description="שדה חובה"
+                withAsterisk
+                value={draft.currentMileage}
+                onChange={(value) =>
+                  handleFieldChange("currentMileage", value)
+                }
+                error={fieldErrors.currentMileage}
+                suffix=" ק״מ"
+                thousandSeparator=","
+                allowDecimal={false}
+                allowNegative={false}
+                clampBehavior="none"
+                hideControls
+                inputMode="numeric"
+                disabled={isSaving}
+              />
+            </Grid.Col>
+            <Grid.Col span={6} miw={0}>
+              <NumberInput
+                w="100%"
+                label="מרווח טיפולים"
+                description="אופציונלי"
+                value={draft.maintenanceInterval}
+                onChange={(value) =>
+                  handleFieldChange("maintenanceInterval", value)
+                }
+                error={fieldErrors.maintenanceInterval}
+                suffix=" ק״מ"
+                thousandSeparator=","
+                allowDecimal={false}
+                allowNegative={false}
+                clampBehavior="none"
+                hideControls
+                inputMode="numeric"
+                disabled={isSaving}
+              />
+            </Grid.Col>
+          </Grid>
         </Stack>
 
-        <Stack gap="md">
+        <Stack gap="sm">
           <Title order={3} size="h4">
             תאריכים
           </Title>
 
-          <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="md">
-            {DATE_FIELDS.map(({ field, label }) => (
-              <TextInput
+          <Grid gutter={FIELD_GRID_GUTTER} w="100%">
+            {DATE_FIELDS.map(({ field, label, fullWidthOnMobile }) => (
+              <Grid.Col
                 key={field}
-                type="date"
-                label={label}
-                description="אופציונלי"
-                value={draft[field]}
-                onChange={(event) =>
-                  handleFieldChange(field, event.currentTarget.value)
-                }
-                error={fieldErrors[field]}
-                styles={{ input: { direction: "ltr" } }}
-                disabled={isSaving}
-              />
+                span={{ base: fullWidthOnMobile ? 12 : 6, sm: 4 }}
+                miw={0}
+              >
+                <TextInput
+                  w="100%"
+                  type="date"
+                  label={label}
+                  description="אופציונלי"
+                  value={draft[field]}
+                  onChange={(event) =>
+                    handleFieldChange(field, event.currentTarget.value)
+                  }
+                  error={fieldErrors[field]}
+                  styles={{ input: { direction: "ltr" } }}
+                  disabled={isSaving}
+                />
+              </Grid.Col>
             ))}
-          </SimpleGrid>
+          </Grid>
         </Stack>
 
-        <Group grow gap="sm" mt="xs">
+        <Group grow gap="sm" mt="xs" w="100%" wrap="nowrap">
           <Button
+            miw={0}
             type="button"
             variant="default"
             onClick={onCancel}
@@ -233,6 +273,7 @@ export default function VehicleEditForm({
             ביטול
           </Button>
           <Button
+            miw={0}
             type="submit"
             loading={isSaving}
             disabled={!hasChanges || isSaving}
@@ -241,6 +282,6 @@ export default function VehicleEditForm({
           </Button>
         </Group>
       </Stack>
-    </form>
+    </Box>
   );
 }
