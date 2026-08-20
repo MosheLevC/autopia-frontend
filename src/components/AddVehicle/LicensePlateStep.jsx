@@ -14,7 +14,7 @@ import {
   cleanLicensePlate,
   formatLicensePlate,
 } from "../../utils/plateUtils";
-import IsraeliLicensePlate from "./IsraeliLicensePlate";
+import LicensePlate from "../LicensePlate/LicensePlate";
 import StepGuidanceCard from "./StepGuidanceCard";
 
 const GUIDANCE_ITEMS = [
@@ -139,7 +139,7 @@ export default function LicensePlateStep({
             </Text>
           </Stack>
 
-          <IsraeliLicensePlate
+          <LicensePlate
             value={plateInput}
             onChange={handlePlateChange}
             onSearch={handlePlateSearch}

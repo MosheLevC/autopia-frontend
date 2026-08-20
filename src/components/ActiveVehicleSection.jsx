@@ -5,7 +5,6 @@ import {
   Button,
   Card,
   Center,
-  Collapse,
   Divider,
   Group,
   Loader,
@@ -28,9 +27,10 @@ const SECTION_CARD_PROPS = {
   radius: "xl",
   shadow: "sm",
   p: { base: "md", sm: "xl" },
+  w: "100%",
 };
 
-function ExpandedVehicleDetails({ vehicle }) {
+function VehicleDetails({ vehicle }) {
   const details = [
     { label: "רמת גימור", value: vehicle.trimLevel },
     { label: "סוג דלק", value: vehicle.fuelType },
@@ -61,7 +61,6 @@ function ExpandedVehicleDetails({ vehicle }) {
 
 const ActiveVehicleSection = observer(function ActiveVehicleSection() {
   const vehicleStore = useVehicleStore();
-  const [detailsExpanded, setDetailsExpanded] = useState(false);
   const [editOpened, setEditOpened] = useState(false);
 
   const { vehicles, activeVehicle, isLoading, error } = vehicleStore;
@@ -158,31 +157,13 @@ const ActiveVehicleSection = observer(function ActiveVehicleSection() {
 
           <HomeVehicleCard vehicle={activeVehicle} />
 
-          <Group justify="flex-start">
-            <Button
-              variant="subtle"
-              color="gray"
-              size="compact-md"
-              onClick={() => setDetailsExpanded((expanded) => !expanded)}
-              leftSection={
-                <i
-                  className={`ph-bold ${detailsExpanded ? "ph-caret-up" : "ph-caret-down"}`}
-                  aria-hidden="true"
-                />
-              }
-              aria-expanded={detailsExpanded}
-              aria-controls="active-vehicle-details"
-            >
-              {detailsExpanded ? "הסתרת פרטים" : "הצג פרטים נוספים"}
-            </Button>
-          </Group>
-
-          <Collapse expanded={detailsExpanded}>
-            <Stack id="active-vehicle-details" gap="md">
-              <Divider />
-              <ExpandedVehicleDetails vehicle={activeVehicle} />
-            </Stack>
-          </Collapse>
+          <Stack gap="sm">
+            <Divider />
+            <Text size="sm" fw={700}>
+              פרטי הרכב
+            </Text>
+            <VehicleDetails vehicle={activeVehicle} />
+          </Stack>
         </Stack>
       </Card>
 
