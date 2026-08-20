@@ -4,6 +4,7 @@ import maintenanceService from "../services/maintenanceService";
 export function createMaintenanceStore() {
   const store = observable({
     maintenances: [],
+    maintenancesVehicleId: null,
     activeMaintenance: null,
     isLoading: false,
     error: null,
@@ -16,6 +17,7 @@ export function createMaintenanceStore() {
       if (!vehicleId) {
         runInAction(() => {
           store.maintenances = [];
+          store.maintenancesVehicleId = null;
           store.isLoading = false;
         });
         return [];
@@ -31,6 +33,7 @@ export function createMaintenanceStore() {
         const records = await maintenanceService.getMaintenances(vehicleId);
         runInAction(() => {
           store.maintenances = Array.isArray(records) ? records : [];
+          store.maintenancesVehicleId = vehicleId;
         });
         return records;
       } catch (err) {
@@ -81,7 +84,10 @@ export function createMaintenanceStore() {
         const vehicle = result?.vehicle || null;
 
         runInAction(() => {
-          if (maintenance) {
+          if (
+            maintenance &&
+            store.maintenancesVehicleId === vehicleId
+          ) {
             store.maintenances.unshift(maintenance);
           }
         });
@@ -111,9 +117,13 @@ export function createMaintenanceStore() {
 
         runInAction(() => {
           if (maintenance) {
-            const index = store.maintenances.findIndex((m) => m._id === maintenanceId);
-            if (index !== -1) {
-              store.maintenances[index] = maintenance;
+            if (store.maintenancesVehicleId === vehicleId) {
+              const index = store.maintenances.findIndex(
+                (m) => m._id === maintenanceId,
+              );
+              if (index !== -1) {
+                store.maintenances[index] = maintenance;
+              }
             }
             if (store.activeMaintenance?._id === maintenanceId) {
               store.activeMaintenance = maintenance;
@@ -142,7 +152,11 @@ export function createMaintenanceStore() {
       try {
         await maintenanceService.deleteMaintenance(vehicleId, maintenanceId);
         runInAction(() => {
-          store.maintenances = store.maintenances.filter((m) => m._id !== maintenanceId);
+          if (store.maintenancesVehicleId === vehicleId) {
+            store.maintenances = store.maintenances.filter(
+              (m) => m._id !== maintenanceId,
+            );
+          }
           if (store.activeMaintenance?._id === maintenanceId) {
             store.activeMaintenance = null;
           }
@@ -161,6 +175,7 @@ export function createMaintenanceStore() {
 
     clear: action(function () {
       store.maintenances = [];
+      store.maintenancesVehicleId = null;
       store.activeMaintenance = null;
       store.error = null;
       store.isLoading = false;
