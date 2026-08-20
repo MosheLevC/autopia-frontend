@@ -6,9 +6,9 @@ import {
   SimpleGrid,
   Stack,
   Text,
-  TextInput,
   Title,
 } from "@mantine/core";
+import AppDateInput from "../AppDateInput";
 import {
   isValidDateInput,
   parseInteger,
@@ -199,22 +199,21 @@ export default function VehicleUsageStep({
             <Stack gap="sm">
               <Text fw={700}>תחזוקה ראשונית</Text>
               <SimpleGrid cols={{ base: 1, md: 2 }} spacing="lg">
-                <TextInput
-                  type="date"
+                <AppDateInput
                   label="מתי עשית טיפול אחרון?"
                   description="אופציונלי"
-                  value={lastMaintenanceDate}
-                  onChange={(event) =>
+                  value={lastMaintenanceDate || null}
+                  onChange={(value) =>
                     handleDateChange(
                       "lastMaintenanceDate",
                       setLastMaintenanceDate,
-                      event.currentTarget.value,
+                      value || "",
                     )
                   }
                   error={fieldErrors.lastMaintenanceDate}
+                  clearable
                   size="md"
                   radius="md"
-                  styles={{ input: { direction: "ltr" } }}
                 />
 
                 <Stack gap="sm">
@@ -260,40 +259,38 @@ export default function VehicleUsageStep({
             <Stack gap="sm">
               <Text fw={700}>תאריכי תוקף</Text>
               <SimpleGrid cols={{ base: 1, md: 2 }} spacing="lg">
-                <TextInput
-                  type="date"
+                <AppDateInput
                   label="תוקף רישיון רכב / טסט"
                   description="בתוקף עד · אופציונלי"
-                  value={vehicleLicenseValidUntil}
-                  onChange={(event) =>
+                  value={vehicleLicenseValidUntil || null}
+                  onChange={(value) =>
                     handleDateChange(
                       "vehicleLicenseValidUntil",
                       setVehicleLicenseValidUntil,
-                      event.currentTarget.value,
+                      value || "",
                     )
                   }
                   error={fieldErrors.vehicleLicenseValidUntil}
+                  clearable
                   size="md"
                   radius="md"
-                  styles={{ input: { direction: "ltr" } }}
                 />
 
-                <TextInput
-                  type="date"
+                <AppDateInput
                   label="ביטוח חובה"
                   description="בתוקף עד · אופציונלי"
-                  value={insuranceExpiryDate}
-                  onChange={(event) =>
+                  value={insuranceExpiryDate || null}
+                  onChange={(value) =>
                     handleDateChange(
                       "insuranceExpiryDate",
                       setInsuranceExpiryDate,
-                      event.currentTarget.value,
+                      value || "",
                     )
                   }
                   error={fieldErrors.insuranceExpiryDate}
+                  clearable
                   size="md"
                   radius="md"
-                  styles={{ input: { direction: "ltr" } }}
                 />
               </SimpleGrid>
             </Stack>

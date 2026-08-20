@@ -11,6 +11,7 @@ import {
   TextInput,
   Title,
 } from "@mantine/core";
+import AppDateInput from "./AppDateInput";
 import { FUEL_TYPE_OPTIONS } from "../utils/vehicleFormUtils";
 import {
   createVehicleEditDraft,
@@ -244,17 +245,14 @@ export default function VehicleEditForm({
                 span={{ base: fullWidthOnMobile ? 12 : 6, sm: 4 }}
                 miw={0}
               >
-                <TextInput
+                <AppDateInput
                   w="100%"
-                  type="date"
                   label={label}
                   description="אופציונלי"
-                  value={draft[field]}
-                  onChange={(event) =>
-                    handleFieldChange(field, event.currentTarget.value)
-                  }
+                  value={draft[field] || null}
+                  onChange={(value) => handleFieldChange(field, value || "")}
                   error={fieldErrors[field]}
-                  styles={{ input: { direction: "ltr" } }}
+                  clearable
                   disabled={isSaving}
                 />
               </Grid.Col>
