@@ -1,6 +1,5 @@
 import { useLocation, useNavigate } from "react-router";
 import { observer } from "mobx-react-lite";
-import { useDisclosure } from "@mantine/hooks";
 import {
   Box,
   Button,
@@ -11,7 +10,6 @@ import {
   UnstyledButton,
 } from "@mantine/core";
 import Logo from "./Logo";
-import AIChat from "./AIChat";
 import { useVehicleStore } from "../stores/VehicleStoreContext";
 
 const NAV_ITEMS = [
@@ -64,10 +62,9 @@ const Navbar = observer(function Navbar() {
   const location = useLocation();
   const navigate = useNavigate();
   const vehicleStore = useVehicleStore();
-  const [aiModalOpened, { open: openAiModal, close: closeAiModal }] =
-    useDisclosure(false);
 
   const activeVehicle = vehicleStore.activeVehicle;
+  const aiActive = location.pathname === "/ai";
 
   const handleNavClick = (item) => {
     const targetPath = item.getPath(activeVehicle);
@@ -153,7 +150,8 @@ const Navbar = observer(function Navbar() {
             radius="lg"
             h={50}
             fw={700}
-            onClick={openAiModal}
+            onClick={() => navigate("/ai")}
+            aria-current={aiActive ? "page" : undefined}
             leftSection={
               <i
                 className="ph-sparkle-fill"
@@ -163,6 +161,9 @@ const Navbar = observer(function Navbar() {
             shadow="sm"
             style={{
               transition: "transform 150ms ease, box-shadow 150ms ease",
+              boxShadow: aiActive
+                ? "0 0 0 3px var(--mantine-primary-color-light)"
+                : undefined,
             }}
           >
             עוזר AI
@@ -288,8 +289,9 @@ const Navbar = observer(function Navbar() {
               }}
             >
               <UnstyledButton
-                onClick={openAiModal}
+                onClick={() => navigate("/ai")}
                 aria-label="עוזר AI"
+                aria-current={aiActive ? "page" : undefined}
                 style={{
                   width: 52,
                   height: 52,
@@ -311,8 +313,12 @@ const Navbar = observer(function Navbar() {
               </UnstyledButton>
               <Text
                 size="xs"
-                fw={600}
-                c="var(--mantine-color-gray-7)"
+                fw={aiActive ? 700 : 600}
+                c={
+                  aiActive
+                    ? "var(--mantine-primary-color-filled, #228be6)"
+                    : "var(--mantine-color-gray-7)"
+                }
                 mt={4}
                 style={{ lineHeight: 1 }}
               >
@@ -365,7 +371,6 @@ const Navbar = observer(function Navbar() {
         </Box>
       </Box>
 
-      <AIChat opened={aiModalOpened} onClose={closeAiModal} />
     </>
   );
 });
