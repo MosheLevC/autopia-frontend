@@ -92,6 +92,11 @@ button {
   padding: 1.5rem 1rem;
 }
 
+.ai-chat-page {
+  height: calc(100dvh - 64px - 3rem);
+  min-height: 0;
+}
+
 @media (max-width: 768px) {
   .app-container {
     flex-direction: column;
@@ -100,6 +105,10 @@ button {
 
   .app-body {
     padding: 1rem 0.75rem;
+  }
+
+  .ai-chat-page {
+    height: calc(100dvh - 64px - 84px - 2rem);
   }
 }
 

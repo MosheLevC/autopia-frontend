@@ -12,6 +12,7 @@ import AddReminderPage from "./pages/AddReminderPage";
 import AddMaintenancePage from "./pages/AddMaintenancePage";
 import AddVehiclePage from "./pages/AddVehiclePage";
 import AuthPage from "./pages/AuthPage";
+import AIChatPage from "./pages/AIChatPage";
 import HomePage from "./pages/HomePage";
 import LandingPage from "./pages/LandingPage";
 import ProfilePage from "./pages/ProfilePage";
@@ -70,6 +71,7 @@ function App() {
                   }
                 >
                   <Route path="/home" element={<HomePage />} />
+                  <Route path="/ai" element={<AIChatPage />} />
                   <Route path="/vehicles" element={<VehiclesPage />} />
                   <Route path="/vehicles/add" element={<AddVehiclePage />} />
                   <Route
