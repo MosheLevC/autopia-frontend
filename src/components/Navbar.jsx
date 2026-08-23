@@ -183,7 +183,13 @@ const Navbar = observer(function Navbar() {
           userSelect: "none",
         }}
       >
-        <Box pos="relative" w="100%" h={72} bg="white" shadow="md">
+        <Box
+          pos="relative"
+          w="100%"
+          h="var(--app-mobile-nav-height)"
+          bg="white"
+          shadow="md"
+        >
           <Box
             pos="absolute"
             top={0}

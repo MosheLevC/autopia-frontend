@@ -1,12 +1,16 @@
 import { Box, Center, Container, Loader, Stack, Text } from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
 import { observer } from "mobx-react-lite";
+import { useEffect } from "react";
 import AIChatEmptyState from "../components/AIChat/AIChatEmptyState";
 import AIComposer from "../components/AIChat/AIComposer";
+import AIConversationHistory from "../components/AIChat/AIConversationHistory";
 import AIMessageList from "../components/AIChat/AIMessageList";
 import VehicleContextBanner from "../components/AIChat/VehicleContextBanner";
 import NoVehicleSelected from "../components/NoVehicleSelected";
 import { useHeaderTitle } from "../context/HeaderContext";
 import useAIChat from "../hooks/useAIChat";
+import useAIConversationHistory from "../hooks/useAIConversationHistory";
 import { useVehicleStore } from "../stores/VehicleStoreContext";
 
 const AIChatPage = observer(function AIChatPage() {
@@ -14,12 +18,59 @@ const AIChatPage = observer(function AIChatPage() {
 
   const vehicleStore = useVehicleStore();
   const activeVehicle = vehicleStore.activeVehicle;
+  const activeVehicleId = activeVehicle?._id || activeVehicle?.id || null;
+  const [historyOpened, { open: openHistory, close: closeHistory }] =
+    useDisclosure(false);
   const {
     messages,
     isResponding,
     sendMessage,
     clearConversation,
+    loadConversation: loadChatConversation,
   } = useAIChat({ vehicle: activeVehicle });
+  const {
+    activeConversationId,
+    conversations,
+    deleteConversation: deleteStoredConversation,
+    loadConversation: getStoredConversation,
+    persistMessages,
+    refreshConversations,
+    startNewConversation,
+  } = useAIConversationHistory({ vehicleId: activeVehicleId });
+
+  useEffect(() => {
+    persistMessages(messages);
+  }, [messages, persistMessages]);
+
+  const handleOpenHistory = () => {
+    refreshConversations();
+    openHistory();
+  };
+
+  const handleConversationSelect = (conversationId) => {
+    const conversation = getStoredConversation(conversationId);
+    if (!conversation) return;
+
+    closeHistory();
+    loadChatConversation(conversation.messages);
+  };
+
+  const handleNewConversation = () => {
+    startNewConversation();
+    clearConversation();
+  };
+
+  const handleConversationDelete = (conversationId) => {
+    const result = deleteStoredConversation(conversationId);
+    if (!result.deleted) return false;
+
+    if (result.wasActive) {
+      closeHistory();
+      clearConversation();
+    }
+
+    return true;
+  };
 
   if (vehicleStore.isLoading && vehicleStore.vehicles.length === 0) {
     return (
@@ -50,13 +101,14 @@ const AIChatPage = observer(function AIChatPage() {
   const hasMessages = messages.length > 0;
 
   return (
-    <Container size={900} px={0} w="100%">
+    <Container size={900} px={0} w="100%" h="100%">
       <Box className="ai-chat-page" w="100%" miw={0}>
         <Stack h="100%" gap="sm" style={{ overflow: "hidden" }}>
           <VehicleContextBanner
             vehicle={activeVehicle}
             showClear={hasMessages || isResponding}
-            onClear={clearConversation}
+            onClear={handleNewConversation}
+            onOpenHistory={handleOpenHistory}
           />
 
           <Box style={{ flex: 1, minHeight: 0, overflow: "hidden" }}>
@@ -76,6 +128,15 @@ const AIChatPage = observer(function AIChatPage() {
           <AIComposer onSend={sendMessage} isResponding={isResponding} />
         </Stack>
       </Box>
+
+      <AIConversationHistory
+        opened={historyOpened}
+        onClose={closeHistory}
+        conversations={conversations}
+        activeConversationId={activeConversationId}
+        onConversationSelect={handleConversationSelect}
+        onConversationDelete={handleConversationDelete}
+      />
     </Container>
   );
 });

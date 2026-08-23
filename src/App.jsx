@@ -1,5 +1,11 @@
 import { useEffect } from "react";
-import { BrowserRouter, Outlet, Route, Routes } from "react-router";
+import {
+  BrowserRouter,
+  Outlet,
+  Route,
+  Routes,
+  useLocation,
+} from "react-router";
 import { observer } from "mobx-react-lite";
 import { AuthStoreProvider, useAuth } from "./stores/AuthStoreContext";
 import { VehicleStoreProvider, useVehicleStore } from "./stores/VehicleStoreContext";
@@ -25,6 +31,8 @@ import VehiclesPage from "./pages/VehiclesPage";
 const AppLayout = observer(function AppLayout() {
   const auth = useAuth();
   const vehicleStore = useVehicleStore();
+  const location = useLocation();
+  const isAIPage = location.pathname === "/ai";
 
   useEffect(() => {
     if (auth.isAuthenticated) {
@@ -33,11 +41,14 @@ const AppLayout = observer(function AppLayout() {
   }, [auth.isAuthenticated, vehicleStore]);
 
   return (
-    <div className="app-container" dir="rtl">
+    <div
+      className={`app-container ${isAIPage ? "app-container--ai" : ""}`}
+      dir="rtl"
+    >
       <Navbar />
       <div className="app-content-wrapper">
         <Header />
-        <main className="app-body">
+        <main className={`app-body ${isAIPage ? "app-body--ai" : ""}`}>
           <Outlet />
         </main>
       </div>

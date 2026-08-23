@@ -1,10 +1,9 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createMockAIService } from "../services/ai/mockAIService";
+import { createAIEntityId } from "../utils/aiConversation";
 
 const createMessage = (role, content) => ({
-  id:
-    globalThis.crypto?.randomUUID?.() ||
-    `${role}-${Date.now()}-${Math.random().toString(36).slice(2)}`,
+  id: createAIEntityId(role),
   role,
   content,
   createdAt: new Date().toISOString(),
@@ -62,6 +61,19 @@ export default function useAIChat({
     setConversation({ contextKey, messages: [] });
     setResponseState({ contextKey: null, active: false });
   }, [contextKey]);
+
+  const loadConversation = useCallback(
+    (messages) => {
+      requestIdRef.current += 1;
+      respondingContextKeyRef.current = null;
+      setConversation({
+        contextKey,
+        messages: Array.isArray(messages) ? messages : [],
+      });
+      setResponseState({ contextKey: null, active: false });
+    },
+    [contextKey],
+  );
 
   const sendMessage = useCallback(
     (rawContent) => {
@@ -151,5 +163,6 @@ export default function useAIChat({
     isResponding,
     sendMessage,
     clearConversation,
+    loadConversation,
   };
 }

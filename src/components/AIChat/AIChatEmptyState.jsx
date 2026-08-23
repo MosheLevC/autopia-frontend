@@ -42,7 +42,11 @@ export default function AIChatEmptyState({
   const vehicleName = getVehicleName(vehicle);
 
   return (
-    <Box h="100%" style={{ overflowY: "auto", overflowX: "hidden" }}>
+    <Box
+      className="ai-local-scroll"
+      h="100%"
+      style={{ overflowY: "auto", overflowX: "hidden" }}
+    >
       <Stack
         align="center"
         justify="center"
@@ -51,11 +55,11 @@ export default function AIChatEmptyState({
         px={{ base: 0, sm: "lg" }}
         py={{ base: "sm", sm: "xl" }}
       >
-        <ThemeIcon size={64} radius="xl" variant="light">
+        <ThemeIcon size={52} radius="md" variant="light" color="gray">
           <i
-            className="ph-sparkle-fill"
+            className="ph-chat-circle-dots"
             aria-hidden="true"
-            style={{ fontSize: "2rem" }}
+            style={{ fontSize: "1.65rem" }}
           />
         </ThemeIcon>
 
@@ -67,8 +71,8 @@ export default function AIChatEmptyState({
             אפשר לשאול על תחזוקה, קילומטראז׳, נורות אזהרה ונושאים כלליים.
             בשלב הזה התשובות הן להדגמת חוויית השיחה בלבד.
           </Text>
-          <Text size="xs" c="blue.7" fw={600} dir="auto">
-            השיחה תתייחס ל־{vehicleName}
+          <Text size="xs" c="dimmed" fw={600} dir="auto">
+            בהקשר של {vehicleName}
           </Text>
         </Stack>
 
@@ -83,10 +87,11 @@ export default function AIChatEmptyState({
             >
               <Paper
                 withBorder
-                radius="lg"
-                p="md"
+                radius="md"
+                p={{ base: "sm", sm: "md" }}
                 h="100%"
                 bg="white"
+                className="ai-suggestion-card"
                 style={{
                   transition: "border-color 150ms ease, box-shadow 150ms ease",
                 }}
