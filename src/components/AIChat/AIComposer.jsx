@@ -35,7 +35,7 @@ export default function AIComposer({ onSend, isResponding = false }) {
 
   return (
     <Box component="form" onSubmit={(event) => event.preventDefault()}>
-      <Paper withBorder radius="xl" p={6} shadow="xs" bg="white">
+      <Paper withBorder radius="lg" p={6} bg="white">
         <Group gap="xs" wrap="nowrap" align="flex-end">
           <Textarea
             value={draft}
@@ -63,8 +63,8 @@ export default function AIComposer({ onSend, isResponding = false }) {
 
           <ActionIcon
             type="button"
-            size={44}
-            radius="xl"
+            size={40}
+            radius="md"
             disabled={!canSend}
             onClick={handleSend}
             aria-label={isResponding ? "ממתין לתשובת העוזר" : "שליחת הודעה"}

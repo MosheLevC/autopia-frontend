@@ -139,6 +139,22 @@ export const createLocalConversationRepository = (
 
       return writeAll(conversations) ? normalizedConversation : null;
     },
+
+    deleteConversation(id) {
+      const normalizedId = String(id || "");
+      if (!normalizedId) return false;
+
+      const conversations = readAll();
+      const remainingConversations = conversations.filter(
+        (conversation) => conversation.id !== normalizedId,
+      );
+
+      if (remainingConversations.length === conversations.length) {
+        return false;
+      }
+
+      return writeAll(remainingConversations);
+    },
   };
 };
 

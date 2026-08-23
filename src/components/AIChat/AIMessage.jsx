@@ -26,22 +26,21 @@ export default function AIMessage({ message, isLoading = false }) {
         gap="xs"
         wrap="nowrap"
         align="flex-start"
-        maw="min(82%, 42rem)"
+        maw={{ base: "90%", sm: "min(78%, 40rem)" }}
         miw={0}
       >
         <Paper
-          radius="xl"
+          radius="lg"
           px="md"
           py="sm"
           bg={isUser ? "blue.6" : "white"}
           c={isUser ? "white" : "gray.9"}
           bd={isUser ? undefined : "1px solid var(--mantine-color-gray-2)"}
-          shadow={isUser ? undefined : "xs"}
           miw={0}
           style={{
             borderRadius: isUser
-              ? "18px 18px 6px 18px"
-              : "18px 18px 18px 6px",
+              ? "16px 16px 5px 16px"
+              : "14px 14px 14px 4px",
           }}
         >
           {isLoading ? (

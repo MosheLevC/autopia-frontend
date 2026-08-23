@@ -22,13 +22,14 @@ export default function AIMessageList({ messages, isResponding }) {
   return (
     <Box
       ref={viewportRef}
+      className="ai-local-scroll"
       h="100%"
       role="log"
       aria-live="polite"
       aria-busy={isResponding}
       style={{ overflowY: "auto", overflowX: "hidden" }}
     >
-      <Stack gap="lg" px={{ base: 0, sm: "md" }} py="md">
+      <Stack gap="md" px={{ base: 0, sm: "md" }} py="md">
         {messages.map((message) => (
           <AIMessage key={message.id} message={message} />
         ))}

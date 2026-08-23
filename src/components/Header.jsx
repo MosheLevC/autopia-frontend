@@ -19,11 +19,11 @@ export default function Header() {
       pos="sticky"
       top={0}
       bg="white"
-      h={64}
+      h="var(--app-header-height)"
       px="md"
       bdb="1px solid var(--mantine-color-gray-2)"
       shadow="xs"
-      style={{ zIndex: 100 }}
+      style={{ zIndex: 100, flexShrink: 0 }}
     >
       <Flex
         align="center"

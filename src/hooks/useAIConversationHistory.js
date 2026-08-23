@@ -74,6 +74,35 @@ export default function useAIConversationHistory({
     [contextKey, repository],
   );
 
+  const deleteConversation = useCallback(
+    (conversationId) => {
+      if (!contextKey) return { deleted: false, wasActive: false };
+
+      const conversation = repository.getConversation(conversationId);
+      if (!conversation || conversation.vehicleId !== contextKey) {
+        return { deleted: false, wasActive: false };
+      }
+
+      const activeRecord = activeConversationRef.current;
+      const wasActive =
+        activeRecord.contextKey === contextKey &&
+        activeRecord.id === conversation.id;
+      const deleted = repository.deleteConversation(conversation.id);
+
+      if (!deleted) return { deleted: false, wasActive: false };
+
+      if (wasActive) {
+        const nextActiveConversation = { contextKey, id: null };
+        activeConversationRef.current = nextActiveConversation;
+        setActiveConversation(nextActiveConversation);
+      }
+
+      refreshConversations();
+      return { deleted: true, wasActive };
+    },
+    [contextKey, refreshConversations, repository],
+  );
+
   const persistMessages = useCallback(
     (messages) => {
       if (!contextKey || !Array.isArray(messages) || messages.length === 0) {
@@ -145,6 +174,7 @@ export default function useAIConversationHistory({
         : null,
     conversations:
       history.contextKey === contextKey ? history.conversations : [],
+    deleteConversation,
     loadConversation,
     persistMessages,
     refreshConversations,
