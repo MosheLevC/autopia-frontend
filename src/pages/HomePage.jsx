@@ -2,7 +2,7 @@ import { Container, Grid, Stack } from "@mantine/core";
 import { useHeaderTitle } from "../context/HeaderContext";
 import ActiveVehicleSection from "../components/ActiveVehicleSection";
 import MileageCard from "../components/MileageCard";
-import RemindersPlaceholderCard from "../components/RemindersPlaceholderCard";
+import RemindersSection from "../components/RemindersSection";
 import RecentMaintenanceSection from "../components/RecentMaintenanceSection";
 
 export default function HomePage() {
@@ -19,7 +19,7 @@ export default function HomePage() {
             order={{ base: 1, md: 2 }}
             style={{ display: "grid" }}
           >
-            <RemindersPlaceholderCard />
+            <RemindersSection />
           </Grid.Col>
           <Grid.Col
             span={{ base: 12, md: 6 }}
