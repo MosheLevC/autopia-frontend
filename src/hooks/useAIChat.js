@@ -12,6 +12,7 @@ const createMessage = (role, content) => ({
 export default function useAIChat({
   vehicle,
   responseSource,
+  persistMessage,
 } = {}) {
   const contextKey = vehicle?._id || vehicle?.id || null;
   const mockResponseSource = useMemo(
@@ -99,8 +100,31 @@ export default function useAIChat({
 
       const getAssistantResponse = async () => {
         try {
+          const persistedUserMessage = persistMessage
+            ? await persistMessage(userMessage)
+            : userMessage;
+
+          if (
+            requestIdRef.current !== requestId ||
+            currentContextKeyRef.current !== contextKey
+          ) {
+            return;
+          }
+
+          setConversation((current) => ({
+            contextKey,
+            messages:
+              current.contextKey === contextKey
+                ? current.messages.map((message) =>
+                    message.id === userMessage.id
+                      ? persistedUserMessage
+                      : message,
+                  )
+                : [persistedUserMessage],
+          }));
+
           const response = await activeResponseSource.sendMessage({
-            message: userMessage,
+            message: persistedUserMessage,
             history,
             vehicleId: contextKey,
           });
@@ -113,12 +137,23 @@ export default function useAIChat({
           }
 
           const assistantMessage = createMessage("assistant", response.content);
+          const persistedAssistantMessage = persistMessage
+            ? await persistMessage(assistantMessage)
+            : assistantMessage;
+
+          if (
+            requestIdRef.current !== requestId ||
+            currentContextKeyRef.current !== contextKey
+          ) {
+            return;
+          }
+
           setConversation((current) => ({
             contextKey,
             messages:
               current.contextKey === contextKey
-                ? [...current.messages, assistantMessage]
-                : [assistantMessage],
+                ? [...current.messages, persistedAssistantMessage]
+                : [persistedAssistantMessage],
           }));
         } catch {
           if (
@@ -150,7 +185,7 @@ export default function useAIChat({
       void getAssistantResponse();
       return true;
     },
-    [activeResponseSource, contextKey, conversation],
+    [activeResponseSource, contextKey, conversation, persistMessage],
   );
 
   const messages =

@@ -1,7 +1,6 @@
 import { Box, Center, Container, Loader, Stack, Text } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { observer } from "mobx-react-lite";
-import { useEffect } from "react";
 import AIChatEmptyState from "../components/AIChat/AIChatEmptyState";
 import AIComposer from "../components/AIChat/AIComposer";
 import AIConversationHistory from "../components/AIChat/AIConversationHistory";
@@ -22,33 +21,29 @@ const AIChatPage = observer(function AIChatPage() {
   const [historyOpened, { open: openHistory, close: closeHistory }] =
     useDisclosure(false);
   const {
+    activeConversationId,
+    conversations,
+    deleteConversation: deleteStoredConversation,
+    loadConversation: getStoredConversation,
+    persistMessage,
+    refreshConversations,
+    startNewConversation,
+  } = useAIConversationHistory({ vehicleId: activeVehicleId });
+  const {
     messages,
     isResponding,
     sendMessage,
     clearConversation,
     loadConversation: loadChatConversation,
-  } = useAIChat({ vehicle: activeVehicle });
-  const {
-    activeConversationId,
-    conversations,
-    deleteConversation: deleteStoredConversation,
-    loadConversation: getStoredConversation,
-    persistMessages,
-    refreshConversations,
-    startNewConversation,
-  } = useAIConversationHistory({ vehicleId: activeVehicleId });
-
-  useEffect(() => {
-    persistMessages(messages);
-  }, [messages, persistMessages]);
+  } = useAIChat({ vehicle: activeVehicle, persistMessage });
 
   const handleOpenHistory = () => {
-    refreshConversations();
+    void refreshConversations();
     openHistory();
   };
 
-  const handleConversationSelect = (conversationId) => {
-    const conversation = getStoredConversation(conversationId);
+  const handleConversationSelect = async (conversationId) => {
+    const conversation = await getStoredConversation(conversationId);
     if (!conversation) return;
 
     closeHistory();
@@ -60,8 +55,8 @@ const AIChatPage = observer(function AIChatPage() {
     clearConversation();
   };
 
-  const handleConversationDelete = (conversationId) => {
-    const result = deleteStoredConversation(conversationId);
+  const handleConversationDelete = async (conversationId) => {
+    const result = await deleteStoredConversation(conversationId);
     if (!result.deleted) return false;
 
     if (result.wasActive) {

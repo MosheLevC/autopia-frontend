@@ -1,170 +1,229 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { localConversationRepository } from "../services/ai/localConversationRepository";
-import {
-  createAIEntityId,
-  createConversationTitle,
-} from "../utils/aiConversation";
+import { conversationRepository } from "../services/ai/conversationRepository";
+import { createConversationTitle } from "../utils/aiConversation";
 
-const getMessageSignature = (messages) =>
-  JSON.stringify(
-    messages.map(({ id, role, content, createdAt }) => ({
-      id,
-      role,
-      content,
-      createdAt,
-    })),
+const sortByRecentActivity = (conversations) =>
+  [...conversations].sort(
+    (first, second) =>
+      new Date(second.lastMessageAt).getTime() -
+      new Date(first.lastMessageAt).getTime(),
   );
 
 export default function useAIConversationHistory({
   vehicleId,
-  repository = localConversationRepository,
+  repository = conversationRepository,
 }) {
   const contextKey = vehicleId ? String(vehicleId) : null;
-  const activeConversationRef = useRef({
-    contextKey,
-    id: null,
-  });
+  const contextKeyRef = useRef(contextKey);
+  const activeConversationRef = useRef({ contextKey, id: null });
+  const operationVersionRef = useRef(0);
+  const historyRequestIdRef = useRef(0);
   const [activeConversation, setActiveConversation] = useState({
     contextKey,
     id: null,
   });
-  const [history, setHistory] = useState(() => ({
+  const [history, setHistory] = useState({
     contextKey,
-    conversations: contextKey
-      ? repository.listConversations(contextKey)
-      : [],
-  }));
+    conversations: [],
+  });
 
-  const refreshConversations = useCallback(() => {
-    const conversations = contextKey
-      ? repository.listConversations(contextKey)
-      : [];
-    setHistory({ contextKey, conversations });
-    return conversations;
+  contextKeyRef.current = contextKey;
+
+  const setActiveConversationRecord = useCallback((record) => {
+    activeConversationRef.current = record;
+    setActiveConversation(record);
+  }, []);
+
+  const refreshConversations = useCallback(async () => {
+    const requestId = historyRequestIdRef.current + 1;
+    historyRequestIdRef.current = requestId;
+
+    if (!contextKey) {
+      setHistory({ contextKey, conversations: [] });
+      return [];
+    }
+
+    try {
+      const conversations = await repository.listConversations(contextKey);
+
+      if (
+        historyRequestIdRef.current !== requestId ||
+        contextKeyRef.current !== contextKey
+      ) {
+        return [];
+      }
+
+      setHistory({ contextKey, conversations });
+      return conversations;
+    } catch {
+      if (
+        historyRequestIdRef.current === requestId &&
+        contextKeyRef.current === contextKey
+      ) {
+        setHistory({ contextKey, conversations: [] });
+      }
+
+      return [];
+    }
   }, [contextKey, repository]);
 
   useEffect(() => {
-    const nextActiveConversation = { contextKey, id: null };
-    activeConversationRef.current = nextActiveConversation;
-    setActiveConversation(nextActiveConversation);
-    refreshConversations();
-  }, [contextKey, refreshConversations]);
+    operationVersionRef.current += 1;
+    setActiveConversationRecord({ contextKey, id: null });
+    setHistory({ contextKey, conversations: [] });
+    void refreshConversations();
+  }, [contextKey, refreshConversations, setActiveConversationRecord]);
 
   const startNewConversation = useCallback(() => {
-    const nextActiveConversation = { contextKey, id: null };
-    activeConversationRef.current = nextActiveConversation;
-    setActiveConversation(nextActiveConversation);
-  }, [contextKey]);
+    operationVersionRef.current += 1;
+    setActiveConversationRecord({ contextKey, id: null });
+  }, [contextKey, setActiveConversationRecord]);
 
   const loadConversation = useCallback(
-    (conversationId) => {
+    async (conversationId) => {
       if (!contextKey) return null;
 
-      const conversation = repository.getConversation(conversationId);
-      if (!conversation || conversation.vehicleId !== contextKey) return null;
+      const operationVersion = operationVersionRef.current + 1;
+      operationVersionRef.current = operationVersion;
 
-      const nextActiveConversation = {
-        contextKey,
-        id: conversation.id,
-      };
-      activeConversationRef.current = nextActiveConversation;
-      setActiveConversation(nextActiveConversation);
-      return conversation;
+      try {
+        const conversation = await repository.getConversation(conversationId);
+
+        if (
+          operationVersionRef.current !== operationVersion ||
+          contextKeyRef.current !== contextKey ||
+          conversation.vehicleId !== contextKey
+        ) {
+          return null;
+        }
+
+        setActiveConversationRecord({
+          contextKey,
+          id: conversation.id,
+        });
+        return conversation;
+      } catch {
+        return null;
+      }
     },
-    [contextKey, repository],
+    [contextKey, repository, setActiveConversationRecord],
+  );
+
+  const persistMessage = useCallback(
+    async ({ role, content }) => {
+      if (!contextKey) {
+        throw new Error("A vehicle is required to persist a conversation");
+      }
+
+      const operationVersion = operationVersionRef.current;
+      const activeRecord = activeConversationRef.current;
+      let conversationId =
+        activeRecord.contextKey === contextKey ? activeRecord.id : null;
+      let createdConversation = null;
+
+      if (!conversationId) {
+        if (role !== "user") {
+          throw new Error("A conversation must begin with a user message");
+        }
+
+        createdConversation = await repository.createConversation({
+          title: createConversationTitle(content),
+          vehicleId: contextKey,
+        });
+        conversationId = createdConversation.id;
+
+        if (
+          operationVersionRef.current === operationVersion &&
+          contextKeyRef.current === contextKey
+        ) {
+          setActiveConversationRecord({ contextKey, id: conversationId });
+          setHistory((current) => {
+            if (current.contextKey !== contextKey) return current;
+
+            const conversations = current.conversations.filter(
+              (conversation) => conversation.id !== conversationId,
+            );
+
+            return {
+              contextKey,
+              conversations: sortByRecentActivity([
+                createdConversation,
+                ...conversations,
+              ]),
+            };
+          });
+        }
+      }
+
+      const message = await repository.appendMessage(conversationId, {
+        role,
+        content,
+      });
+
+      if (
+        operationVersionRef.current === operationVersion &&
+        contextKeyRef.current === contextKey
+      ) {
+        setHistory((current) => {
+          if (current.contextKey !== contextKey) return current;
+
+          const existingConversation = current.conversations.find(
+            (conversation) => conversation.id === conversationId,
+          );
+          const conversation = {
+            ...(createdConversation || existingConversation),
+            id: conversationId,
+            vehicleId: contextKey,
+            lastMessageAt: message.createdAt,
+            updatedAt: message.createdAt,
+          };
+          const conversations = current.conversations.filter(
+            (item) => item.id !== conversationId,
+          );
+
+          return {
+            contextKey,
+            conversations: sortByRecentActivity([
+              conversation,
+              ...conversations,
+            ]),
+          };
+        });
+      }
+
+      return message;
+    },
+    [contextKey, repository, setActiveConversationRecord],
   );
 
   const deleteConversation = useCallback(
-    (conversationId) => {
-      if (!contextKey) return { deleted: false, wasActive: false };
+    async (conversationId) => {
+      if (!conversationId) return { deleted: false, wasActive: false };
 
-      const conversation = repository.getConversation(conversationId);
-      if (!conversation || conversation.vehicleId !== contextKey) {
+      try {
+        await repository.deleteConversation(conversationId);
+      } catch {
         return { deleted: false, wasActive: false };
       }
 
       const activeRecord = activeConversationRef.current;
-      const wasActive =
-        activeRecord.contextKey === contextKey &&
-        activeRecord.id === conversation.id;
-      const deleted = repository.deleteConversation(conversation.id);
-
-      if (!deleted) return { deleted: false, wasActive: false };
+      const wasActive = activeRecord.id === conversationId;
 
       if (wasActive) {
-        const nextActiveConversation = { contextKey, id: null };
-        activeConversationRef.current = nextActiveConversation;
-        setActiveConversation(nextActiveConversation);
+        operationVersionRef.current += 1;
+        setActiveConversationRecord({ contextKey, id: null });
       }
 
-      refreshConversations();
+      setHistory((current) => ({
+        ...current,
+        conversations: current.conversations.filter(
+          (conversation) => conversation.id !== conversationId,
+        ),
+      }));
+
       return { deleted: true, wasActive };
     },
-    [contextKey, refreshConversations, repository],
-  );
-
-  const persistMessages = useCallback(
-    (messages) => {
-      if (!contextKey || !Array.isArray(messages) || messages.length === 0) {
-        return null;
-      }
-
-      const firstUserMessage = messages.find(
-        (message) => message.role === "user" && message.content?.trim(),
-      );
-      if (!firstUserMessage) return null;
-
-      const activeRecord = activeConversationRef.current;
-      let conversationId =
-        activeRecord.contextKey === contextKey ? activeRecord.id : null;
-      let existingConversation = conversationId
-        ? repository.getConversation(conversationId)
-        : null;
-
-      if (
-        existingConversation &&
-        existingConversation.vehicleId !== contextKey
-      ) {
-        conversationId = null;
-        existingConversation = null;
-      }
-
-      if (!conversationId) {
-        conversationId = createAIEntityId("conversation");
-        const nextActiveConversation = { contextKey, id: conversationId };
-        activeConversationRef.current = nextActiveConversation;
-        setActiveConversation(nextActiveConversation);
-      }
-
-      if (
-        existingConversation &&
-        getMessageSignature(existingConversation.messages) ===
-          getMessageSignature(messages)
-      ) {
-        return existingConversation;
-      }
-
-      const now = new Date().toISOString();
-      const conversation = {
-        id: conversationId,
-        vehicleId: contextKey,
-        title:
-          existingConversation?.title ||
-          createConversationTitle(firstUserMessage.content),
-        messages,
-        createdAt:
-          existingConversation?.createdAt || firstUserMessage.createdAt || now,
-        updatedAt: now,
-      };
-      const savedConversation = repository.saveConversation(conversation);
-
-      if (savedConversation) {
-        refreshConversations();
-      }
-
-      return savedConversation;
-    },
-    [contextKey, refreshConversations, repository],
+    [contextKey, repository, setActiveConversationRecord],
   );
 
   return {
@@ -176,7 +235,7 @@ export default function useAIConversationHistory({
       history.contextKey === contextKey ? history.conversations : [],
     deleteConversation,
     loadConversation,
-    persistMessages,
+    persistMessage,
     refreshConversations,
     startNewConversation,
   };
