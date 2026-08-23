@@ -2,6 +2,9 @@
 @import 'phosphor-icons/src/css/icons.css';
 
 :root {
+  --app-header-height: 64px;
+  --app-mobile-nav-height: 72px;
+  --app-mobile-nav-clearance: 84px;
   --mantine-primary-color: var(--mantine-primary-color-filled, #228be6);
   --bg-main: #f8fafc;
   --bg-card: #ffffff;
@@ -69,18 +72,19 @@ button {
 }
 
 .app-container {
-  min-height: 100vh;
+  min-height: 100dvh;
   width: 100%;
   display: flex;
+  overflow-x: clip;
   background-color: var(--bg-main);
 }
 
 .app-content-wrapper {
   flex: 1;
   min-width: 0;
+  min-height: 100dvh;
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
 }
 
 .app-body {
@@ -92,14 +96,115 @@ button {
   padding: 1.5rem 1rem;
 }
 
+.app-container--ai {
+  height: 100dvh;
+  overflow: hidden;
+}
+
+.app-container--ai .app-content-wrapper {
+  height: 100%;
+  min-height: 0;
+}
+
+.app-body--ai {
+  min-height: 0;
+  overflow: hidden;
+}
+
+.ai-chat-page {
+  height: 100%;
+  min-height: 0;
+}
+
+.ai-context-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--mantine-spacing-md);
+}
+
+.ai-context-main {
+  min-width: 0;
+}
+
+.ai-context-actions {
+  flex-shrink: 0;
+}
+
+.ai-history-item {
+  min-height: 64px;
+  border: 1px solid var(--mantine-color-gray-2);
+  background: var(--mantine-color-white);
+  transition: background-color 150ms ease, border-color 150ms ease,
+    box-shadow 150ms ease;
+}
+
+.ai-history-item:hover {
+  background: var(--mantine-color-gray-0);
+  border-color: var(--mantine-color-gray-3);
+}
+
+.ai-history-item[data-active="true"] {
+  background: var(--primary-50);
+  border-color: var(--mantine-color-blue-2);
+  box-shadow: inset -3px 0 0 var(--mantine-primary-color-filled);
+}
+
+.ai-suggestion-card:hover {
+  border-color: var(--mantine-color-gray-4);
+  box-shadow: var(--shadow-sm);
+}
+
+.ai-local-scroll {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.ai-local-scroll::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+.ai-history-menu {
+  opacity: 0.55;
+  transition: opacity 150ms ease, background-color 150ms ease;
+}
+
+.ai-history-item:hover .ai-history-menu,
+.ai-history-item:focus-within .ai-history-menu {
+  opacity: 1;
+}
+
 @media (max-width: 768px) {
   .app-container {
     flex-direction: column;
-    padding-bottom: 84px;
   }
 
   .app-body {
-    padding: 1rem 0.75rem;
+    padding: 1rem 0.75rem calc(1rem + var(--app-mobile-nav-clearance));
+  }
+
+  .app-container--ai {
+    padding-bottom: var(--app-mobile-nav-clearance);
+  }
+
+  .app-container--ai .app-body {
+    padding-bottom: 1rem;
+  }
+
+  .ai-context-card {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--mantine-spacing-xs);
+  }
+
+  .ai-context-actions {
+    width: 100%;
+    padding-top: var(--mantine-spacing-xs);
+    border-top: 1px solid var(--mantine-color-gray-2);
+  }
+
+  .ai-history-menu {
+    opacity: 0.75;
   }
 }
 

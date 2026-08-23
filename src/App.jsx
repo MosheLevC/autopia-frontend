@@ -1,5 +1,11 @@
 import { useEffect } from "react";
-import { BrowserRouter, Outlet, Route, Routes } from "react-router";
+import {
+  BrowserRouter,
+  Outlet,
+  Route,
+  Routes,
+  useLocation,
+} from "react-router";
 import { observer } from "mobx-react-lite";
 import { AuthStoreProvider, useAuth } from "./stores/AuthStoreContext";
 import { VehicleStoreProvider, useVehicleStore } from "./stores/VehicleStoreContext";
@@ -14,6 +20,7 @@ import EditReminderPage from "./pages/EditReminderPage";
 import AddMaintenancePage from "./pages/AddMaintenancePage";
 import AddVehiclePage from "./pages/AddVehiclePage";
 import AuthPage from "./pages/AuthPage";
+import AIChatPage from "./pages/AIChatPage";
 import HomePage from "./pages/HomePage";
 import LandingPage from "./pages/LandingPage";
 import ProfilePage from "./pages/ProfilePage";
@@ -26,6 +33,8 @@ import VehiclesPage from "./pages/VehiclesPage";
 const AppLayout = observer(function AppLayout() {
   const auth = useAuth();
   const vehicleStore = useVehicleStore();
+  const location = useLocation();
+  const isAIPage = location.pathname === "/ai";
 
   useEffect(() => {
     if (auth.isAuthenticated) {
@@ -34,11 +43,14 @@ const AppLayout = observer(function AppLayout() {
   }, [auth.isAuthenticated, vehicleStore]);
 
   return (
-    <div className="app-container" dir="rtl">
+    <div
+      className={`app-container ${isAIPage ? "app-container--ai" : ""}`}
+      dir="rtl"
+    >
       <Navbar />
       <div className="app-content-wrapper">
         <Header />
-        <main className="app-body">
+        <main className={`app-body ${isAIPage ? "app-body--ai" : ""}`}>
           <Outlet />
         </main>
       </div>
@@ -73,6 +85,7 @@ function App() {
                     }
                   >
                     <Route path="/home" element={<HomePage />} />
+                    <Route path="/ai" element={<AIChatPage />} />
                     <Route path="/vehicles" element={<VehiclesPage />} />
                     <Route path="/vehicles/add" element={<AddVehiclePage />} />
                     <Route
