@@ -11,9 +11,9 @@ import {
 } from "@mantine/core";
 import { MAINTENANCE_TYPES } from "../constants/maintenanceConstants";
 import AppDateInput from "./AppDateInput";
-import MaintenanceVehicleBanner from "./AddMaintenance/MaintenanceVehicleBanner";
+import VehicleBanner from "./VehicleBanner";
 import MaintenancePartsPicker from "./AddMaintenance/MaintenancePartsPicker";
-import MaintenanceDeleteModal from "./AddMaintenance/MaintenanceDeleteModal";
+import ConfirmDeleteModal from "./ConfirmDeleteModal";
 
 export default function AddMaintenanceForm({
   vehicle,
@@ -151,7 +151,7 @@ export default function AddMaintenanceForm({
       <Card withBorder radius="xl" shadow="xs" p={{ base: "md", sm: "xl" }} bg="white">
         <form onSubmit={handleSubmit} noValidate>
           <Stack gap="lg">
-            <MaintenanceVehicleBanner vehicle={vehicle} />
+            <VehicleBanner vehicle={vehicle} />
 
             <TextInput
               label="כותרת הטיפול"
@@ -330,10 +330,14 @@ export default function AddMaintenanceForm({
       </Card>
 
       {isEdit && onDelete && (
-        <MaintenanceDeleteModal
+        <ConfirmDeleteModal
           opened={deleteModalOpened}
           onClose={() => setDeleteModalOpened(false)}
           onConfirm={onDelete}
+          title="מחיקת טיפול"
+          message="האם אתה בטוח שברצונך למחוק טיפול זה?"
+          description="פעולה זו הינה בלתי הפיכה והטיפול יוסר לצמיתות מיומן הטיפולים של הרכב."
+          confirmLabel="אישור ומחיקה"
           isDeleting={isDeleting}
         />
       )}

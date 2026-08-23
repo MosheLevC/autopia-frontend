@@ -39,6 +39,7 @@ export default function MaintenanceListItem({ maintenance, onClick }) {
       bg="white"
       shadow="xs"
       w="100%"
+      h="100%"
       style={{
         transition: "all 150ms ease",
         display: "block",

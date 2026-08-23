@@ -1,12 +1,5 @@
 import { useState } from "react";
-import {
-  Alert,
-  Center,
-  Container,
-  Loader,
-  Stack,
-  Text,
-} from "@mantine/core";
+import { Alert, Container, Stack } from "@mantine/core";
 import { useNavigate, useParams } from "react-router";
 import { observer } from "mobx-react-lite";
 import { useHeaderTitle } from "../context/HeaderContext";
@@ -14,6 +7,7 @@ import { useVehicleStore } from "../stores/VehicleStoreContext";
 import { useMaintenanceStore } from "../stores/MaintenanceStoreContext";
 import NoVehicleSelected from "../components/NoVehicleSelected";
 import AddMaintenanceForm from "../components/AddMaintenanceForm";
+import PageLoading from "../components/common/PageLoading";
 
 const AddMaintenancePage = observer(function AddMaintenancePage() {
   useHeaderTitle("הוספת טיפול");
@@ -32,16 +26,7 @@ const AddMaintenancePage = observer(function AddMaintenancePage() {
   const currentVehicleId = currentVehicle?._id;
 
   if (vehicleStore.isLoading && vehicleStore.vehicles.length === 0) {
-    return (
-      <Center h={300}>
-        <Stack align="center" gap="sm">
-          <Loader size="lg" />
-          <Text size="sm" c="dimmed">
-            טוען את פרטי הרכב...
-          </Text>
-        </Stack>
-      </Center>
-    );
+    return <PageLoading message="טוען את פרטי הרכב..." />;
   }
 
   if (!currentVehicle) {
@@ -59,7 +44,10 @@ const AddMaintenancePage = observer(function AddMaintenancePage() {
     setSubmitError(null);
 
     try {
-      const result = await maintenanceStore.createMaintenance(currentVehicleId, payload);
+      const result = await maintenanceStore.createMaintenance(
+        currentVehicleId,
+        payload
+      );
 
       if (result?.vehicle) {
         vehicleStore.updateVehicleLocally(result.vehicle);

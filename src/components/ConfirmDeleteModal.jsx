@@ -1,10 +1,14 @@
 import { Button, Group, Modal, Stack, Text, ThemeIcon } from "@mantine/core";
 
-export default function MaintenanceDeleteModal({
+export default function ConfirmDeleteModal({
   opened,
   onClose,
   onConfirm,
-  isDeleting,
+  title = "מחיקה",
+  message = "האם אתה בטוח שברצונך למחוק פריט זה?",
+  description = "פעולה זו הינה בלתי הפיכה והפריט יוסר לצמיתות.",
+  confirmLabel = "אישור ומחיקה",
+  isDeleting = false,
 }) {
   return (
     <Modal
@@ -12,7 +16,7 @@ export default function MaintenanceDeleteModal({
       onClose={() => !isDeleting && onClose()}
       title={
         <Text fw={700} size="md">
-          מחיקת טיפול
+          {title}
         </Text>
       }
       centered
@@ -27,16 +31,28 @@ export default function MaintenanceDeleteModal({
     >
       <Stack gap="lg" pt="xs">
         <Group gap="md" align="flex-start" wrap="nowrap">
-          <ThemeIcon color="red" variant="light" size={44} radius="xl" style={{ flexShrink: 0 }}>
-            <i className="ph-warning" style={{ fontSize: "1.5rem" }} aria-hidden="true" />
+          <ThemeIcon
+            color="red"
+            variant="light"
+            size={44}
+            radius="xl"
+            style={{ flexShrink: 0 }}
+          >
+            <i
+              className="ph-warning"
+              style={{ fontSize: "1.5rem" }}
+              aria-hidden="true"
+            />
           </ThemeIcon>
           <Stack gap={4}>
             <Text fw={600} size="sm" c="gray.9">
-              האם אתה בטוח שברצונך למחוק טיפול זה?
+              {message}
             </Text>
-            <Text size="xs" c="dimmed" lh={1.5}>
-              פעולה זו הינה בלתי הפיכה והטיפול יוסר לצמיתות מיומן הטיפולים של הרכב.
-            </Text>
+            {description && (
+              <Text size="xs" c="dimmed" lh={1.5}>
+                {description}
+              </Text>
+            )}
           </Stack>
         </Group>
 
@@ -56,7 +72,7 @@ export default function MaintenanceDeleteModal({
             radius="md"
             leftSection={<i className="ph-trash" aria-hidden="true" />}
           >
-            אישור ומחיקה
+            {confirmLabel}
           </Button>
         </Group>
       </Stack>

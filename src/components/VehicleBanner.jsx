@@ -1,8 +1,8 @@
 import { Card, Flex, Stack, Text } from "@mantine/core";
-import { getVehicleBackground } from "../../utils/vehicleBackground";
-import LicensePlate from "../LicensePlate/LicensePlate";
+import { getVehicleBackground } from "../utils/vehicleBackground";
+import LicensePlate from "./LicensePlate/LicensePlate";
 
-export default function MaintenanceVehicleBanner({ vehicle }) {
+export default function VehicleBanner({ vehicle }) {
   if (!vehicle) return null;
 
   const manufacturer = vehicle.manufacturer || vehicle.make || "";

@@ -1,16 +1,5 @@
 import { useEffect, useState } from "react";
-import {
-  Alert,
-  Button,
-  Card,
-  Center,
-  Container,
-  Loader,
-  Stack,
-  Text,
-  ThemeIcon,
-  Title,
-} from "@mantine/core";
+import { Alert, Container, Stack } from "@mantine/core";
 import { useNavigate, useParams } from "react-router";
 import { observer } from "mobx-react-lite";
 import { useHeaderTitle } from "../context/HeaderContext";
@@ -19,6 +8,8 @@ import { useMaintenanceStore } from "../stores/MaintenanceStoreContext";
 import AddMaintenanceForm from "../components/AddMaintenanceForm";
 import MaintenanceDetailView from "../components/MaintenanceDetail/MaintenanceDetailView";
 import NoVehicleSelected from "../components/NoVehicleSelected";
+import PageLoading from "../components/common/PageLoading";
+import NotFoundCard from "../components/common/NotFoundCard";
 
 const MaintenanceDetailPage = observer(function MaintenanceDetailPage() {
   const navigate = useNavigate();
@@ -58,16 +49,7 @@ const MaintenanceDetailPage = observer(function MaintenanceDetailPage() {
   };
 
   if (vehicleStore.isLoading && vehicleStore.vehicles.length === 0) {
-    return (
-      <Center h={320}>
-        <Stack align="center" gap="sm">
-          <Loader size="lg" />
-          <Text size="sm" c="dimmed">
-            טוען את פרטי הרכב...
-          </Text>
-        </Stack>
-      </Center>
-    );
+    return <PageLoading message="טוען את פרטי הרכב..." height={320} />;
   }
 
   if (!currentVehicle) {
@@ -86,43 +68,18 @@ const MaintenanceDetailPage = observer(function MaintenanceDetailPage() {
       : maintenanceStore.maintenances.find((m) => m._id === maintenanceId);
 
   if (maintenanceStore.isLoading && !maintenance) {
-    return (
-      <Center h={320}>
-        <Stack align="center" gap="sm">
-          <Loader size="lg" />
-          <Text size="sm" c="dimmed">
-            טוען את פרטי הטיפול...
-          </Text>
-        </Stack>
-      </Center>
-    );
+    return <PageLoading message="טוען את פרטי הטיפול..." height={320} />;
   }
 
   if (!maintenanceStore.isLoading && !maintenance) {
     return (
       <Container size="sm" py="xl">
-        <Card withBorder radius="xl" shadow="xs" p="xl" bg="white" ta="center">
-          <Stack align="center" gap="md" py="lg">
-            <ThemeIcon size={64} radius="xl" variant="light" color="red">
-              <i className="ph-warning-circle" style={{ fontSize: "2rem" }} aria-hidden="true" />
-            </ThemeIcon>
-            <Stack gap={4} align="center">
-              <Title order={4} fw={700}>
-                טיפול לא נמצא
-              </Title>
-              <Text size="sm" c="dimmed" maw={360}>
-                פרטי הטיפול המבוקש אינם קיימים או שנמחקו.
-              </Text>
-            </Stack>
-            <Button
-              variant="light"
-              onClick={handleBack}
-              leftSection={<i className="ph-arrow-right" aria-hidden="true" />}
-            >
-              חזרה ליומן הטיפולים
-            </Button>
-          </Stack>
-        </Card>
+        <NotFoundCard
+          title="טיפול לא נמצא"
+          description="פרטי הטיפול המבוקש אינם קיימים או שנמחקו."
+          backLabel="חזרה ליומן הטיפולים"
+          onBack={handleBack}
+        />
       </Container>
     );
   }
@@ -132,7 +89,11 @@ const MaintenanceDetailPage = observer(function MaintenanceDetailPage() {
     setPageError(null);
 
     try {
-      const result = await maintenanceStore.updateMaintenance(currentVehicleId, maintenanceId, payload);
+      const result = await maintenanceStore.updateMaintenance(
+        currentVehicleId,
+        maintenanceId,
+        payload
+      );
 
       if (result?.vehicle) {
         vehicleStore.updateVehicleLocally(result.vehicle);
@@ -151,7 +112,10 @@ const MaintenanceDetailPage = observer(function MaintenanceDetailPage() {
     setPageError(null);
 
     try {
-      await maintenanceStore.deleteMaintenance(currentVehicleId, maintenanceId);
+      await maintenanceStore.deleteMaintenance(
+        currentVehicleId,
+        maintenanceId
+      );
       navigate(`/vehicles/${currentVehicleId}/maintenances`);
     } catch (err) {
       setPageError(err.message || "שגיאה במחיקת הטיפול. נא לנסות שוב.");
@@ -205,4 +169,3 @@ const MaintenanceDetailPage = observer(function MaintenanceDetailPage() {
 });
 
 export default MaintenanceDetailPage;
-
