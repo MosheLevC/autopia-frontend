@@ -10,11 +10,13 @@ import { observer } from "mobx-react-lite";
 import { AuthStoreProvider, useAuth } from "./stores/AuthStoreContext";
 import { VehicleStoreProvider, useVehicleStore } from "./stores/VehicleStoreContext";
 import { MaintenanceStoreProvider } from "./stores/MaintenanceStoreContext";
+import { ReminderStoreProvider } from "./stores/ReminderStoreContext";
 import { ProtectedRoute, PublicRoute } from "./components/ProtectedRoute";
 import { HeaderProvider } from "./context/HeaderContext";
 import Header from "./components/Header";
 import Navbar from "./components/Navbar";
 import AddReminderPage from "./pages/AddReminderPage";
+import EditReminderPage from "./pages/EditReminderPage";
 import AddMaintenancePage from "./pages/AddMaintenancePage";
 import AddVehiclePage from "./pages/AddVehiclePage";
 import AuthPage from "./pages/AuthPage";
@@ -61,65 +63,79 @@ function App() {
     <AuthStoreProvider>
       <VehicleStoreProvider>
         <MaintenanceStoreProvider>
-          <HeaderProvider>
-            <BrowserRouter>
-              <Routes>
-                <Route path="/" element={<LandingPage />} />
-                <Route
-                  path="/auth"
-                  element={
-                    <PublicRoute>
-                      <AuthPage />
-                    </PublicRoute>
-                  }
-                />
+          <ReminderStoreProvider>
+            <HeaderProvider>
+              <BrowserRouter>
+                <Routes>
+                  <Route path="/" element={<LandingPage />} />
+                  <Route
+                    path="/auth"
+                    element={
+                      <PublicRoute>
+                        <AuthPage />
+                      </PublicRoute>
+                    }
+                  />
 
-                <Route
-                  element={
-                    <ProtectedRoute>
-                      <AppLayout />
-                    </ProtectedRoute>
-                  }
-                >
-                  <Route path="/home" element={<HomePage />} />
-                  <Route path="/ai" element={<AIChatPage />} />
-                  <Route path="/vehicles" element={<VehiclesPage />} />
-                  <Route path="/vehicles/add" element={<AddVehiclePage />} />
                   <Route
-                    path="/vehicles/:vehicleId"
-                    element={<VehicleProfilePage />}
-                  />
-                  <Route path="/maintenances" element={<MaintenancesPage />} />
-                  <Route
-                    path="/maintenances/add"
-                    element={<AddMaintenancePage />}
-                  />
-                  <Route
-                    path="/vehicles/:vehicleId/maintenances"
-                    element={<MaintenancesPage />}
-                  />
-                  <Route
-                    path="/vehicles/:vehicleId/maintenances/add"
-                    element={<AddMaintenancePage />}
-                  />
-                  <Route
-                    path="/vehicles/:vehicleId/maintenances/:maintenanceId"
-                    element={<MaintenanceDetailPage />}
-                  />
-                  <Route path="/reminders" element={<RemindersPage />} />
-                  <Route
-                    path="/vehicles/:vehicleId/reminders"
-                    element={<RemindersPage />}
-                  />
-                  <Route
-                    path="/vehicles/:vehicleId/reminders/add"
-                    element={<AddReminderPage />}
-                  />
-                  <Route path="/profile" element={<ProfilePage />} />
-                </Route>
-              </Routes>
-            </BrowserRouter>
-          </HeaderProvider>
+                    element={
+                      <ProtectedRoute>
+                        <AppLayout />
+                      </ProtectedRoute>
+                    }
+                  >
+                    <Route path="/home" element={<HomePage />} />
+                    <Route path="/ai" element={<AIChatPage />} />
+                    <Route path="/vehicles" element={<VehiclesPage />} />
+                    <Route path="/vehicles/add" element={<AddVehiclePage />} />
+                    <Route
+                      path="/vehicles/:vehicleId"
+                      element={<VehicleProfilePage />}
+                    />
+                    <Route path="/maintenances" element={<MaintenancesPage />} />
+                    <Route
+                      path="/maintenances/add"
+                      element={<AddMaintenancePage />}
+                    />
+                    <Route
+                      path="/vehicles/:vehicleId/maintenances"
+                      element={<MaintenancesPage />}
+                    />
+                    <Route
+                      path="/vehicles/:vehicleId/maintenances/add"
+                      element={<AddMaintenancePage />}
+                    />
+                    <Route
+                      path="/vehicles/:vehicleId/maintenances/:maintenanceId"
+                      element={<MaintenanceDetailPage />}
+                    />
+                    <Route path="/reminders" element={<RemindersPage />} />
+                    <Route
+                      path="/reminders/add"
+                      element={<AddReminderPage />}
+                    />
+                    <Route
+                      path="/reminders/:reminderId/edit"
+                      element={<EditReminderPage />}
+                    />
+                    <Route
+                      path="/vehicles/:vehicleId/reminders"
+                      element={<RemindersPage />}
+                    />
+                    <Route
+                      path="/vehicles/:vehicleId/reminders/add"
+                      element={<AddReminderPage />}
+                    />
+                    <Route
+                      path="/vehicles/:vehicleId/reminders/:reminderId/edit"
+                      element={<EditReminderPage />}
+                    />
+                    <Route path="/profile" element={<ProfilePage />} />
+                  </Route>
+                </Routes>
+              </BrowserRouter>
+            </HeaderProvider>
+          </ReminderStoreProvider>
         </MaintenanceStoreProvider>
       </VehicleStoreProvider>
     </AuthStoreProvider>

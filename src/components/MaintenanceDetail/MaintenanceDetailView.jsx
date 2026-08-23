@@ -11,7 +11,7 @@ import {
   Title,
 } from "@mantine/core";
 import { getMaintenanceTypeInfo } from "../../constants/maintenanceConstants";
-import MaintenanceVehicleBanner from "../AddMaintenance/MaintenanceVehicleBanner";
+import VehicleBanner from "../VehicleBanner";
 import MaintenanceMetricsGrid from "./MaintenanceMetricsGrid";
 import MaintenancePartsList from "./MaintenancePartsList";
 
@@ -25,7 +25,7 @@ export default function MaintenanceDetailView({
 
   return (
     <Stack gap="md">
-      <MaintenanceVehicleBanner vehicle={vehicle} />
+      <VehicleBanner vehicle={vehicle} />
 
       <Card withBorder radius="xl" shadow="xs" p={{ base: "md", sm: "xl" }} bg="white">
         <Stack gap="lg">
