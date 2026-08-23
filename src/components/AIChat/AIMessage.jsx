@@ -1,4 +1,4 @@
-import { Box, Group, Loader, Paper, Text, ThemeIcon } from "@mantine/core";
+import { Box, Group, Loader, Paper, Text } from "@mantine/core";
 
 const formatMessageTime = (createdAt) => {
   if (!createdAt) return "";
@@ -29,12 +29,6 @@ export default function AIMessage({ message, isLoading = false }) {
         maw="min(82%, 42rem)"
         miw={0}
       >
-        {!isUser && (
-          <ThemeIcon size={32} radius="xl" variant="light" mt={2}>
-            <i className="ph-sparkle-fill" aria-hidden="true" />
-          </ThemeIcon>
-        )}
-
         <Paper
           radius="xl"
           px="md"
