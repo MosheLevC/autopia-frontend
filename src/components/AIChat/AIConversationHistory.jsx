@@ -26,18 +26,27 @@ export default function AIConversationHistory({
 }) {
   const isMobile = useMediaQuery("(max-width: 47.99em)");
   const [conversationToDelete, setConversationToDelete] = useState(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const handleClose = () => {
+    if (isDeleting) return;
+
     setConversationToDelete(null);
     onClose();
   };
 
-  const handleDeleteConfirm = () => {
-    if (!conversationToDelete) return;
+  const handleDeleteConfirm = async () => {
+    if (!conversationToDelete || isDeleting) return;
 
-    const deleted = onConversationDelete(conversationToDelete.id);
-    if (deleted) {
-      setConversationToDelete(null);
+    setIsDeleting(true);
+
+    try {
+      const deleted = await onConversationDelete(conversationToDelete.id);
+      if (deleted) {
+        setConversationToDelete(null);
+      }
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -212,6 +221,7 @@ export default function AIConversationHistory({
 
       <AIConversationDeleteModal
         conversation={conversationToDelete}
+        isDeleting={isDeleting}
         onClose={() => setConversationToDelete(null)}
         onConfirm={handleDeleteConfirm}
       />

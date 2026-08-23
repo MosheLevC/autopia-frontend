@@ -2,6 +2,7 @@ import { Button, Group, Modal, Stack, Text } from "@mantine/core";
 
 export default function AIConversationDeleteModal({
   conversation,
+  isDeleting = false,
   onClose,
   onConfirm,
 }) {
@@ -48,12 +49,18 @@ export default function AIConversationDeleteModal({
         )}
 
         <Group justify="flex-end" gap="xs">
-          <Button type="button" variant="default" onClick={onClose}>
+          <Button
+            type="button"
+            variant="default"
+            disabled={isDeleting}
+            onClick={onClose}
+          >
             ביטול
           </Button>
           <Button
             type="button"
             color="red"
+            loading={isDeleting}
             onClick={onConfirm}
             leftSection={<i className="ph-trash" aria-hidden="true" />}
           >
