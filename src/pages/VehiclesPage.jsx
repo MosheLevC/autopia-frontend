@@ -124,19 +124,6 @@ const VehiclesPage = observer(function VehiclesPage() {
               ? `${vehicles.length} ${vehicles.length === 1 ? "רכב" : "רכבים"}`
               : undefined
           }
-          action={
-            !isDeleteMode
-              ? {
-                  label: "הוסף רכב",
-                  onClick: () => navigate("/vehicles/add"),
-                  icon: PlusCircle,
-                  variant: "filled",
-                  size: "sm",
-                  radius: "md",
-                  visibleFrom: "sm",
-                }
-              : undefined
-          }
           actions={
             isDeleteMode ? (
               <Group gap="xs">
@@ -159,18 +146,32 @@ const VehiclesPage = observer(function VehiclesPage() {
                 </Button>
               </Group>
             ) : (
-              <Button
-                variant="subtle"
-                color="red"
-                size="sm"
-                radius="md"
-                leftSection={
-                  <Trash size={18} weight="bold" aria-hidden="true" />
-                }
-                onClick={enterDeleteMode}
-              >
-                מחק רכב
-              </Button>
+              <Group gap="sm">
+                <Button
+                  variant="subtle"
+                  color="red"
+                  size="sm"
+                  radius="md"
+                  leftSection={
+                    <Trash size={18} weight="bold" aria-hidden="true" />
+                  }
+                  onClick={enterDeleteMode}
+                >
+                  מחק רכב
+                </Button>
+                <Button
+                  variant="filled"
+                  size="sm"
+                  radius="md"
+                  visibleFrom="sm"
+                  leftSection={
+                    <PlusCircle size={16} weight="bold" aria-hidden="true" />
+                  }
+                  onClick={() => navigate("/vehicles/add")}
+                >
+                  הוסף רכב
+                </Button>
+              </Group>
             )
           }
         />
