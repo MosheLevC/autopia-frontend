@@ -100,19 +100,13 @@ export const createConversationRepository = (client = apiClient) => ({
     }
   },
 
-  async listConversations(vehicleId) {
-    if (!vehicleId) return [];
-
+  async listConversations() {
     try {
       const response = await client.get("/chat/conversations");
-      const normalizedVehicleId = String(vehicleId);
 
       return (response.data?.data?.conversations || [])
         .map((conversation) => normalizeConversation(conversation))
-        .filter(
-          (conversation) =>
-            conversation?.vehicleId === normalizedVehicleId,
-        );
+        .filter(Boolean);
     } catch (error) {
       throw repositoryError(error, "שגיאה בטעינת השיחות הקודמות");
     }

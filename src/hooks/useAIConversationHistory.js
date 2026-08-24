@@ -44,7 +44,7 @@ export default function useAIConversationHistory({
     }
 
     try {
-      const conversations = await repository.listConversations(contextKey);
+      const conversations = await repository.listConversations();
 
       if (
         historyRequestIdRef.current !== requestId ||
@@ -91,8 +91,7 @@ export default function useAIConversationHistory({
 
         if (
           operationVersionRef.current !== operationVersion ||
-          contextKeyRef.current !== contextKey ||
-          conversation.vehicleId !== contextKey
+          contextKeyRef.current !== contextKey
         ) {
           return null;
         }
@@ -131,7 +130,7 @@ export default function useAIConversationHistory({
               }),
         });
 
-        if (result.conversation.vehicleId !== contextKey) {
+        if (!conversationId && result.conversation.vehicleId !== contextKey) {
           throw new Error("Chat response vehicle does not match active vehicle");
         }
 
