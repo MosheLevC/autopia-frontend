@@ -3,9 +3,9 @@ import { Alert, Container, Stack } from "@mantine/core";
 import { useNavigate, useParams } from "react-router";
 import { observer } from "mobx-react-lite";
 import { BellSlash, WarningCircle } from "@phosphor-icons/react";
-import { useHeaderTitle } from "../context/HeaderContext";
-import { useVehicleStore } from "../stores/VehicleStoreContext";
-import { useReminderStore } from "../stores/ReminderStoreContext";
+import { useHeaderTitle } from "../hooks/useHeader";
+import { useVehicleStore, useReminderStore } from "../stores";
+
 import NoVehicleSelected from "../components/NoVehicleSelected";
 import AddReminderForm from "../components/AddReminderForm";
 import PageLoading from "../components/common/PageLoading";

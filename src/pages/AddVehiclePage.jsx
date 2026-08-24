@@ -3,8 +3,9 @@ import { Container, Alert, Stack } from "@mantine/core";
 import { useNavigate } from "react-router";
 import { observer } from "mobx-react-lite";
 import VehicleWizard from "../components/VehicleWizard";
-import { useVehicleStore } from "../stores/VehicleStoreContext";
-import { useHeaderTitle } from "../context/HeaderContext";
+import { useVehicleStore } from "../stores";
+import { useHeaderTitle } from "../hooks/useHeader";
+
 
 const AddVehiclePage = observer(function AddVehiclePage() {
   const navigate = useNavigate();

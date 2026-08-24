@@ -26,7 +26,8 @@ import {
   WarningCircle,
 } from "@phosphor-icons/react";
 import Logo from "../components/Logo";
-import { useAuth } from "../stores/AuthStoreContext";
+import { useAuth } from "../stores";
+
 
 const AuthPage = observer(function AuthPage() {
   const auth = useAuth();

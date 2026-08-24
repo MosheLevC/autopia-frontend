@@ -1,8 +1,9 @@
 import { ActionIcon, Box, Flex, Menu, Text, Tooltip } from "@mantine/core";
 import { useNavigate } from "react-router";
 import { User } from "@phosphor-icons/react";
-import { useHeader } from "../context/HeaderContext";
-import { useAuth } from "../stores/AuthStoreContext";
+import { useHeader } from "../hooks/useHeader";
+import { useAuth } from "../stores";
+
 
 export default function Header() {
   const { title } = useHeader();

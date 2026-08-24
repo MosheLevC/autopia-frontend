@@ -8,10 +8,11 @@ import AIConversationHistory from "../components/AIChat/AIConversationHistory";
 import AIMessageList from "../components/AIChat/AIMessageList";
 import VehicleContextBanner from "../components/AIChat/VehicleContextBanner";
 import NoVehicleSelected from "../components/NoVehicleSelected";
-import { useHeaderTitle } from "../context/HeaderContext";
+import { useHeaderTitle } from "../hooks/useHeader";
 import useAIChat from "../hooks/useAIChat";
 import useAIConversationHistory from "../hooks/useAIConversationHistory";
-import { useVehicleStore } from "../stores/VehicleStoreContext";
+import { useVehicleStore } from "../stores";
+
 
 const AIChatPage = observer(function AIChatPage() {
   useHeaderTitle("עוזר AI");

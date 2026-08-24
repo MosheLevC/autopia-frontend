@@ -22,9 +22,9 @@ import {
   PlusCircle,
   WarningCircle,
 } from "@phosphor-icons/react";
-import { useVehicleStore } from "../stores/VehicleStoreContext";
-import { useReminderStore } from "../stores/ReminderStoreContext";
+import { useReminderStore, useVehicleStore } from "../stores";
 import ReminderCard from "./Reminder/ReminderCard";
+
 import ReminderRenewModal from "./Reminder/ReminderRenewModal";
 
 const SECTION_CARD_PROPS = {

@@ -19,8 +19,9 @@ import {
   PlusCircle,
   WarningCircle,
 } from "@phosphor-icons/react";
-import { useReminderStore } from "../stores/ReminderStoreContext";
+import { useReminderStore } from "../stores";
 import { getReminderTypeInfo } from "../constants/reminderConstants";
+
 import ReminderCard from "./Reminder/ReminderCard";
 import ReminderRenewModal from "./Reminder/ReminderRenewModal";
 import ConfirmDeleteModal from "./ConfirmDeleteModal";

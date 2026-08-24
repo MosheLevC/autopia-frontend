@@ -17,7 +17,7 @@ import {
   Sparkle,
 } from "@phosphor-icons/react";
 import Logo from "./Logo";
-import { useVehicleStore } from "../stores/VehicleStoreContext";
+import { useVehicleStore } from "../stores";
 
 const NAV_ITEMS = [
   {

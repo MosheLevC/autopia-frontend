@@ -2,8 +2,9 @@ import { useState } from "react";
 import { observer } from "mobx-react-lite";
 import { Button, Card, Group, Stack, Text, Title } from "@mantine/core";
 import { CheckCircle, Gauge } from "@phosphor-icons/react";
-import { useVehicleStore } from "../stores/VehicleStoreContext";
+import { useVehicleStore } from "../stores";
 import MileageUpdateModal from "./MileageUpdateModal";
+
 
 const formatMileage = (value) => Number(value).toLocaleString("he-IL");
 

@@ -31,7 +31,8 @@ import EditVehicleModal from "./EditVehicleModal";
 import NoVehicleSelected from "./NoVehicleSelected";
 import { formatDateToDisplay } from "../utils/plateUtils";
 import { getAdditionalVehicleDetails } from "../utils/governmentVehicleDetails";
-import { useVehicleStore } from "../stores/VehicleStoreContext";
+import { useVehicleStore } from "../stores";
+
 
 const SECTION_CARD_PROPS = {
   withBorder: true,

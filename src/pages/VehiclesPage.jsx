@@ -17,8 +17,9 @@ import { Car, Plus, Trash, WarningCircle } from "@phosphor-icons/react";
 import DeleteVehicleModal from "../components/DeleteVehicleModal";
 import MyCarsVehicleCard from "../components/MyCarsVehicleCard";
 import NoVehicleSelected from "../components/NoVehicleSelected";
-import { useHeaderTitle } from "../context/HeaderContext";
-import { useVehicleStore } from "../stores/VehicleStoreContext";
+import { useHeaderTitle } from "../hooks/useHeader";
+import { useVehicleStore } from "../stores";
+
 
 const VehiclesPage = observer(function VehiclesPage() {
   useHeaderTitle("הרכבים שלי");

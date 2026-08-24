@@ -3,9 +3,9 @@ import { Container } from "@mantine/core";
 import { useParams } from "react-router";
 import { observer } from "mobx-react-lite";
 import { Wrench } from "@phosphor-icons/react";
-import { useHeaderTitle } from "../context/HeaderContext";
-import { useVehicleStore } from "../stores/VehicleStoreContext";
-import { useMaintenanceStore } from "../stores/MaintenanceStoreContext";
+import { useHeaderTitle } from "../hooks/useHeader";
+import { useVehicleStore, useMaintenanceStore } from "../stores";
+
 import NoVehicleSelected from "../components/NoVehicleSelected";
 import MaintenanceLog from "../components/MaintenanceLog";
 import PageLoading from "../components/common/PageLoading";

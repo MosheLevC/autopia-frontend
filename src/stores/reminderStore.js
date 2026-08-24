@@ -239,3 +239,6 @@ export function createReminderStore() {
 }
 
 export const reminderStore = createReminderStore();
+
+export const useReminderStore = () => reminderStore;
+

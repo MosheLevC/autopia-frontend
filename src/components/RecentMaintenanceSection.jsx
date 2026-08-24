@@ -22,8 +22,8 @@ import {
   Wrench,
 } from "@phosphor-icons/react";
 import MaintenanceListItem from "./MaintenanceListItem";
-import { useMaintenanceStore } from "../stores/MaintenanceStoreContext";
-import { useVehicleStore } from "../stores/VehicleStoreContext";
+import { useMaintenanceStore, useVehicleStore } from "../stores";
+
 
 const SECTION_CARD_PROPS = {
   withBorder: true,
