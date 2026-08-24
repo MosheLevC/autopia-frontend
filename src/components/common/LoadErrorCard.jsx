@@ -1,4 +1,5 @@
 import { Button, Card, Stack, Text, ThemeIcon, Title } from "@mantine/core";
+import { ArrowClockwise, WarningCircle } from "@phosphor-icons/react";
 
 export default function LoadErrorCard({
   title = "שגיאה בטעינת הנתונים",
@@ -9,11 +10,7 @@ export default function LoadErrorCard({
     <Card withBorder radius="xl" shadow="xs" p="xl" bg="white">
       <Stack align="center" gap="sm" py="lg" ta="center">
         <ThemeIcon color="red" variant="light" size={48} radius="xl">
-          <i
-            className="ph-warning-circle"
-            style={{ fontSize: "1.8rem" }}
-            aria-hidden="true"
-          />
+          <WarningCircle size={28} aria-hidden="true" />
         </ThemeIcon>
         <Title order={3} size="h4" fw={700}>
           {title}
@@ -29,9 +26,7 @@ export default function LoadErrorCard({
             color="red"
             mt="xs"
             onClick={onRetry}
-            leftSection={
-              <i className="ph-arrow-clockwise" aria-hidden="true" />
-            }
+            leftSection={<ArrowClockwise size={18} aria-hidden="true" />}
           >
             נסה שוב
           </Button>

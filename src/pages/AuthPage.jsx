@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useNavigate, useLocation } from "react-router";
+import { Link, Navigate, useLocation, useNavigate } from "react-router";
 import { observer } from "mobx-react-lite";
 import {
   Alert,
@@ -18,6 +18,13 @@ import {
   TextInput,
   Title,
 } from "@mantine/core";
+import {
+  EnvelopeSimple,
+  LockKey,
+  LockKeyOpen,
+  User,
+  WarningCircle,
+} from "@phosphor-icons/react";
 import Logo from "../components/Logo";
 import { useAuth } from "../stores/AuthStoreContext";
 
@@ -27,22 +34,25 @@ const AuthPage = observer(function AuthPage() {
   const location = useLocation();
 
   const [mode, setMode] = useState("login");
-
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
     email: "",
     password: "",
     confirmPassword: "",
-    rememberMe: true,
+    rememberMe: false,
   });
-
   const [fieldErrors, setFieldErrors] = useState({});
+
+  if (auth.isAuthenticated) {
+    const from = location.state?.from?.pathname || "/home";
+    return <Navigate to={from} replace />;
+  }
 
   const handleModeChange = (newMode) => {
     setMode(newMode);
-    setFieldErrors({});
     auth.clearError();
+    setFieldErrors({});
   };
 
   const handleChange = (field, value) => {
@@ -54,19 +64,6 @@ const AuthPage = observer(function AuthPage() {
 
   const validate = () => {
     const errors = {};
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-    if (!formData.email.trim()) {
-      errors.email = "נא להזין כתובת אימייל";
-    } else if (!emailRegex.test(formData.email.trim())) {
-      errors.email = "כתובת אימייל אינה תקינה";
-    }
-
-    if (!formData.password) {
-      errors.password = "נא להזין סיסמה";
-    } else if (formData.password.length < 8) {
-      errors.password = "הסיסמה חייבת להכיל לפחות 8 תווים";
-    }
 
     if (mode === "signup") {
       if (!formData.firstName.trim()) {
@@ -75,9 +72,22 @@ const AuthPage = observer(function AuthPage() {
       if (!formData.lastName.trim()) {
         errors.lastName = "נא להזין שם משפחה";
       }
-      if (formData.password !== formData.confirmPassword) {
-        errors.confirmPassword = "הסיסמאות אינן תואמות";
-      }
+    }
+
+    if (!formData.email.trim()) {
+      errors.email = "נא להזין כתובת אימייל";
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      errors.email = "כתובת אימייל לא תקינה";
+    }
+
+    if (!formData.password) {
+      errors.password = "נא להזין סיסמה";
+    } else if (formData.password.length < 8) {
+      errors.password = "הסיסמה חייבת להכיל לפחות 8 תווים";
+    }
+
+    if (mode === "signup" && formData.password !== formData.confirmPassword) {
+      errors.confirmPassword = "הסיסמאות אינן תואמות";
     }
 
     setFieldErrors(errors);
@@ -86,34 +96,25 @@ const AuthPage = observer(function AuthPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    auth.clearError();
-
-    if (!validate()) {
-      return;
-    }
+    if (!validate() || auth.isSubmitting) return;
 
     try {
       if (mode === "login") {
-        await auth.login(
-          formData.email.trim(),
-          formData.password,
-          formData.rememberMe
-        );
+        await auth.login(formData.email, formData.password, formData.rememberMe);
       } else {
         await auth.signup(
-          {
-            firstName: formData.firstName.trim(),
-            lastName: formData.lastName.trim(),
-            email: formData.email.trim(),
-            password: formData.password,
-          },
-          formData.rememberMe
+          formData.firstName,
+          formData.lastName,
+          formData.email,
+          formData.password,
+          formData.rememberMe,
         );
       }
-
-      const redirectPath = location.state?.from?.pathname || "/home";
-      navigate(redirectPath, { replace: true });
-    } catch {}
+      const from = location.state?.from?.pathname || "/home";
+      navigate(from, { replace: true });
+    } catch {
+      // Error is stored in authStore.error
+    }
   };
 
   const currentErrorMessage = auth.error;
@@ -121,29 +122,23 @@ const AuthPage = observer(function AuthPage() {
   return (
     <Box
       bg="gray.0"
-      py="xl"
+      py={{ base: "xl", sm: 48 }}
       px="md"
-      style={{
-        minHeight: "100vh",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-      }}
+      style={{ minHeight: "100vh" }}
       dir="rtl"
     >
-      <Container size="xs" style={{ width: "100%", maxWidth: 440 }}>
-        <Paper
-          radius="xl"
-          p="xl"
-          withBorder
-          shadow="md"
-          style={{ width: "100%" }}
-        >
-          <Stack align="center" gap="xs" mb="lg">
-            <Logo size={72} />
+      <Container size={440}>
+        <Stack align="center" gap="sm" mb="xl">
+          <Logo size={56} />
+          <Title order={2} fw={800} c="blue.6">
+            Autopia
+          </Title>
+        </Stack>
 
-            <Title order={2} fw={800}>
-              Autopia
+        <Paper radius="xl" p={{ base: "lg", sm: "xl" }} withBorder shadow="sm">
+          <Stack align="center" gap={4} mb="lg">
+            <Title order={3} fw={700}>
+              {mode === "login" ? "התחברות" : "הרשמה"}
             </Title>
             <Text size="sm" c="dimmed">
               {mode === "login"
@@ -154,9 +149,7 @@ const AuthPage = observer(function AuthPage() {
 
           {currentErrorMessage && (
             <Alert
-              icon={
-                <i className="ph-warning-circle" style={{ fontSize: 20 }} />
-              }
+              icon={<WarningCircle size={20} aria-hidden="true" />}
               title="שגיאה"
               color="red"
               radius="md"
@@ -197,12 +190,10 @@ const AuthPage = observer(function AuthPage() {
                       }
                       error={fieldErrors.firstName}
                       leftSection={
-                        <i
-                          className="ph-user"
-                          style={{
-                            fontSize: 18,
-                            color: "var(--mantine-color-dimmed)",
-                          }}
+                        <User
+                          size={18}
+                          color="var(--mantine-color-dimmed)"
+                          aria-hidden="true"
                         />
                       }
                       radius="md"
@@ -226,12 +217,10 @@ const AuthPage = observer(function AuthPage() {
                 onChange={(e) => handleChange("email", e.target.value)}
                 error={fieldErrors.email}
                 leftSection={
-                  <i
-                    className="ph-envelope-simple"
-                    style={{
-                      fontSize: 18,
-                      color: "var(--mantine-color-dimmed)",
-                    }}
+                  <EnvelopeSimple
+                    size={18}
+                    color="var(--mantine-color-dimmed)"
+                    aria-hidden="true"
                   />
                 }
                 radius="md"
@@ -249,12 +238,10 @@ const AuthPage = observer(function AuthPage() {
                   onChange={(e) => handleChange("password", e.target.value)}
                   error={fieldErrors.password}
                   leftSection={
-                    <i
-                      className="ph-lock-key"
-                      style={{
-                        fontSize: 18,
-                        color: "var(--mantine-color-dimmed)",
-                      }}
+                    <LockKey
+                      size={18}
+                      color="var(--mantine-color-dimmed)"
+                      aria-hidden="true"
                     />
                   }
                   radius="md"
@@ -276,12 +263,10 @@ const AuthPage = observer(function AuthPage() {
                       }
                       error={fieldErrors.confirmPassword}
                       leftSection={
-                        <i
-                          className="ph-lock-key-open"
-                          style={{
-                            fontSize: 18,
-                            color: "var(--mantine-color-dimmed)",
-                          }}
+                        <LockKeyOpen
+                          size={18}
+                          color="var(--mantine-color-dimmed)"
+                          aria-hidden="true"
                         />
                       }
                       radius="md"

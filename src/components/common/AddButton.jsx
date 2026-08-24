@@ -1,13 +1,15 @@
 import { Box, Button } from "@mantine/core";
+import { PlusCircle } from "@phosphor-icons/react";
 
 export function AddBottomButton({
   label = "הוסף",
   onClick,
-  icon = "ph-plus-circle",
+  icon: Icon = PlusCircle,
   disabled = false,
   hiddenFrom = "sm",
   ...props
 }) {
+  const IconComponent = Icon || PlusCircle;
   return (
     <Box
       pos="sticky"
@@ -24,13 +26,7 @@ export function AddBottomButton({
         fw={700}
         onClick={onClick}
         disabled={disabled}
-        leftSection={
-          <i
-            className={icon}
-            style={{ fontSize: "1.3rem" }}
-            aria-hidden="true"
-          />
-        }
+        leftSection={<IconComponent size={22} aria-hidden="true" />}
         shadow="sm"
         {...props}
       >

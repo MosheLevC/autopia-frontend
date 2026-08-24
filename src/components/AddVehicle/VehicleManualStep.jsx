@@ -1,4 +1,5 @@
 import { Button, Card, Paper, Stack, Text, ThemeIcon, Title } from "@mantine/core";
+import { FilePdf } from "@phosphor-icons/react";
 
 export default function VehicleManualStep({ onContinue }) {
   return (
@@ -30,11 +31,7 @@ export default function VehicleManualStep({ onContinue }) {
         >
           <Stack gap="sm" align="center">
             <ThemeIcon size={64} radius="xl" variant="light" color="blue">
-              <i
-                className="ph-bold ph-file-pdf"
-                aria-hidden="true"
-                style={{ fontSize: 32 }}
-              />
+              <FilePdf size={32} weight="bold" aria-hidden="true" />
             </ThemeIcon>
 
             <Text fw={800} size="lg" ta="center">
@@ -56,3 +53,4 @@ export default function VehicleManualStep({ onContinue }) {
     </Card>
   );
 }
+

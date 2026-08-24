@@ -11,6 +11,11 @@ import {
   ThemeIcon,
   Title,
 } from "@mantine/core";
+import {
+  ClockCounterClockwise,
+  PlusCircle,
+  Wrench,
+} from "@phosphor-icons/react";
 import MaintenanceListItem from "./MaintenanceListItem";
 import AddBottomButton from "./common/AddButton";
 
@@ -47,11 +52,7 @@ const MaintenanceLog = observer(function MaintenanceLog({
       <Group justify="space-between" align="center">
         <Group gap="xs" align="center">
           <ThemeIcon size={36} radius="md" variant="light" color="blue">
-            <i
-              className="ph-clock-counter-clockwise"
-              style={{ fontSize: "1.3rem" }}
-              aria-hidden="true"
-            />
+            <ClockCounterClockwise size={20} aria-hidden="true" />
           </ThemeIcon>
           <Title order={2} size="h3" fw={700} c="gray.9">
             היסטוריית טיפולים
@@ -72,9 +73,7 @@ const MaintenanceLog = observer(function MaintenanceLog({
               size="sm"
               radius="md"
               onClick={handleAddClick}
-              leftSection={
-                <i className="ph-plus-circle" aria-hidden="true" />
-              }
+              leftSection={<PlusCircle size={16} aria-hidden="true" />}
             >
               הוסף טיפול
             </Button>
@@ -86,11 +85,7 @@ const MaintenanceLog = observer(function MaintenanceLog({
         <Card withBorder radius="xl" shadow="xs" p="xl" bg="white">
           <Stack align="center" gap="md" py="xl" ta="center">
             <ThemeIcon size={64} radius="xl" variant="light" color="gray">
-              <i
-                className="ph-wrench"
-                style={{ fontSize: "2rem" }}
-                aria-hidden="true"
-              />
+              <Wrench size={32} aria-hidden="true" />
             </ThemeIcon>
             <Stack gap={4} align="center">
               <Title order={4} fw={700} c="gray.9">
@@ -104,13 +99,7 @@ const MaintenanceLog = observer(function MaintenanceLog({
             <Button
               variant="light"
               onClick={handleAddClick}
-              leftSection={
-                <i
-                  className="ph-plus-circle"
-                  style={{ fontSize: "1.1rem" }}
-                  aria-hidden="true"
-                />
-              }
+              leftSection={<PlusCircle size={18} aria-hidden="true" />}
               mt="xs"
             >
               הוסף טיפול ראשון

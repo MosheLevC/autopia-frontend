@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Alert, Container, Stack } from "@mantine/core";
 import { useNavigate, useParams } from "react-router";
 import { observer } from "mobx-react-lite";
+import { WarningCircle, Wrench } from "@phosphor-icons/react";
 import { useHeaderTitle } from "../context/HeaderContext";
 import { useVehicleStore } from "../stores/VehicleStoreContext";
 import { useMaintenanceStore } from "../stores/MaintenanceStoreContext";
@@ -57,7 +58,7 @@ const MaintenanceDetailPage = observer(function MaintenanceDetailPage() {
       <NoVehicleSelected
         title="לא נבחר רכב"
         description="לא ניתן להציג את פרטי הטיפול מכיוון שלא נבחר רכב."
-        icon="ph-wrench"
+        icon={Wrench}
       />
     );
   }
@@ -132,7 +133,7 @@ const MaintenanceDetailPage = observer(function MaintenanceDetailPage() {
             variant="light"
             radius="md"
             title="שגיאה"
-            icon={<i className="ph-warning-circle" aria-hidden="true" />}
+            icon={<WarningCircle size={20} aria-hidden="true" />}
           >
             {pageError}
           </Alert>

@@ -1,4 +1,5 @@
 import { Button, Group, Modal, Stack, Text, ThemeIcon } from "@mantine/core";
+import { Trash, Warning } from "@phosphor-icons/react";
 
 export default function ConfirmDeleteModal({
   opened,
@@ -38,11 +39,7 @@ export default function ConfirmDeleteModal({
             radius="xl"
             style={{ flexShrink: 0 }}
           >
-            <i
-              className="ph-warning"
-              style={{ fontSize: "1.5rem" }}
-              aria-hidden="true"
-            />
+            <Warning size={24} aria-hidden="true" />
           </ThemeIcon>
           <Stack gap={4}>
             <Text fw={600} size="sm" c="gray.9">
@@ -70,7 +67,7 @@ export default function ConfirmDeleteModal({
             onClick={onConfirm}
             loading={isDeleting}
             radius="md"
-            leftSection={<i className="ph-trash" aria-hidden="true" />}
+            leftSection={<Trash size={18} aria-hidden="true" />}
           >
             {confirmLabel}
           </Button>
@@ -79,3 +76,4 @@ export default function ConfirmDeleteModal({
     </Modal>
   );
 }
+

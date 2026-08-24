@@ -7,6 +7,7 @@ import {
   Text,
   Textarea,
 } from "@mantine/core";
+import { PaperPlaneTilt } from "@phosphor-icons/react";
 import { useState } from "react";
 
 export default function AIComposer({ onSend, isResponding = false }) {
@@ -73,11 +74,7 @@ export default function AIComposer({ onSend, isResponding = false }) {
             {isResponding ? (
               <Loader size="xs" color="gray" />
             ) : (
-              <i
-                className="ph-paper-plane-tilt-fill"
-                aria-hidden="true"
-                style={{ fontSize: "1.15rem" }}
-              />
+              <PaperPlaneTilt size={18} weight="fill" aria-hidden="true" />
             )}
           </ActionIcon>
         </Group>

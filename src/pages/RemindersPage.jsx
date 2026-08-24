@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { Container } from "@mantine/core";
 import { useParams } from "react-router";
 import { observer } from "mobx-react-lite";
+import { BellSlash } from "@phosphor-icons/react";
 import { useHeaderTitle } from "../context/HeaderContext";
 import { useVehicleStore } from "../stores/VehicleStoreContext";
 import { useReminderStore } from "../stores/ReminderStoreContext";
@@ -37,7 +38,7 @@ const RemindersPage = observer(function RemindersPage() {
       <NoVehicleSelected
         title="לא נבחר רכב"
         description="לא ניתן להציג את התזכורות מכיוון שלא נבחר רכב. יש לבחור רכב מתוך רשימת הרכבים שלך."
-        icon="ph-bell-slash"
+        icon={BellSlash}
       />
     );
   }

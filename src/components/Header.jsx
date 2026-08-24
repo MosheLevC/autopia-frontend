@@ -1,5 +1,6 @@
 import { ActionIcon, Box, Flex, Menu, Text, Tooltip } from "@mantine/core";
 import { useNavigate } from "react-router";
+import { User } from "@phosphor-icons/react";
 import { useHeader } from "../context/HeaderContext";
 import { useAuth } from "../stores/AuthStoreContext";
 
@@ -59,7 +60,7 @@ export default function Header() {
                   c="gray.7"
                   bd="1px solid var(--mantine-color-gray-3)"
                 >
-                  <i className="ph-user" style={{ fontSize: "1.25rem" }} />
+                  <User size={20} />
                 </ActionIcon>
               </Tooltip>
             </Menu.Target>

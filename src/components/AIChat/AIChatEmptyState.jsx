@@ -9,22 +9,29 @@ import {
   Title,
   UnstyledButton,
 } from "@mantine/core";
+import {
+  ChatCircleDots,
+  Gauge,
+  Question,
+  WarningCircle,
+  Wrench,
+} from "@phosphor-icons/react";
 
 const SUGGESTED_PROMPTS = [
   {
-    icon: "ph-wrench",
+    icon: Wrench,
     label: "איזה מידע חשוב לבדוק לפני הטיפול הבא?",
   },
   {
-    icon: "ph-gauge",
+    icon: Gauge,
     label: "מה כדאי לדעת על הקילומטראז׳ הנוכחי שלי?",
   },
   {
-    icon: "ph-warning-circle",
+    icon: WarningCircle,
     label: "נדלקה נורת אזהרה — איזה פרטים חשוב לתאר?",
   },
   {
-    icon: "ph-question",
+    icon: Question,
     label: "יש לי שאלה כללית על הרכב שלי",
   },
 ];
@@ -56,11 +63,7 @@ export default function AIChatEmptyState({
         py={{ base: "sm", sm: "xl" }}
       >
         <ThemeIcon size={52} radius="md" variant="light" color="gray">
-          <i
-            className="ph-chat-circle-dots"
-            aria-hidden="true"
-            style={{ fontSize: "1.65rem" }}
-          />
+          <ChatCircleDots size={28} aria-hidden="true" />
         </ThemeIcon>
 
         <Stack align="center" gap={6} ta="center">
@@ -77,36 +80,41 @@ export default function AIChatEmptyState({
         </Stack>
 
         <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="sm" w="100%" maw={720}>
-          {suggestions.map((suggestion) => (
-            <UnstyledButton
-              key={suggestion.label}
-              type="button"
-              onClick={() => onSuggestionSelect(suggestion.label)}
-              aria-label={`שליחת השאלה: ${suggestion.label}`}
-              style={{ minWidth: 0 }}
-            >
-              <Paper
-                withBorder
-                radius="md"
-                p={{ base: "sm", sm: "md" }}
-                h="100%"
-                bg="white"
-                className="ai-suggestion-card"
-                style={{
-                  transition: "border-color 150ms ease, box-shadow 150ms ease",
-                }}
+          {suggestions.map((suggestion) => {
+            const SuggestionIcon = suggestion.icon;
+            return (
+              <UnstyledButton
+                key={suggestion.label}
+                type="button"
+                onClick={() => onSuggestionSelect(suggestion.label)}
+                aria-label={`שליחת השאלה: ${suggestion.label}`}
+                style={{ minWidth: 0 }}
               >
-                <Group gap="sm" wrap="nowrap" align="flex-start">
-                  <ThemeIcon variant="light" radius="xl" size="md">
-                    <i className={suggestion.icon} aria-hidden="true" />
-                  </ThemeIcon>
-                  <Text size="sm" fw={600} style={{ overflowWrap: "anywhere" }}>
-                    {suggestion.label}
-                  </Text>
-                </Group>
-              </Paper>
-            </UnstyledButton>
-          ))}
+                <Paper
+                  withBorder
+                  radius="md"
+                  p={{ base: "sm", sm: "md" }}
+                  h="100%"
+                  bg="white"
+                  className="ai-suggestion-card"
+                  style={{
+                    transition: "border-color 150ms ease, box-shadow 150ms ease",
+                  }}
+                >
+                  <Group gap="sm" wrap="nowrap" align="flex-start">
+                    <ThemeIcon variant="light" radius="xl" size="md">
+                      {SuggestionIcon ? (
+                        <SuggestionIcon size={18} aria-hidden="true" />
+                      ) : null}
+                    </ThemeIcon>
+                    <Text size="sm" fw={600} style={{ overflowWrap: "anywhere" }}>
+                      {suggestion.label}
+                    </Text>
+                  </Group>
+                </Paper>
+              </UnstyledButton>
+            );
+          })}
         </SimpleGrid>
       </Stack>
     </Box>

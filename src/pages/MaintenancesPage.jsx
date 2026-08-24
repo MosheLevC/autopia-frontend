@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { Container } from "@mantine/core";
 import { useParams } from "react-router";
 import { observer } from "mobx-react-lite";
+import { Wrench } from "@phosphor-icons/react";
 import { useHeaderTitle } from "../context/HeaderContext";
 import { useVehicleStore } from "../stores/VehicleStoreContext";
 import { useMaintenanceStore } from "../stores/MaintenanceStoreContext";
@@ -37,7 +38,7 @@ const MaintenancesPage = observer(function MaintenancesPage() {
       <NoVehicleSelected
         title="לא נבחר רכב"
         description="לא ניתן להציג את יומן הטיפולים מכיוון שלא נבחר רכב. יש לבחור רכב מתוך רשימת הרכבים שלך."
-        icon="ph-wrench"
+        icon={Wrench}
       />
     );
   }

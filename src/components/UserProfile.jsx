@@ -11,6 +11,7 @@ import {
   TextInput,
   Title,
 } from "@mantine/core";
+import { CheckCircle, LockKey, PencilSimple } from "@phosphor-icons/react";
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -178,18 +179,14 @@ export default function UserProfile({
                   setShowSuccess(false);
                   onChangePassword?.();
                 }}
-                leftSection={
-                  <i className="ph-bold ph-lock-key" aria-hidden="true" />
-                }
+                leftSection={<LockKey size={18} weight="bold" aria-hidden="true" />}
               >
                 שינוי סיסמה
               </Button>
               <Button
                 variant="light"
                 onClick={handleEdit}
-                leftSection={
-                  <i className="ph-bold ph-pencil-simple" aria-hidden="true" />
-                }
+                leftSection={<PencilSimple size={18} weight="bold" aria-hidden="true" />}
               >
                 עריכת פרטים
               </Button>
@@ -199,7 +196,7 @@ export default function UserProfile({
 
         {showSuccess && !isEditing && (
           <Group gap={6} c="green.7">
-            <i className="ph-bold ph-check-circle" aria-hidden="true" />
+            <CheckCircle size={18} weight="bold" aria-hidden="true" />
             <Text size="sm" fw={600}>
               הפרטים עודכנו בהצלחה
             </Text>
@@ -208,7 +205,7 @@ export default function UserProfile({
 
         {passwordChangeSuccess && !isEditing && (
           <Group gap={6} c="green.7">
-            <i className="ph-bold ph-check-circle" aria-hidden="true" />
+            <CheckCircle size={18} weight="bold" aria-hidden="true" />
             <Text size="sm" fw={600}>
               הסיסמה שונתה בהצלחה
             </Text>

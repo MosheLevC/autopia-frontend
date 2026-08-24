@@ -17,6 +17,12 @@ import {
   ThemeIcon,
 } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
+import {
+  Gauge,
+  Minus,
+  Plus,
+  ArrowCounterClockwise,
+} from "@phosphor-icons/react";
 
 const INPUT_MODES = {
   newMileage: "newMileage",
@@ -79,7 +85,7 @@ function MileageFlowSummary({
         >
           <Stack gap={4} align="center" justify="center" ta="center" h="100%">
             <ThemeIcon color="blue" variant="light" size={36} radius="xl">
-              <i className="ph-bold ph-gauge" aria-hidden="true" />
+              <Gauge size={20} weight="bold" aria-hidden="true" />
             </ThemeIcon>
             <Text size="xs" c="dimmed" fw={600}>
               קילומטראז׳ נוכחי
@@ -132,6 +138,7 @@ function MileageFlowSummary({
           aria-label="סיכום הקילומטרים שנוספו"
           withBorder
           radius="lg"
+          shadow="xs"
           p="md"
           bg="gray.0"
           h="100%"
@@ -368,7 +375,7 @@ export default function MileageUpdateModal({
                   parsedInput <= minimumValue
                 }
               >
-                <i className="ph-bold ph-minus" aria-hidden="true" />
+                <Minus size={20} weight="bold" aria-hidden="true" />
               </ActionIcon>
 
               <NumberInput
@@ -420,7 +427,7 @@ export default function MileageUpdateModal({
                 onClick={() => handleAdjustment(1)}
                 disabled={isSaving}
               >
-                <i className="ph-bold ph-plus" aria-hidden="true" />
+                <Plus size={20} weight="bold" aria-hidden="true" />
               </ActionIcon>
             </Group>
 
@@ -453,7 +460,7 @@ export default function MileageUpdateModal({
                 onClick={handleReset}
                 disabled={isSaving}
                 leftSection={
-                  <i className="ph-bold ph-arrow-counter-clockwise" aria-hidden="true" />
+                  <ArrowCounterClockwise size={16} weight="bold" aria-hidden="true" />
                 }
               >
                 איפוס לנוכחי

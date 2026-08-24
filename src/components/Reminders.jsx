@@ -13,6 +13,12 @@ import {
   ThemeIcon,
   Title,
 } from "@mantine/core";
+import {
+  BellRinging,
+  BellSlash,
+  PlusCircle,
+  WarningCircle,
+} from "@phosphor-icons/react";
 import { useReminderStore } from "../stores/ReminderStoreContext";
 import { getReminderTypeInfo } from "../constants/reminderConstants";
 import ReminderCard from "./Reminder/ReminderCard";
@@ -88,7 +94,7 @@ const Reminders = observer(function Reminders({ vehicle }) {
           variant="light"
           radius="md"
           title="שגיאה"
-          icon={<i className="ph-warning-circle" aria-hidden="true" />}
+          icon={<WarningCircle size={20} aria-hidden="true" />}
           withCloseButton
           onClose={() => setActionError(null)}
         >
@@ -99,11 +105,7 @@ const Reminders = observer(function Reminders({ vehicle }) {
       <Group justify="space-between" align="center">
         <Group gap="xs" align="center">
           <ThemeIcon size={36} radius="md" variant="light" color="blue">
-            <i
-              className="ph-bell-ringing"
-              style={{ fontSize: "1.3rem" }}
-              aria-hidden="true"
-            />
+            <BellRinging size={20} aria-hidden="true" />
           </ThemeIcon>
           <Title order={2} size="h3" fw={700} c="gray.9">
             תזכורות לרכב
@@ -124,9 +126,7 @@ const Reminders = observer(function Reminders({ vehicle }) {
               size="sm"
               radius="md"
               onClick={handleAddClick}
-              leftSection={
-                <i className="ph-plus-circle" aria-hidden="true" />
-              }
+              leftSection={<PlusCircle size={16} aria-hidden="true" />}
             >
               הוסף תזכורת
             </Button>
@@ -138,11 +138,7 @@ const Reminders = observer(function Reminders({ vehicle }) {
         <Card withBorder radius="xl" shadow="xs" p="xl" bg="white">
           <Stack align="center" gap="md" py="xl" ta="center">
             <ThemeIcon size={64} radius="xl" variant="light" color="gray">
-              <i
-                className="ph-bell-slash"
-                style={{ fontSize: "2rem" }}
-                aria-hidden="true"
-              />
+              <BellSlash size={32} aria-hidden="true" />
             </ThemeIcon>
             <Stack gap={4} align="center">
               <Title order={4} fw={700} c="gray.9">
@@ -156,13 +152,7 @@ const Reminders = observer(function Reminders({ vehicle }) {
             <Button
               variant="light"
               onClick={handleAddClick}
-              leftSection={
-                <i
-                  className="ph-plus-circle"
-                  style={{ fontSize: "1.1rem" }}
-                  aria-hidden="true"
-                />
-              }
+              leftSection={<PlusCircle size={18} aria-hidden="true" />}
               mt="xs"
             >
               הוסף תזכורת ראשונה

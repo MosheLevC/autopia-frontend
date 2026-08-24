@@ -1,4 +1,5 @@
 import { Group, Paper, SimpleGrid, Stack, Text, ThemeIcon } from "@mantine/core";
+import { Calendar, Coins, Gauge } from "@phosphor-icons/react";
 import { formatDateToDisplay } from "../../utils/plateUtils";
 
 export default function MaintenanceMetricsGrid({ maintenance }) {
@@ -18,7 +19,7 @@ export default function MaintenanceMetricsGrid({ maintenance }) {
         <Stack gap={4}>
           <Group gap={6} align="center">
             <ThemeIcon size="sm" variant="transparent" color="blue">
-              <i className="ph-currency-ils" style={{ fontSize: "1.1rem" }} aria-hidden="true" />
+              <Coins size={18} aria-hidden="true" />
             </ThemeIcon>
             <Text size="xs" c="dimmed" fw={600}>
               עלות כוללת
@@ -34,7 +35,7 @@ export default function MaintenanceMetricsGrid({ maintenance }) {
         <Stack gap={4}>
           <Group gap={6} align="center">
             <ThemeIcon size="sm" variant="transparent" color="gray.6">
-              <i className="ph-calendar" style={{ fontSize: "1.1rem" }} aria-hidden="true" />
+              <Calendar size={18} aria-hidden="true" />
             </ThemeIcon>
             <Text size="xs" c="dimmed" fw={600}>
               תאריך טיפול
@@ -50,7 +51,7 @@ export default function MaintenanceMetricsGrid({ maintenance }) {
         <Stack gap={4}>
           <Group gap={6} align="center">
             <ThemeIcon size="sm" variant="transparent" color="gray.6">
-              <i className="ph-gauge" style={{ fontSize: "1.1rem" }} aria-hidden="true" />
+              <Gauge size={18} aria-hidden="true" />
             </ThemeIcon>
             <Text size="xs" c="dimmed" fw={600}>
               קילומטראז'
@@ -64,3 +65,4 @@ export default function MaintenanceMetricsGrid({ maintenance }) {
     </SimpleGrid>
   );
 }
+

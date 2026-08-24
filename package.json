@@ -13,12 +13,12 @@
     "@mantine/core": "^9.5.1",
     "@mantine/dates": "^9.5.1",
     "@mantine/hooks": "^9.5.1",
+    "@phosphor-icons/react": "^2.1.10",
     "axios": "^1.19.0",
     "dayjs": "^1.11.23",
     "mobx": "^7.0.0",
     "mobx-react-lite": "^5.0.0",
     "node-vehicle-logos": "^0.1.1",
-    "phosphor-icons": "^1.4.2",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "react-router": "^7.18.2"

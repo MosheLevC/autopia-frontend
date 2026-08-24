@@ -13,6 +13,14 @@ import {
   ThemeIcon,
   Title,
 } from "@mantine/core";
+import {
+  ArrowClockwise,
+  CaretLeft,
+  ClockCounterClockwise,
+  PlusCircle,
+  WarningCircle,
+  Wrench,
+} from "@phosphor-icons/react";
 import MaintenanceListItem from "./MaintenanceListItem";
 import { useMaintenanceStore } from "../stores/MaintenanceStoreContext";
 import { useVehicleStore } from "../stores/VehicleStoreContext";
@@ -82,11 +90,7 @@ const RecentMaintenanceSection = observer(function RecentMaintenanceSection() {
         <Group justify="space-between" align="center" wrap="nowrap" gap="sm">
           <Group gap="xs" align="center" wrap="nowrap">
             <ThemeIcon size={36} radius="md" variant="light" color="blue">
-              <i
-                className="ph-clock-counter-clockwise"
-                style={{ fontSize: "1.3rem" }}
-                aria-hidden="true"
-              />
+              <ClockCounterClockwise size={20} aria-hidden="true" />
             </ThemeIcon>
             <Title
               id="recent-maintenance-title"
@@ -103,7 +107,7 @@ const RecentMaintenanceSection = observer(function RecentMaintenanceSection() {
             variant="subtle"
             size="compact-sm"
             onClick={navigateToHistory}
-            rightSection={<i className="ph-caret-left" aria-hidden="true" />}
+            rightSection={<CaretLeft size={16} aria-hidden="true" />}
             style={{ flexShrink: 0 }}
           >
             כל הטיפולים
@@ -125,7 +129,7 @@ const RecentMaintenanceSection = observer(function RecentMaintenanceSection() {
           <Paper withBorder radius="lg" p="md" bg="red.0">
             <Stack align="center" gap="sm" ta="center">
               <ThemeIcon color="red" variant="light" size={40} radius="xl">
-                <i className="ph-warning-circle" aria-hidden="true" />
+                <WarningCircle size={24} aria-hidden="true" />
               </ThemeIcon>
               <Stack gap={2} align="center">
                 <Text fw={700} size="sm">
@@ -141,9 +145,7 @@ const RecentMaintenanceSection = observer(function RecentMaintenanceSection() {
                   color="red"
                   size="sm"
                   onClick={retryFetch}
-                  leftSection={
-                    <i className="ph-arrow-clockwise" aria-hidden="true" />
-                  }
+                  leftSection={<ArrowClockwise size={16} aria-hidden="true" />}
                 >
                   נסה שוב
                 </Button>
@@ -162,11 +164,7 @@ const RecentMaintenanceSection = observer(function RecentMaintenanceSection() {
             <Paper withBorder radius="lg" p="md" bg="gray.0">
               <Stack align="center" gap="sm" py="xs" ta="center">
                 <ThemeIcon size={44} radius="xl" variant="light" color="gray">
-                  <i
-                    className="ph-wrench"
-                    style={{ fontSize: "1.35rem" }}
-                    aria-hidden="true"
-                  />
+                  <Wrench size={22} aria-hidden="true" />
                 </ThemeIcon>
                 <Text size="sm" c="dimmed">
                   עדיין לא נוספו טיפולים לרכב הזה
@@ -175,9 +173,7 @@ const RecentMaintenanceSection = observer(function RecentMaintenanceSection() {
                   variant="light"
                   size="sm"
                   onClick={navigateToAdd}
-                  leftSection={
-                    <i className="ph-plus-circle" aria-hidden="true" />
-                  }
+                  leftSection={<PlusCircle size={16} aria-hidden="true" />}
                 >
                   הוספת טיפול ראשון
                 </Button>
@@ -209,9 +205,7 @@ const RecentMaintenanceSection = observer(function RecentMaintenanceSection() {
                   size="sm"
                   w={{ base: "100%", sm: "auto" }}
                   onClick={navigateToAdd}
-                  leftSection={
-                    <i className="ph-plus-circle" aria-hidden="true" />
-                  }
+                  leftSection={<PlusCircle size={16} aria-hidden="true" />}
                 >
                   הוספת טיפול
                 </Button>
@@ -224,3 +218,4 @@ const RecentMaintenanceSection = observer(function RecentMaintenanceSection() {
 });
 
 export default RecentMaintenanceSection;
+

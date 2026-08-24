@@ -1,4 +1,5 @@
 import { Badge, Group, Stack, Text, ThemeIcon } from "@mantine/core";
+import { Check, Wrench } from "@phosphor-icons/react";
 import { getPartLabel } from "../../constants/maintenanceConstants";
 
 export default function MaintenancePartsList({ parts = [] }) {
@@ -6,7 +7,7 @@ export default function MaintenancePartsList({ parts = [] }) {
     <Stack gap="xs">
       <Group gap="xs" align="center">
         <ThemeIcon size="sm" variant="transparent" color="blue">
-          <i className="ph-wrench" style={{ fontSize: "1.1rem" }} aria-hidden="true" />
+          <Wrench size={18} aria-hidden="true" />
         </ThemeIcon>
         <Text fw={700} size="sm" c="gray.9">
           חלקים שהוחלפו / טופלו
@@ -22,7 +23,7 @@ export default function MaintenancePartsList({ parts = [] }) {
               color="blue"
               size="md"
               radius="md"
-              leftSection={<i className="ph-check" style={{ fontSize: "0.85rem" }} aria-hidden="true" />}
+              leftSection={<Check size={14} weight="bold" aria-hidden="true" />}
             >
               {getPartLabel(part)}
             </Badge>
@@ -36,3 +37,4 @@ export default function MaintenancePartsList({ parts = [] }) {
     </Stack>
   );
 }
+

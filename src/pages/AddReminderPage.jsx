@@ -11,6 +11,12 @@ import {
 } from "@mantine/core";
 import { useNavigate, useParams } from "react-router";
 import { observer } from "mobx-react-lite";
+import {
+  ArrowRight,
+  BellSlash,
+  CheckCircle,
+  WarningCircle,
+} from "@phosphor-icons/react";
 import { useHeaderTitle } from "../context/HeaderContext";
 import { useVehicleStore } from "../stores/VehicleStoreContext";
 import { useReminderStore } from "../stores/ReminderStoreContext";
@@ -49,7 +55,7 @@ const AddReminderPage = observer(function AddReminderPage() {
       <NoVehicleSelected
         title="לא נבחר רכב"
         description="לא ניתן להוסיף תזכורת מכיוון שלא נבחר רכב. יש לבחור או להוסיף רכב תחילה."
-        icon="ph-bell-slash"
+        icon={BellSlash}
       />
     );
   }
@@ -66,11 +72,7 @@ const AddReminderPage = observer(function AddReminderPage() {
         <Card withBorder radius="xl" shadow="xs" p="xl" bg="white" ta="center">
           <Stack align="center" gap="md" py="lg">
             <ThemeIcon size={64} radius="xl" variant="light" color="blue">
-              <i
-                className="ph-check-circle"
-                style={{ fontSize: "2rem" }}
-                aria-hidden="true"
-              />
+              <CheckCircle size={32} aria-hidden="true" />
             </ThemeIcon>
             <Stack gap={4} align="center">
               <Title order={4} fw={700}>
@@ -86,9 +88,7 @@ const AddReminderPage = observer(function AddReminderPage() {
               onClick={() =>
                 navigate(`/vehicles/${currentVehicleId}/reminders`)
               }
-              leftSection={
-                <i className="ph-arrow-right" aria-hidden="true" />
-              }
+              leftSection={<ArrowRight size={18} aria-hidden="true" />}
             >
               חזרה לרשימת התזכורות
             </Button>
@@ -125,9 +125,7 @@ const AddReminderPage = observer(function AddReminderPage() {
             variant="light"
             radius="md"
             title="שגיאה"
-            icon={
-              <i className="ph-warning-circle" aria-hidden="true" />
-            }
+            icon={<WarningCircle size={20} aria-hidden="true" />}
           >
             {submitError}
           </Alert>

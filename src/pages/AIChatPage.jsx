@@ -1,6 +1,7 @@
 import { Box, Center, Container, Loader, Stack, Text } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { observer } from "mobx-react-lite";
+import { ChatCircleDots, Plus } from "@phosphor-icons/react";
 import AIChatEmptyState from "../components/AIChat/AIChatEmptyState";
 import AIComposer from "../components/AIChat/AIComposer";
 import AIConversationHistory from "../components/AIChat/AIConversationHistory";
@@ -85,10 +86,10 @@ const AIChatPage = observer(function AIChatPage() {
       <NoVehicleSelected
         title="צריך רכב כדי להתחיל שיחה"
         description="העוזר של Autopia מתייחס לרכב הפעיל שלך. הוסף רכב כדי להתחיל לשאול שאלות."
-        icon="ph-chat-circle-dots"
+        icon={ChatCircleDots}
         actionLabel="הוספת רכב"
         actionPath="/vehicles/add"
-        actionIcon="ph-plus"
+        actionIcon={Plus}
       />
     );
   }

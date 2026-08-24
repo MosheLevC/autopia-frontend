@@ -1,4 +1,5 @@
 import { DateInput } from "@mantine/dates";
+import { Calendar } from "@phosphor-icons/react";
 
 const DEFAULT_WEEKEND_DAYS = [5, 6];
 
@@ -11,7 +12,7 @@ export default function AppDateInput(props) {
       locale="he"
       firstDayOfWeek={0}
       weekendDays={DEFAULT_WEEKEND_DAYS}
-      leftSection={<i className="ph-calendar" aria-hidden="true" />}
+      leftSection={<Calendar size={18} aria-hidden="true" />}
       leftSectionPointerEvents="none"
       clearButtonProps={{ "aria-label": "ניקוי תאריך" }}
       styles={{

@@ -7,6 +7,12 @@ import {
   Text,
   ThemeIcon,
 } from "@mantine/core";
+import {
+  Car,
+  ClockCounterClockwise,
+  Gauge,
+  Plus,
+} from "@phosphor-icons/react";
 
 const formatMileage = (value) => {
   const mileage = Number(value);
@@ -41,8 +47,9 @@ export default function VehicleContextBanner({
       >
         <Group gap="sm" wrap="nowrap" miw={0}>
           <ThemeIcon radius="md" variant="light" color="gray" size={40}>
-            <i
-              className="ph-car-fill"
+            <Car
+              size={20}
+              weight="fill"
               aria-hidden="true"
               style={{ color: "var(--mantine-primary-color-filled)" }}
             />
@@ -64,7 +71,7 @@ export default function VehicleContextBanner({
 
         {mileage && (
           <Group gap={5} wrap="nowrap" c="dimmed" style={{ flexShrink: 0 }}>
-            <i className="ph-gauge" aria-hidden="true" />
+            <Gauge size={16} aria-hidden="true" />
             <Text size="xs" fw={600} dir="ltr">
               {mileage} ק״מ
             </Text>
@@ -85,12 +92,7 @@ export default function VehicleContextBanner({
             size="compact-sm"
             radius="md"
             onClick={onOpenHistory}
-            leftSection={
-              <i
-                className="ph-clock-counter-clockwise"
-                aria-hidden="true"
-              />
-            }
+            leftSection={<ClockCounterClockwise size={16} aria-hidden="true" />}
           >
             שיחות קודמות
           </Button>
@@ -101,7 +103,7 @@ export default function VehicleContextBanner({
               size="compact-sm"
               radius="md"
               onClick={onClear}
-              leftSection={<i className="ph-plus" aria-hidden="true" />}
+              leftSection={<Plus size={16} aria-hidden="true" />}
             >
               שיחה חדשה
             </Button>

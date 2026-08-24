@@ -9,6 +9,13 @@ import {
   Text,
   UnstyledButton,
 } from "@mantine/core";
+import {
+  House,
+  Car,
+  Bell,
+  CalendarBlank,
+  Sparkle,
+} from "@phosphor-icons/react";
 import Logo from "./Logo";
 import { useVehicleStore } from "../stores/VehicleStoreContext";
 
@@ -16,16 +23,14 @@ const NAV_ITEMS = [
   {
     id: "home",
     label: "בית",
-    icon: "ph-house",
-    activeIcon: "ph-house-fill",
+    Icon: House,
     getPath: () => "/home",
     isActive: (path) => path === "/home",
   },
   {
     id: "vehicles",
     label: "הרכבים שלי",
-    icon: "ph-car",
-    activeIcon: "ph-car-fill",
+    Icon: Car,
     getPath: () => "/vehicles",
     isActive: (path) =>
       path === "/vehicles" ||
@@ -37,8 +42,7 @@ const NAV_ITEMS = [
   {
     id: "reminders",
     label: "תזכורות",
-    icon: "ph-bell",
-    activeIcon: "ph-bell-fill",
+    Icon: Bell,
     getPath: (activeVehicle) => {
       const id = activeVehicle?._id;
       return id ? `/vehicles/${id}/reminders` : "/reminders";
@@ -48,8 +52,7 @@ const NAV_ITEMS = [
   {
     id: "maintenances",
     label: "יומן טיפולים",
-    icon: "ph-calendar-blank",
-    activeIcon: "ph-calendar-check-fill",
+    Icon: CalendarBlank,
     getPath: (activeVehicle) => {
       const id = activeVehicle?._id;
       return id ? `/vehicles/${id}/maintenances` : "/maintenances";
@@ -106,6 +109,7 @@ const Navbar = observer(function Navbar() {
           <Stack gap="xs">
             {NAV_ITEMS.map((item) => {
               const active = item.isActive(location.pathname);
+              const ItemIcon = item.Icon;
               return (
                 <UnstyledButton
                   key={item.id}
@@ -115,14 +119,14 @@ const Navbar = observer(function Navbar() {
                   className={`navbar-desktop-link ${active ? "is-active" : ""}`}
                 >
                   <Group justify="flex-start" gap="md" wrap="nowrap">
-                    <i
-                      className={active ? item.activeIcon : item.icon}
-                      style={{
-                        fontSize: "1.45rem",
-                        color: active
+                    <ItemIcon
+                      size={23}
+                      weight={active ? "fill" : "regular"}
+                      color={
+                        active
                           ? "var(--mantine-primary-color-filled, #228be6)"
-                          : "var(--mantine-color-gray-7)",
-                      }}
+                          : "var(--mantine-color-gray-7)"
+                      }
                     />
                     <Text
                       size="md"
@@ -152,12 +156,7 @@ const Navbar = observer(function Navbar() {
             fw={700}
             onClick={() => navigate("/ai")}
             aria-current={aiActive ? "page" : undefined}
-            leftSection={
-              <i
-                className="ph-sparkle-fill"
-                style={{ fontSize: "1.35rem", color: "white" }}
-              />
-            }
+            leftSection={<Sparkle size={22} weight="fill" color="white" />}
             shadow="sm"
             style={{
               transition: "transform 150ms ease, box-shadow 150ms ease",
@@ -242,6 +241,7 @@ const Navbar = observer(function Navbar() {
             <Flex align="center" justify="space-around" style={{ flex: 1 }}>
               {rightItems.map((item) => {
                 const active = item.isActive(location.pathname);
+                const ItemIcon = item.Icon;
                 return (
                   <UnstyledButton
                     key={item.id}
@@ -255,14 +255,14 @@ const Navbar = observer(function Navbar() {
                       minWidth: 56,
                     }}
                   >
-                    <i
-                      className={active ? item.activeIcon : item.icon}
-                      style={{
-                        fontSize: "1.4rem",
-                        color: active
+                    <ItemIcon
+                      size={22}
+                      weight={active ? "fill" : "regular"}
+                      color={
+                        active
                           ? "var(--mantine-primary-color-filled, #228be6)"
-                          : "var(--mantine-color-gray-6)",
-                      }}
+                          : "var(--mantine-color-gray-6)"
+                      }
                     />
                     <Text
                       size="xs"
@@ -312,10 +312,7 @@ const Navbar = observer(function Navbar() {
                   transition: "transform 150ms ease",
                 }}
               >
-                <i
-                  className="ph-sparkle-fill"
-                  style={{ fontSize: "1.6rem", color: "#ffffff" }}
-                />
+                <Sparkle size={26} weight="fill" color="#ffffff" />
               </UnstyledButton>
               <Text
                 size="xs"
@@ -335,6 +332,7 @@ const Navbar = observer(function Navbar() {
             <Flex align="center" justify="space-around" style={{ flex: 1 }}>
               {leftItems.map((item) => {
                 const active = item.isActive(location.pathname);
+                const ItemIcon = item.Icon;
                 return (
                   <UnstyledButton
                     key={item.id}
@@ -348,14 +346,14 @@ const Navbar = observer(function Navbar() {
                       minWidth: 56,
                     }}
                   >
-                    <i
-                      className={active ? item.activeIcon : item.icon}
-                      style={{
-                        fontSize: "1.4rem",
-                        color: active
+                    <ItemIcon
+                      size={22}
+                      weight={active ? "fill" : "regular"}
+                      color={
+                        active
                           ? "var(--mantine-primary-color-filled, #228be6)"
-                          : "var(--mantine-color-gray-6)",
-                      }}
+                          : "var(--mantine-color-gray-6)"
+                      }
                     />
                     <Text
                       size="xs"

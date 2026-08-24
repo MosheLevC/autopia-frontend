@@ -13,6 +13,7 @@ import {
 } from "@mantine/core";
 import { observer } from "mobx-react-lite";
 import { useNavigate } from "react-router";
+import { Car, Plus, Trash, WarningCircle } from "@phosphor-icons/react";
 import DeleteVehicleModal from "../components/DeleteVehicleModal";
 import MyCarsVehicleCard from "../components/MyCarsVehicleCard";
 import NoVehicleSelected from "../components/NoVehicleSelected";
@@ -76,7 +77,7 @@ const VehiclesPage = observer(function VehiclesPage() {
         <Alert
           color="red"
           title="לא הצלחנו לטעון את הרכבים"
-          icon={<i className="ph-bold ph-warning-circle" aria-hidden="true" />}
+          icon={<WarningCircle size={20} weight="bold" aria-hidden="true" />}
           radius="lg"
         >
           {error}
@@ -90,10 +91,10 @@ const VehiclesPage = observer(function VehiclesPage() {
       <NoVehicleSelected
         title="עדיין לא הוספת רכב"
         description="הוסף את הרכב הראשון שלך כדי להתחיל לנהל את כל המידע החשוב במקום אחד."
-        icon="ph-car"
+        icon={Car}
         actionLabel="הוסף רכב"
         actionPath="/vehicles/add"
-        actionIcon="ph-plus"
+        actionIcon={Plus}
       />
     );
   }
@@ -105,7 +106,7 @@ const VehiclesPage = observer(function VehiclesPage() {
           <Alert
             color="red"
             title="חלק מהמידע לא נטען"
-            icon={<i className="ph-bold ph-warning-circle" aria-hidden="true" />}
+            icon={<WarningCircle size={20} weight="bold" aria-hidden="true" />}
             radius="lg"
           >
             {error}
@@ -131,7 +132,7 @@ const VehiclesPage = observer(function VehiclesPage() {
               variant="subtle"
               color="red"
               leftSection={
-                <i className="ph-bold ph-trash" aria-hidden="true" />
+                <Trash size={18} weight="bold" aria-hidden="true" />
               }
               onClick={enterDeleteMode}
             >
@@ -196,7 +197,7 @@ const VehiclesPage = observer(function VehiclesPage() {
                 h={50}
                 fw={700}
                 leftSection={
-                  <i className="ph-bold ph-plus" aria-hidden="true" />
+                  <Plus size={20} weight="bold" aria-hidden="true" />
                 }
                 onClick={() => navigate("/vehicles/add")}
                 shadow="sm"

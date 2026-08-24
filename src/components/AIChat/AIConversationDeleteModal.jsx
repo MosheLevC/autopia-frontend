@@ -1,4 +1,5 @@
 import { Button, Group, Modal, Stack, Text } from "@mantine/core";
+import { Trash } from "@phosphor-icons/react";
 
 export default function AIConversationDeleteModal({
   conversation,
@@ -62,7 +63,7 @@ export default function AIConversationDeleteModal({
             color="red"
             loading={isDeleting}
             onClick={onConfirm}
-            leftSection={<i className="ph-trash" aria-hidden="true" />}
+            leftSection={<Trash size={16} aria-hidden="true" />}
           >
             מחיקה
           </Button>

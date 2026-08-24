@@ -9,6 +9,7 @@ import {
   TextInput,
   Textarea,
 } from "@mantine/core";
+import { Check, Gauge, Trash } from "@phosphor-icons/react";
 import { MAINTENANCE_TYPES } from "../constants/maintenanceConstants";
 import AppDateInput from "./AppDateInput";
 import VehicleBanner from "./VehicleBanner";
@@ -190,11 +191,13 @@ export default function AddMaintenanceForm({
               <Group gap="xs" wrap="wrap">
                 {MAINTENANCE_TYPES.map((t) => {
                   const isSelected = type === t.value;
+                  const TypeIcon = t.icon;
                   return (
                     <Button
                       key={t.value}
                       type="button"
                       variant={isSelected ? "filled" : "default"}
+                      color={isSelected ? t.color : undefined}
                       radius="md"
                       size="sm"
                       onClick={() => {
@@ -202,10 +205,11 @@ export default function AddMaintenanceForm({
                         if (errors.type) setErrors((prev) => ({ ...prev, type: null }));
                       }}
                       leftSection={
-                        <i
-                          className={isSelected ? "ph-check" : t.icon}
-                          aria-hidden="true"
-                        />
+                        isSelected ? (
+                          <Check size={16} weight="bold" aria-hidden="true" />
+                        ) : TypeIcon ? (
+                          <TypeIcon size={16} aria-hidden="true" />
+                        ) : undefined
                       }
                     >
                       {t.label}
@@ -240,7 +244,7 @@ export default function AddMaintenanceForm({
                 if (errors.mileage) setErrors((prev) => ({ ...prev, mileage: null }));
               }}
               error={errors.mileage}
-              leftSection={<i className="ph-gauge" aria-hidden="true" />}
+              leftSection={<Gauge size={18} aria-hidden="true" />}
               suffix=" ק״מ"
               thousandSeparator=","
               allowDecimal={false}
@@ -318,7 +322,7 @@ export default function AddMaintenanceForm({
                   radius="lg"
                   h={50}
                   onClick={() => setDeleteModalOpened(true)}
-                  leftSection={<i className="ph-trash" style={{ fontSize: "1.2rem" }} aria-hidden="true" />}
+                  leftSection={<Trash size={18} aria-hidden="true" />}
                   disabled={isSubmitting || isDeleting}
                 >
                   מחיקת טיפול

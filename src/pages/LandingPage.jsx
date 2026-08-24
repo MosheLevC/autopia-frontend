@@ -1,5 +1,4 @@
 import { Link } from "react-router";
-import "phosphor-icons";
 import {
   Badge,
   Box,
@@ -14,26 +13,33 @@ import {
   ThemeIcon,
   Title,
 } from "@mantine/core";
+import {
+  ArrowLeft,
+  BellRinging,
+  ShieldCheck,
+  Sparkle,
+  Wrench,
+} from "@phosphor-icons/react";
 import Logo from "../components/Logo";
 
 const FEATURES = [
   {
-    icon: "ph-wrench",
+    icon: Wrench,
     title: "מעקב טיפולים",
     description: "תיעוד מלא וניהול היסטוריית הטיפולים, התיקונים והקבלות של הרכב שלך.",
   },
   {
-    icon: "ph-bell-ringing",
+    icon: BellRinging,
     title: "תזכורות חכמות",
     description: "התראות מבעוד מועד לטסט שנתי, טיפול תקופתי וחידוש פוליסת ביטוח.",
   },
   {
-    icon: "ph-sparkle",
+    icon: Sparkle,
     title: "סייען AI לספר הרכב",
     description: "צ'אט AI חכם שמכיר את ספר הרכב שלך ועונה באופן מיידי לכל שאלה.",
   },
   {
-    icon: "ph-shield-check",
+    icon: ShieldCheck,
     title: "ארכיון מסמכים",
     description: "ריכוז מאובטח של רישיונות, תעודות ביטוח ואישורים במקום נגיש אחד.",
   },
@@ -87,7 +93,7 @@ export default function LandingPage() {
                 to="/auth"
                 size="lg"
                 radius="md"
-                leftSection={<i className="ph-bold ph-arrow-left" style={{ fontSize: 20 }} />}
+                leftSection={<ArrowLeft size={20} weight="bold" />}
                 px="xl"
               >
                 התחברות / הרשמה
@@ -101,24 +107,27 @@ export default function LandingPage() {
             </Title>
 
             <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="lg">
-              {FEATURES.map((feature, index) => (
-                <Card key={index} radius="lg" p="lg" withBorder shadow="xs">
-                  <Group align="flex-start" gap="md" wrap="nowrap">
-                    <ThemeIcon size={44} radius="md" variant="light">
-                      <i className={`ph-bold ${feature.icon}`} style={{ fontSize: 24 }} />
-                    </ThemeIcon>
+              {FEATURES.map((feature, index) => {
+                const FeatureIcon = feature.icon;
+                return (
+                  <Card key={index} radius="lg" p="lg" withBorder shadow="xs">
+                    <Group align="flex-start" gap="md" wrap="nowrap">
+                      <ThemeIcon size={44} radius="md" variant="light">
+                        <FeatureIcon size={24} weight="bold" />
+                      </ThemeIcon>
 
-                    <Stack gap={4} style={{ flex: 1 }}>
-                      <Text fw={700} size="md">
-                        {feature.title}
-                      </Text>
-                      <Text size="sm" c="dimmed" style={{ lineHeight: 1.5 }}>
-                        {feature.description}
-                      </Text>
-                    </Stack>
-                  </Group>
-                </Card>
-              ))}
+                      <Stack gap={4} style={{ flex: 1 }}>
+                        <Text fw={700} size="md">
+                          {feature.title}
+                        </Text>
+                        <Text size="sm" c="dimmed" style={{ lineHeight: 1.5 }}>
+                          {feature.description}
+                        </Text>
+                      </Stack>
+                    </Group>
+                  </Card>
+                );
+              })}
             </SimpleGrid>
           </Box>
         </Stack>

@@ -14,6 +14,14 @@ import {
   ThemeIcon,
   Title,
 } from "@mantine/core";
+import {
+  BellRinging,
+  BellSlash,
+  Car,
+  CaretLeft,
+  PlusCircle,
+  WarningCircle,
+} from "@phosphor-icons/react";
 import { useVehicleStore } from "../stores/VehicleStoreContext";
 import { useReminderStore } from "../stores/ReminderStoreContext";
 import ReminderCard from "./Reminder/ReminderCard";
@@ -101,11 +109,7 @@ const RemindersSection = observer(function RemindersSection() {
             <Group justify="space-between" align="center" wrap="nowrap" gap="sm">
               <Group gap="xs" align="center" wrap="nowrap">
                 <ThemeIcon size={36} radius="md" variant="light" color="blue">
-                  <i
-                    className="ph-bell-ringing"
-                    style={{ fontSize: "1.35rem" }}
-                    aria-hidden="true"
-                  />
+                  <BellRinging size={20} aria-hidden="true" />
                 </ThemeIcon>
                 <Title
                   id="reminders-card-title"
@@ -123,9 +127,7 @@ const RemindersSection = observer(function RemindersSection() {
                   variant="subtle"
                   size="compact-sm"
                   onClick={handleNavigateToReminders}
-                  rightSection={
-                    <i className="ph-caret-left" aria-hidden="true" />
-                  }
+                  rightSection={<CaretLeft size={16} aria-hidden="true" />}
                   style={{ flexShrink: 0 }}
                 >
                   ניהול תזכורות
@@ -139,7 +141,7 @@ const RemindersSection = observer(function RemindersSection() {
                 variant="light"
                 radius="md"
                 title="שגיאה"
-                icon={<i className="ph-warning-circle" aria-hidden="true" />}
+                icon={<WarningCircle size={20} aria-hidden="true" />}
                 withCloseButton
                 onClose={() => setActionError(null)}
               >
@@ -161,11 +163,7 @@ const RemindersSection = observer(function RemindersSection() {
                 <Center h="100%">
                   <Stack align="center" gap="xs" ta="center">
                     <ThemeIcon size={44} radius="xl" variant="light" color="gray">
-                      <i
-                        className="ph-car"
-                        style={{ fontSize: "1.35rem" }}
-                        aria-hidden="true"
-                      />
+                      <Car size={22} aria-hidden="true" />
                     </ThemeIcon>
                     <Text size="sm" c="dimmed">
                       בחר רכב כדי לראות את התזכורות
@@ -178,11 +176,7 @@ const RemindersSection = observer(function RemindersSection() {
                 <Center h="100%">
                   <Stack align="center" gap="sm" py="xs" ta="center">
                     <ThemeIcon size={44} radius="xl" variant="light" color="gray">
-                      <i
-                        className="ph-bell-slash"
-                        style={{ fontSize: "1.35rem" }}
-                        aria-hidden="true"
-                      />
+                      <BellSlash size={22} aria-hidden="true" />
                     </ThemeIcon>
                     <Text size="sm" c="dimmed">
                       עדיין לא הוגדרו תזכורות לרכב זה
@@ -191,9 +185,7 @@ const RemindersSection = observer(function RemindersSection() {
                       variant="light"
                       size="sm"
                       onClick={handleAddReminder}
-                      leftSection={
-                        <i className="ph-plus-circle" aria-hidden="true" />
-                      }
+                      leftSection={<PlusCircle size={16} aria-hidden="true" />}
                     >
                       הוספת תזכורת ראשונה
                     </Button>
@@ -223,7 +215,7 @@ const RemindersSection = observer(function RemindersSection() {
                 size="sm"
                 w={{ base: "100%", sm: "auto" }}
                 onClick={handleAddReminder}
-                leftSection={<i className="ph-plus-circle" aria-hidden="true" />}
+                leftSection={<PlusCircle size={16} aria-hidden="true" />}
               >
                 הוספת תזכורת
               </Button>
@@ -245,3 +237,4 @@ const RemindersSection = observer(function RemindersSection() {
 });
 
 export default RemindersSection;
+

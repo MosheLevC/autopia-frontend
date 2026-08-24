@@ -1,15 +1,17 @@
+import { Bell, Car, ShieldCheck } from "@phosphor-icons/react";
+
 export const REMINDER_TYPES = [
   {
     value: "test",
     label: "טסט שנתי",
     subtitle: "מבחן רישוי שנתי",
-    icon: "ph-car",
+    icon: Car,
   },
   {
     value: "insurance",
     label: "ביטוח רכב",
     subtitle: "ביטוח חובה / מקיף",
-    icon: "ph-shield-check",
+    icon: ShieldCheck,
   },
 ];
 
@@ -45,7 +47,7 @@ export function getReminderTypeInfo(type) {
     value: type,
     label: type,
     subtitle: "",
-    icon: "ph-bell",
+    icon: Bell,
   };
 }
 

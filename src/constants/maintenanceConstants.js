@@ -1,9 +1,17 @@
+import {
+  ClockCounterClockwise,
+  Wrench,
+  ArrowsLeftRight,
+  MagnifyingGlass,
+  DotsThreeCircle,
+} from "@phosphor-icons/react";
+
 export const MAINTENANCE_TYPE_CONFIG = {
-  periodic: { label: "תקופתי", color: "orange", icon: "ph-clock-counter-clockwise" },
-  repair: { label: "תיקון", color: "red", icon: "ph-wrench" },
-  replacement: { label: "החלפה", color: "grape", icon: "ph-arrows-left-right" },
-  inspection: { label: "בדיקה", color: "teal", icon: "ph-magnifying-glass" },
-  other: { label: "אחר", color: "gray", icon: "ph-dots-three-circle" },
+  periodic: { label: "תקופתי", color: "orange", icon: ClockCounterClockwise },
+  repair: { label: "תיקון", color: "red", icon: Wrench },
+  replacement: { label: "החלפה", color: "grape", icon: ArrowsLeftRight },
+  inspection: { label: "בדיקה", color: "teal", icon: MagnifyingGlass },
+  other: { label: "אחר", color: "gray", icon: DotsThreeCircle },
 };
 
 export const MAINTENANCE_TYPES = Object.entries(MAINTENANCE_TYPE_CONFIG).map(

@@ -9,16 +9,19 @@ import {
   Title,
 } from "@mantine/core";
 import { useNavigate } from "react-router";
+import { Car } from "@phosphor-icons/react";
 
 export default function NoVehicleSelected({
   title = "לא נבחר רכב",
   description = "לא ניתן להציג את המידע מכיוון שלא נבחר רכב.",
-  icon = "ph-car",
+  icon: Icon = Car,
   actionLabel = "לרכבים שלי",
   actionPath = "/vehicles",
-  actionIcon = "ph-car",
+  actionIcon: ActionIconComponent = Car,
 }) {
   const navigate = useNavigate();
+  const IconComponent = Icon || Car;
+  const ActionIcon = ActionIconComponent || Car;
 
   return (
     <Container size="sm" py="xl" w="100%">
@@ -35,7 +38,7 @@ export default function NoVehicleSelected({
         >
           <Stack align="center" gap="md" py="lg">
             <ThemeIcon size={72} radius="xl" variant="light" color="gray">
-              <i className={icon} style={{ fontSize: "2.2rem" }} />
+              <IconComponent size={35} />
             </ThemeIcon>
 
             <Stack gap={6} align="center">
@@ -51,9 +54,7 @@ export default function NoVehicleSelected({
               size="md"
               radius="lg"
               onClick={() => navigate(actionPath)}
-              leftSection={
-                <i className={actionIcon} style={{ fontSize: "1.2rem" }} />
-              }
+              leftSection={<ActionIcon size={20} />}
               mt="xs"
             >
               {actionLabel}
@@ -64,3 +65,4 @@ export default function NoVehicleSelected({
     </Container>
   );
 }
+
