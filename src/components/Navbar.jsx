@@ -124,7 +124,7 @@ const Navbar = observer(function Navbar() {
                       weight={active ? "fill" : "regular"}
                       color={
                         active
-                          ? "var(--mantine-primary-color-filled, #228be6)"
+                          ? "var(--mantine-primary-color-filled)"
                           : "var(--mantine-color-gray-7)"
                       }
                     />
@@ -133,7 +133,7 @@ const Navbar = observer(function Navbar() {
                       fw={active ? 700 : 500}
                       c={
                         active
-                          ? "var(--mantine-primary-color-filled, #228be6)"
+                          ? "var(--mantine-primary-color-filled)"
                           : "var(--mantine-color-gray-8)"
                       }
                       style={{ userSelect: "none" }}
@@ -156,7 +156,13 @@ const Navbar = observer(function Navbar() {
             fw={700}
             onClick={() => navigate("/ai")}
             aria-current={aiActive ? "page" : undefined}
-            leftSection={<Sparkle size={22} weight="fill" color="white" />}
+            leftSection={
+              <Sparkle
+                size={22}
+                weight="fill"
+                color="var(--mantine-color-white)"
+              />
+            }
             shadow="sm"
             style={{
               transition: "transform 150ms ease, box-shadow 150ms ease",
@@ -260,7 +266,7 @@ const Navbar = observer(function Navbar() {
                       weight={active ? "fill" : "regular"}
                       color={
                         active
-                          ? "var(--mantine-primary-color-filled, #228be6)"
+                          ? "var(--mantine-primary-color-filled)"
                           : "var(--mantine-color-gray-6)"
                       }
                     />
@@ -269,7 +275,7 @@ const Navbar = observer(function Navbar() {
                       fw={active ? 700 : 500}
                       c={
                         active
-                          ? "var(--mantine-primary-color-filled, #228be6)"
+                          ? "var(--mantine-primary-color-filled)"
                           : "var(--mantine-color-gray-6)"
                       }
                       mt={2}
@@ -302,24 +308,24 @@ const Navbar = observer(function Navbar() {
                   width: 52,
                   height: 52,
                   borderRadius: "50%",
-                  backgroundColor: "var(--mantine-primary-color-filled, #228be6)",
-                  color: "#ffffff",
+                  backgroundColor: "var(--mantine-primary-color-filled)",
+                  color: "var(--mantine-color-white)",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
                   boxShadow:
-                    "0 4px 14px 0 rgba(34, 139, 230, 0.4), 0 2px 6px rgba(0, 0, 0, 0.15)",
+                    "0 4px 14px 0 color-mix(in srgb, var(--mantine-primary-color-filled) 40%, transparent), 0 2px 6px rgba(0, 0, 0, 0.15)",
                   transition: "transform 150ms ease",
                 }}
               >
-                <Sparkle size={26} weight="fill" color="#ffffff" />
+                <Sparkle size={26} weight="fill" color="var(--mantine-color-white)" />
               </UnstyledButton>
               <Text
                 size="xs"
                 fw={aiActive ? 700 : 600}
                 c={
                   aiActive
-                    ? "var(--mantine-primary-color-filled, #228be6)"
+                    ? "var(--mantine-primary-color-filled)"
                     : "var(--mantine-color-gray-7)"
                 }
                 mt={4}
@@ -351,7 +357,7 @@ const Navbar = observer(function Navbar() {
                       weight={active ? "fill" : "regular"}
                       color={
                         active
-                          ? "var(--mantine-primary-color-filled, #228be6)"
+                          ? "var(--mantine-primary-color-filled)"
                           : "var(--mantine-color-gray-6)"
                       }
                     />
@@ -360,7 +366,7 @@ const Navbar = observer(function Navbar() {
                       fw={active ? 700 : 500}
                       c={
                         active
-                          ? "var(--mantine-primary-color-filled, #228be6)"
+                          ? "var(--mantine-primary-color-filled)"
                           : "var(--mantine-color-gray-6)"
                       }
                       mt={2}

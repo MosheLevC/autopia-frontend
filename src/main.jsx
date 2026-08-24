@@ -13,7 +13,11 @@ const APP_FONT_FAMILY =
 const theme = createTheme({
   fontFamily: APP_FONT_FAMILY,
   headings: { fontFamily: APP_FONT_FAMILY },
+  primaryColor: "blue",
+  defaultRadius: "lg",
+  cursorType: "pointer",
 });
+
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>

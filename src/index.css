@@ -4,21 +4,6 @@
   --app-header-height: 64px;
   --app-mobile-nav-height: 72px;
   --app-mobile-nav-clearance: 84px;
-  --mantine-primary-color: var(--mantine-primary-color-filled, #228be6);
-  --bg-main: #f8fafc;
-  --bg-card: #ffffff;
-  --primary-50: #eff6ff;
-  --primary-100: #dbeafe;
-  --primary-500: #3b82f6;
-  --primary-600: #2563eb;
-  --primary-700: #1d4ed8;
-  --text-main: #0f172a;
-  --text-muted: #64748b;
-  --border-light: #e2e8f0;
-  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
 }
 
 * {
@@ -29,13 +14,14 @@
 
 body {
   font-family: var(--mantine-font-family);
-  background-color: var(--bg-main);
-  color: var(--text-main);
+  background-color: var(--mantine-color-gray-0);
+  color: var(--mantine-color-text);
   direction: rtl;
   text-align: right;
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
 }
+
 
 a {
   text-decoration: none;
@@ -75,7 +61,7 @@ button {
   width: 100%;
   display: flex;
   overflow-x: clip;
-  background-color: var(--bg-main);
+  background-color: var(--mantine-color-gray-0);
 }
 
 .app-content-wrapper {
@@ -144,14 +130,14 @@ button {
 }
 
 .ai-history-item[data-active="true"] {
-  background: var(--primary-50);
-  border-color: var(--mantine-color-blue-2);
+  background: var(--mantine-primary-color-light);
+  border-color: var(--mantine-primary-color-light-border, var(--mantine-primary-color-2));
   box-shadow: inset -3px 0 0 var(--mantine-primary-color-filled);
 }
 
 .ai-suggestion-card:hover {
   border-color: var(--mantine-color-gray-4);
-  box-shadow: var(--shadow-sm);
+  box-shadow: var(--mantine-shadow-xs);
 }
 
 .ai-local-scroll {
@@ -230,9 +216,10 @@ button {
 
 .maintenance-item-card:hover {
   transform: translateY(-1px);
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--mantine-shadow-sm);
   border-color: var(--mantine-color-gray-4);
 }
+
 
 .mantine-DatePicker-weekday,
 .mantine-Month-weekday,
