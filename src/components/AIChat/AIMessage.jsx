@@ -1,5 +1,6 @@
 import { Box, Group, Loader, Paper, Text } from "@mantine/core";
 import ReactMarkdown from "react-markdown";
+import { formatLicensePlate } from "../../utils/plateUtils";
 
 const assistantMarkdownElements = [
   "p",
@@ -72,9 +73,44 @@ const formatMessageTime = (createdAt) => {
   });
 };
 
-export default function AIMessage({ message, isLoading = false }) {
+export default function AIMessage({
+  message,
+  isLoading = false,
+  isTouchInteraction = false,
+  isVehicleContextRevealed = false,
+  onVehicleContextReveal,
+  onVehicleContextToggle,
+}) {
   const isUser = message.role === "user";
   const timestamp = formatMessageTime(message.createdAt);
+  const focusedVehicle = isUser ? message.focusedVehicle : null;
+  const vehicleName = focusedVehicle
+    ? [focusedVehicle.manufacturer, focusedVehicle.model]
+        .filter(Boolean)
+        .join(" ")
+    : "";
+  const vehicleContextLabel = focusedVehicle
+    ? `${vehicleName} · ${formatLicensePlate(focusedVehicle.licensePlate)}`
+    : "";
+  const vehicleContextHandlers = focusedVehicle
+    ? {
+        onMouseEnter: () => {
+          if (!isTouchInteraction) {
+            onVehicleContextReveal?.(message.id, true);
+          }
+        },
+        onMouseLeave: () => {
+          if (!isTouchInteraction) {
+            onVehicleContextReveal?.(message.id, false);
+          }
+        },
+        onClick: () => {
+          if (isTouchInteraction) {
+            onVehicleContextToggle?.(message.id);
+          }
+        },
+      }
+    : {};
 
   return (
     <Box
@@ -85,17 +121,23 @@ export default function AIMessage({ message, isLoading = false }) {
         minWidth: 0,
       }}
     >
-      <Group
-        gap="xs"
-        wrap="nowrap"
-        align="flex-start"
+      <Box
         maw={{ base: "90%", sm: "min(78%, 40rem)" }}
         miw={0}
+        w={isUser ? "fit-content" : undefined}
+        {...vehicleContextHandlers}
+        aria-expanded={
+          focusedVehicle && isTouchInteraction
+            ? isVehicleContextRevealed
+            : undefined
+        }
       >
         <Paper
           radius="lg"
           px="md"
           py="sm"
+          w={isUser ? "fit-content" : undefined}
+          maw={isUser ? "100%" : undefined}
           bg={isUser ? "blue.6" : "white"}
           c={isUser ? "white" : "gray.9"}
           bd={isUser ? undefined : "1px solid var(--mantine-color-gray-2)"}
@@ -143,7 +185,20 @@ export default function AIMessage({ message, isLoading = false }) {
             </Text>
           )}
         </Paper>
-      </Group>
+
+        {focusedVehicle && isVehicleContextRevealed && (
+          <Text
+            size="xs"
+            c="dimmed"
+            mt={4}
+            px="xs"
+            dir="auto"
+            style={{ overflowWrap: "anywhere" }}
+          >
+            {vehicleContextLabel}
+          </Text>
+        )}
+      </Box>
     </Box>
   );
 }
