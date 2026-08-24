@@ -4,7 +4,8 @@ import { useNavigate, useParams } from "react-router";
 import { observer } from "mobx-react-lite";
 import { WarningCircle, Wrench } from "@phosphor-icons/react";
 import { useHeaderTitle } from "../hooks/useHeader";
-import { useVehicleStore, useMaintenanceStore } from "../stores";
+import { useCurrentVehicle } from "../hooks/useCurrentVehicle";
+import { useMaintenanceStore } from "../stores";
 
 import AddMaintenanceForm from "../components/AddMaintenanceForm";
 import MaintenanceDetailView from "../components/MaintenanceDetail/MaintenanceDetailView";
@@ -14,8 +15,9 @@ import NotFoundCard from "../components/common/NotFoundCard";
 
 const MaintenanceDetailPage = observer(function MaintenanceDetailPage() {
   const navigate = useNavigate();
-  const { vehicleId, maintenanceId } = useParams();
-  const vehicleStore = useVehicleStore();
+  const { maintenanceId } = useParams();
+  const { vehicle, vehicleId, isVehicleLoading, hasNoVehicle, vehicleStore } =
+    useCurrentVehicle();
   const maintenanceStore = useMaintenanceStore();
 
   const [isEditing, setIsEditing] = useState(false);
@@ -25,35 +27,29 @@ const MaintenanceDetailPage = observer(function MaintenanceDetailPage() {
 
   useHeaderTitle(isEditing ? "עריכת טיפול" : "פרטי טיפול");
 
-  const currentVehicle = vehicleId
-    ? vehicleStore.vehicles.find((v) => v._id === vehicleId)
-    : vehicleStore.activeVehicle;
-
-  const currentVehicleId = currentVehicle?._id || vehicleId;
-
   useEffect(() => {
-    if (currentVehicleId && maintenanceId) {
+    if (vehicleId && maintenanceId) {
       maintenanceStore
-        .fetchMaintenanceById(currentVehicleId, maintenanceId)
+        .fetchMaintenanceById(vehicleId, maintenanceId)
         .catch((err) => {
           setPageError(err.message || "שגיאה בטעינת פרטי הטיפול");
         });
     }
-  }, [currentVehicleId, maintenanceId, maintenanceStore]);
+  }, [vehicleId, maintenanceId, maintenanceStore]);
 
   const handleBack = () => {
-    if (currentVehicleId) {
-      navigate(`/vehicles/${currentVehicleId}/maintenances`);
+    if (vehicleId) {
+      navigate(`/vehicles/${vehicleId}/maintenances`);
     } else {
       navigate("/maintenances");
     }
   };
 
-  if (vehicleStore.isLoading && vehicleStore.vehicles.length === 0) {
+  if (isVehicleLoading) {
     return <PageLoading message="טוען את פרטי הרכב..." height={320} />;
   }
 
-  if (!currentVehicle) {
+  if (hasNoVehicle) {
     return (
       <NoVehicleSelected
         title="לא נבחר רכב"
@@ -91,7 +87,7 @@ const MaintenanceDetailPage = observer(function MaintenanceDetailPage() {
 
     try {
       const result = await maintenanceStore.updateMaintenance(
-        currentVehicleId,
+        vehicleId,
         maintenanceId,
         payload
       );
@@ -114,10 +110,10 @@ const MaintenanceDetailPage = observer(function MaintenanceDetailPage() {
 
     try {
       await maintenanceStore.deleteMaintenance(
-        currentVehicleId,
+        vehicleId,
         maintenanceId
       );
-      navigate(`/vehicles/${currentVehicleId}/maintenances`);
+      navigate(`/vehicles/${vehicleId}/maintenances`);
     } catch (err) {
       setPageError(err.message || "שגיאה במחיקת הטיפול. נא לנסות שוב.");
       setIsDeleting(false);
@@ -141,7 +137,7 @@ const MaintenanceDetailPage = observer(function MaintenanceDetailPage() {
 
         {isEditing ? (
           <AddMaintenanceForm
-            vehicle={currentVehicle}
+            vehicle={vehicle}
             initialValues={maintenance}
             isEdit={true}
             onSubmit={handleUpdate}
@@ -156,7 +152,7 @@ const MaintenanceDetailPage = observer(function MaintenanceDetailPage() {
         ) : (
           <MaintenanceDetailView
             maintenance={maintenance}
-            vehicle={currentVehicle}
+            vehicle={vehicle}
             onEdit={() => {
               setPageError(null);
               setIsEditing(true);

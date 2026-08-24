@@ -22,7 +22,7 @@ import {
   X,
 } from "@phosphor-icons/react";
 import { formatConversationTimestamp } from "../../utils/aiConversation";
-import AIConversationDeleteModal from "./AIConversationDeleteModal";
+import ConfirmDeleteModal from "../ConfirmDeleteModal";
 
 export default function AIConversationHistory({
   opened,
@@ -217,12 +217,31 @@ export default function AIConversationHistory({
         </Box>
       </Drawer>
 
-      <AIConversationDeleteModal
-        conversation={conversationToDelete}
-        isDeleting={isDeleting}
+      <ConfirmDeleteModal
+        opened={Boolean(conversationToDelete)}
         onClose={() => setConversationToDelete(null)}
         onConfirm={handleDeleteConfirm}
-      />
+        title="מחיקת שיחה"
+        message="האם למחוק את השיחה הזו?"
+        description="לא ניתן לשחזר אותה לאחר המחיקה."
+        confirmLabel="מחיקה"
+        isDeleting={isDeleting}
+        zIndex={230}
+      >
+        {conversationToDelete?.title && (
+          <Text
+            size="sm"
+            fw={650}
+            p="sm"
+            bg="gray.0"
+            bd="1px solid var(--mantine-color-gray-2)"
+            style={{ borderRadius: "var(--mantine-radius-md)" }}
+            dir="auto"
+          >
+            {conversationToDelete.title}
+          </Text>
+        )}
+      </ConfirmDeleteModal>
     </>
   );
 }

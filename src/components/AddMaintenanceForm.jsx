@@ -9,12 +9,13 @@ import {
   TextInput,
   Textarea,
 } from "@mantine/core";
-import { Check, Gauge, Trash } from "@phosphor-icons/react";
+import { Check, Gauge } from "@phosphor-icons/react";
 import { MAINTENANCE_TYPES } from "../constants/maintenanceConstants";
 import AppDateInput from "./AppDateInput";
 import VehicleBanner from "./VehicleBanner";
 import MaintenancePartsPicker from "./AddMaintenance/MaintenancePartsPicker";
 import ConfirmDeleteModal from "./ConfirmDeleteModal";
+import FormActionButtons from "./common/FormActionButtons";
 
 export default function AddMaintenanceForm({
   vehicle,
@@ -287,48 +288,15 @@ export default function AddMaintenanceForm({
               radius="md"
             />
 
-            <Stack gap="xs" mt="md">
-              <Button
-                type="submit"
-                size="lg"
-                radius="lg"
-                h={50}
-                fw={700}
-                loading={isSubmitting}
-                disabled={isDeleting}
-                shadow="sm"
-              >
-                {isEdit ? "שמירת שינויים" : "שמירת טיפול"}
-              </Button>
-
-              <Button
-                type="button"
-                variant="outline"
-                size="lg"
-                radius="lg"
-                h={50}
-                onClick={onCancel}
-                disabled={isSubmitting || isDeleting}
-              >
-                ביטול
-              </Button>
-
-              {isEdit && onDelete && (
-                <Button
-                  type="button"
-                  variant="light"
-                  color="red"
-                  size="lg"
-                  radius="lg"
-                  h={50}
-                  onClick={() => setDeleteModalOpened(true)}
-                  leftSection={<Trash size={18} aria-hidden="true" />}
-                  disabled={isSubmitting || isDeleting}
-                >
-                  מחיקת טיפול
-                </Button>
-              )}
-            </Stack>
+            <FormActionButtons
+              isEdit={isEdit}
+              submitLabel={isEdit ? "שמירת שינויים" : "שמירת טיפול"}
+              deleteLabel="מחיקת טיפול"
+              onCancel={onCancel}
+              onDelete={onDelete ? () => setDeleteModalOpened(true) : undefined}
+              isSubmitting={isSubmitting}
+              isDeleting={isDeleting}
+            />
           </Stack>
         </form>
       </Card>

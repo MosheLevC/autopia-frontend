@@ -1,15 +1,7 @@
-import {
-  Button,
-  Card,
-  Center,
-  Container,
-  Stack,
-  Text,
-  ThemeIcon,
-  Title,
-} from "@mantine/core";
+import { Center, Container } from "@mantine/core";
 import { useNavigate } from "react-router";
 import { Car } from "@phosphor-icons/react";
+import StatusCard from "./common/StatusCard";
 
 export default function NoVehicleSelected({
   title = "לא נבחר רכב",
@@ -20,49 +12,28 @@ export default function NoVehicleSelected({
   actionIcon: ActionIconComponent = Car,
 }) {
   const navigate = useNavigate();
-  const IconComponent = Icon || Car;
-  const ActionIcon = ActionIconComponent || Car;
 
   return (
     <Container size="sm" py="xl" w="100%">
       <Center>
-        <Card
-          withBorder
-          shadow="xs"
-          radius="xl"
-          p="xl"
-          w="100%"
+        <StatusCard
           maw={480}
-          ta="center"
-          bg="white"
-        >
-          <Stack align="center" gap="md" py="lg">
-            <ThemeIcon size={72} radius="xl" variant="light" color="gray">
-              <IconComponent size={35} />
-            </ThemeIcon>
-
-            <Stack gap={6} align="center">
-              <Title order={3} fw={700} c="gray.9">
-                {title}
-              </Title>
-              <Text c="dimmed" size="sm" maw={360} mih="3lh">
-                {description}
-              </Text>
-            </Stack>
-
-            <Button
-              size="md"
-              radius="lg"
-              onClick={() => navigate(actionPath)}
-              leftSection={<ActionIcon size={20} />}
-              mt="xs"
-            >
-              {actionLabel}
-            </Button>
-          </Stack>
-        </Card>
+          icon={Icon}
+          iconSize={35}
+          iconThemeSize={72}
+          title={title}
+          titleOrder={3}
+          description={description}
+          action={{
+            label: actionLabel,
+            onClick: () => navigate(actionPath),
+            icon: ActionIconComponent,
+            size: "md",
+            radius: "lg",
+            variant: "filled",
+          }}
+        />
       </Center>
     </Container>
   );
 }
-

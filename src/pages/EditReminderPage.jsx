@@ -4,7 +4,8 @@ import { useNavigate, useParams } from "react-router";
 import { observer } from "mobx-react-lite";
 import { BellSlash, WarningCircle } from "@phosphor-icons/react";
 import { useHeaderTitle } from "../hooks/useHeader";
-import { useVehicleStore, useReminderStore } from "../stores";
+import { useCurrentVehicle } from "../hooks/useCurrentVehicle";
+import { useReminderStore } from "../stores";
 
 import NoVehicleSelected from "../components/NoVehicleSelected";
 import AddReminderForm from "../components/AddReminderForm";
@@ -14,43 +15,38 @@ import NotFoundCard from "../components/common/NotFoundCard";
 const EditReminderPage = observer(function EditReminderPage() {
   useHeaderTitle("עריכת תזכורת");
   const navigate = useNavigate();
-  const { vehicleId, reminderId } = useParams();
-  const vehicleStore = useVehicleStore();
+  const { reminderId } = useParams();
+  const { vehicle, vehicleId, isVehicleLoading, hasNoVehicle } =
+    useCurrentVehicle();
   const reminderStore = useReminderStore();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [pageError, setPageError] = useState(null);
 
-  const currentVehicle = vehicleId
-    ? vehicleStore.vehicles.find((v) => v._id === vehicleId)
-    : vehicleStore.activeVehicle;
-
-  const currentVehicleId = currentVehicle?._id || vehicleId;
-
   useEffect(() => {
-    if (currentVehicleId && reminderId) {
+    if (vehicleId && reminderId) {
       reminderStore
-        .fetchReminderById(currentVehicleId, reminderId)
+        .fetchReminderById(vehicleId, reminderId)
         .catch((err) => {
           setPageError(err.message || "שגיאה בטעינת פרטי התזכורת");
         });
     }
-  }, [currentVehicleId, reminderId, reminderStore]);
+  }, [vehicleId, reminderId, reminderStore]);
 
   const handleBack = () => {
-    if (currentVehicleId) {
-      navigate(`/vehicles/${currentVehicleId}/reminders`);
+    if (vehicleId) {
+      navigate(`/vehicles/${vehicleId}/reminders`);
     } else {
       navigate("/reminders");
     }
   };
 
-  if (vehicleStore.isLoading && vehicleStore.vehicles.length === 0) {
+  if (isVehicleLoading) {
     return <PageLoading message="טוען את פרטי הרכב..." />;
   }
 
-  if (!currentVehicle) {
+  if (hasNoVehicle) {
     return (
       <NoVehicleSelected
         title="לא נבחר רכב"
@@ -88,11 +84,11 @@ const EditReminderPage = observer(function EditReminderPage() {
 
     try {
       await reminderStore.updateReminder(
-        currentVehicleId,
+        vehicleId,
         reminderId,
         payload
       );
-      navigate(`/vehicles/${currentVehicleId}/reminders`);
+      navigate(`/vehicles/${vehicleId}/reminders`);
     } catch (err) {
       setPageError(err.message || "שגיאה בעדכון התזכורת. נא לנסות שוב.");
     } finally {
@@ -105,8 +101,8 @@ const EditReminderPage = observer(function EditReminderPage() {
     setPageError(null);
 
     try {
-      await reminderStore.deleteReminder(currentVehicleId, reminderId);
-      navigate(`/vehicles/${currentVehicleId}/reminders`);
+      await reminderStore.deleteReminder(vehicleId, reminderId);
+      navigate(`/vehicles/${vehicleId}/reminders`);
     } catch (err) {
       setPageError(err.message || "שגיאה במחיקת התזכורת. נא לנסות שוב.");
       setIsDeleting(false);
@@ -129,7 +125,7 @@ const EditReminderPage = observer(function EditReminderPage() {
         )}
 
         <AddReminderForm
-          vehicle={currentVehicle}
+          vehicle={vehicle}
           initialValues={reminder}
           isEdit={true}
           onSubmit={handleUpdate}

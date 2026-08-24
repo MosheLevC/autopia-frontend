@@ -9,7 +9,14 @@ export default function ConfirmDeleteModal({
   message = "האם אתה בטוח שברצונך למחוק פריט זה?",
   description = "פעולה זו הינה בלתי הפיכה והפריט יוסר לצמיתות.",
   confirmLabel = "אישור ומחיקה",
+  cancelLabel = "ביטול",
+  confirmColor = "red",
+  confirmIcon: ConfirmIcon = Trash,
+  icon: Icon = Warning,
+  iconColor = "red",
   isDeleting = false,
+  zIndex,
+  children,
 }) {
   return (
     <Modal
@@ -22,6 +29,7 @@ export default function ConfirmDeleteModal({
       }
       centered
       radius="xl"
+      zIndex={zIndex}
       closeOnClickOutside={!isDeleting}
       closeOnEscape={!isDeleting}
       withCloseButton={!isDeleting}
@@ -32,19 +40,23 @@ export default function ConfirmDeleteModal({
     >
       <Stack gap="lg" pt="xs">
         <Group gap="md" align="flex-start" wrap="nowrap">
-          <ThemeIcon
-            color="red"
-            variant="light"
-            size={44}
-            radius="xl"
-            style={{ flexShrink: 0 }}
-          >
-            <Warning size={24} aria-hidden="true" />
-          </ThemeIcon>
+          {Icon && (
+            <ThemeIcon
+              color={iconColor}
+              variant="light"
+              size={44}
+              radius="xl"
+              style={{ flexShrink: 0 }}
+            >
+              <Icon size={24} aria-hidden="true" />
+            </ThemeIcon>
+          )}
           <Stack gap={4}>
-            <Text fw={600} size="sm" c="gray.9">
-              {message}
-            </Text>
+            {message && (
+              <Text fw={600} size="sm" c="gray.9">
+                {message}
+              </Text>
+            )}
             {description && (
               <Text size="xs" c="dimmed" lh={1.5}>
                 {description}
@@ -53,6 +65,8 @@ export default function ConfirmDeleteModal({
           </Stack>
         </Group>
 
+        {children}
+
         <Group justify="flex-end" gap="xs">
           <Button
             variant="default"
@@ -60,14 +74,16 @@ export default function ConfirmDeleteModal({
             disabled={isDeleting}
             radius="md"
           >
-            ביטול
+            {cancelLabel}
           </Button>
           <Button
-            color="red"
+            color={confirmColor}
             onClick={onConfirm}
             loading={isDeleting}
             radius="md"
-            leftSection={<Trash size={18} aria-hidden="true" />}
+            leftSection={
+              ConfirmIcon ? <ConfirmIcon size={18} aria-hidden="true" /> : undefined
+            }
           >
             {confirmLabel}
           </Button>
@@ -76,4 +92,3 @@ export default function ConfirmDeleteModal({
     </Modal>
   );
 }
-

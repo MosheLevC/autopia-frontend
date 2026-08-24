@@ -1,15 +1,6 @@
 import { useEffect, useState } from "react";
-import {
-  Alert,
-  Button,
-  Card,
-  Container,
-  Stack,
-  Text,
-  ThemeIcon,
-  Title,
-} from "@mantine/core";
-import { useNavigate, useParams } from "react-router";
+import { Alert, Container, Stack } from "@mantine/core";
+import { useNavigate } from "react-router";
 import { observer } from "mobx-react-lite";
 import {
   ArrowRight,
@@ -18,39 +9,35 @@ import {
   WarningCircle,
 } from "@phosphor-icons/react";
 import { useHeaderTitle } from "../hooks/useHeader";
-import { useVehicleStore, useReminderStore } from "../stores";
+import { useCurrentVehicle } from "../hooks/useCurrentVehicle";
+import { useReminderStore } from "../stores";
 
 import NoVehicleSelected from "../components/NoVehicleSelected";
 import AddReminderForm from "../components/AddReminderForm";
 import PageLoading from "../components/common/PageLoading";
+import StatusCard from "../components/common/StatusCard";
 
 const AddReminderPage = observer(function AddReminderPage() {
   useHeaderTitle("הוספת תזכורת");
   const navigate = useNavigate();
-  const { vehicleId } = useParams();
-  const vehicleStore = useVehicleStore();
+  const { vehicle, vehicleId, isVehicleLoading, hasNoVehicle } =
+    useCurrentVehicle();
   const reminderStore = useReminderStore();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState(null);
 
-  const currentVehicle = vehicleId
-    ? vehicleStore.vehicles.find((v) => v._id === vehicleId)
-    : vehicleStore.activeVehicle;
-
-  const currentVehicleId = currentVehicle?._id;
-
   useEffect(() => {
-    if (currentVehicleId) {
-      reminderStore.fetchReminders(currentVehicleId).catch(() => {});
+    if (vehicleId) {
+      reminderStore.fetchReminders(vehicleId).catch(() => {});
     }
-  }, [currentVehicleId, reminderStore]);
+  }, [vehicleId, reminderStore]);
 
-  if (vehicleStore.isLoading && vehicleStore.vehicles.length === 0) {
+  if (isVehicleLoading) {
     return <PageLoading message="טוען את פרטי הרכב..." />;
   }
 
-  if (!currentVehicle) {
+  if (hasNoVehicle) {
     return (
       <NoVehicleSelected
         title="לא נבחר רכב"
@@ -61,7 +48,7 @@ const AddReminderPage = observer(function AddReminderPage() {
   }
 
   const existingReminders =
-    reminderStore.remindersVehicleId === currentVehicleId
+    reminderStore.remindersVehicleId === vehicleId
       ? reminderStore.reminders
       : [];
   const existingTypes = existingReminders.map((r) => r.type);
@@ -69,31 +56,18 @@ const AddReminderPage = observer(function AddReminderPage() {
   if (existingTypes.includes("test") && existingTypes.includes("insurance")) {
     return (
       <Container size="sm" py="md">
-        <Card withBorder radius="xl" shadow="xs" p="xl" bg="white" ta="center">
-          <Stack align="center" gap="md" py="lg">
-            <ThemeIcon size={64} radius="xl" variant="light" color="blue">
-              <CheckCircle size={32} aria-hidden="true" />
-            </ThemeIcon>
-            <Stack gap={4} align="center">
-              <Title order={4} fw={700}>
-                תזכורות הרכב כבר מוגדרות
-              </Title>
-              <Text size="sm" c="dimmed" maw={360}>
-                עבור רכב זה כבר מוגדרות תזכורת לטסט ותזכורת לביטוח. באפשרותך
-                לערוך אותן מעמוד התזכורות.
-              </Text>
-            </Stack>
-            <Button
-              variant="light"
-              onClick={() =>
-                navigate(`/vehicles/${currentVehicleId}/reminders`)
-              }
-              leftSection={<ArrowRight size={18} aria-hidden="true" />}
-            >
-              חזרה לרשימת התזכורות
-            </Button>
-          </Stack>
-        </Card>
+        <StatusCard
+          icon={CheckCircle}
+          iconColor="blue"
+          title="תזכורות הרכב כבר מוגדרות"
+          description="עבור רכב זה כבר מוגדרות תזכורת לטסט ותזכורת לביטוח. באפשרותך לערוך אותן מעמוד התזכורות."
+          action={{
+            label: "חזרה לרשימת התזכורות",
+            onClick: () => navigate(`/vehicles/${vehicleId}/reminders`),
+            icon: ArrowRight,
+            variant: "light",
+          }}
+        />
       </Container>
     );
   }
@@ -103,8 +77,8 @@ const AddReminderPage = observer(function AddReminderPage() {
     setSubmitError(null);
 
     try {
-      await reminderStore.createReminder(currentVehicleId, payload);
-      navigate(`/vehicles/${currentVehicleId}/reminders`);
+      await reminderStore.createReminder(vehicleId, payload);
+      navigate(`/vehicles/${vehicleId}/reminders`);
     } catch (err) {
       setSubmitError(err.message || "שגיאה בהוספת התזכורת. נא לנסות שוב.");
     } finally {
@@ -113,7 +87,7 @@ const AddReminderPage = observer(function AddReminderPage() {
   };
 
   const handleCancel = () => {
-    navigate(`/vehicles/${currentVehicleId}/reminders`);
+    navigate(`/vehicles/${vehicleId}/reminders`);
   };
 
   return (
@@ -132,7 +106,7 @@ const AddReminderPage = observer(function AddReminderPage() {
         )}
 
         <AddReminderForm
-          vehicle={currentVehicle}
+          vehicle={vehicle}
           existingTypes={existingTypes}
           onSubmit={handleSubmit}
           onCancel={handleCancel}

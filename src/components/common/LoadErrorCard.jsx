@@ -1,5 +1,5 @@
-import { Button, Card, Stack, Text, ThemeIcon, Title } from "@mantine/core";
 import { ArrowClockwise, WarningCircle } from "@phosphor-icons/react";
+import StatusCard from "./StatusCard";
 
 export default function LoadErrorCard({
   title = "שגיאה בטעינת הנתונים",
@@ -7,31 +7,27 @@ export default function LoadErrorCard({
   onRetry,
 }) {
   return (
-    <Card withBorder radius="xl" shadow="xs" p="xl" bg="white">
-      <Stack align="center" gap="sm" py="lg" ta="center">
-        <ThemeIcon color="red" variant="light" size={48} radius="xl">
-          <WarningCircle size={28} aria-hidden="true" />
-        </ThemeIcon>
-        <Title order={3} size="h4" fw={700}>
-          {title}
-        </Title>
-        {error && (
-          <Text size="sm" c="dimmed">
-            {error}
-          </Text>
-        )}
-        {onRetry && (
-          <Button
-            variant="light"
-            color="red"
-            mt="xs"
-            onClick={onRetry}
-            leftSection={<ArrowClockwise size={18} aria-hidden="true" />}
-          >
-            נסה שוב
-          </Button>
-        )}
-      </Stack>
-    </Card>
+    <StatusCard
+      icon={WarningCircle}
+      iconColor="red"
+      iconSize={28}
+      iconThemeSize={48}
+      title={title}
+      titleOrder={3}
+      titleSize="h4"
+      description={error}
+      gap="sm"
+      action={
+        onRetry
+          ? {
+              label: "נסה שוב",
+              onClick: onRetry,
+              icon: ArrowClockwise,
+              variant: "light",
+              color: "red",
+            }
+          : undefined
+      }
+    />
   );
 }

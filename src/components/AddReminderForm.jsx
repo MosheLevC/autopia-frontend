@@ -8,7 +8,7 @@ import {
   Text,
   TextInput,
 } from "@mantine/core";
-import { ArrowsClockwise, Check, Trash } from "@phosphor-icons/react";
+import { ArrowsClockwise, Check } from "@phosphor-icons/react";
 import {
   REMINDER_FREQUENCIES,
   REMINDER_TYPES,
@@ -17,6 +17,7 @@ import {
 import AppDateInput from "./AppDateInput";
 import VehicleBanner from "./VehicleBanner";
 import ConfirmDeleteModal from "./ConfirmDeleteModal";
+import FormActionButtons from "./common/FormActionButtons";
 
 export default function AddReminderForm({
   vehicle,
@@ -268,48 +269,15 @@ export default function AddReminderForm({
               </Stack>
             )}
 
-            <Stack gap="xs" mt="md">
-              <Button
-                type="submit"
-                size="lg"
-                radius="lg"
-                h={50}
-                fw={700}
-                loading={isSubmitting}
-                disabled={isDeleting}
-                shadow="sm"
-              >
-                {isEdit ? "שמירת שינויים" : "שמירת תזכורת"}
-              </Button>
-
-              <Button
-                type="button"
-                variant="outline"
-                size="lg"
-                radius="lg"
-                h={50}
-                onClick={onCancel}
-                disabled={isSubmitting || isDeleting}
-              >
-                ביטול
-              </Button>
-
-              {isEdit && onDelete && (
-                <Button
-                  type="button"
-                  variant="light"
-                  color="red"
-                  size="lg"
-                  radius="lg"
-                  h={50}
-                  onClick={() => setDeleteModalOpened(true)}
-                  leftSection={<Trash size={18} aria-hidden="true" />}
-                  disabled={isSubmitting || isDeleting}
-                >
-                  מחיקת תזכורת
-                </Button>
-              )}
-            </Stack>
+            <FormActionButtons
+              isEdit={isEdit}
+              submitLabel={isEdit ? "שמירת שינויים" : "שמירת תזכורת"}
+              deleteLabel="מחיקת תזכורת"
+              onCancel={onCancel}
+              onDelete={onDelete ? () => setDeleteModalOpened(true) : undefined}
+              isSubmitting={isSubmitting}
+              isDeleting={isDeleting}
+            />
           </Stack>
         </form>
       </Card>

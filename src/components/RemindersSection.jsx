@@ -8,11 +8,8 @@ import {
   Center,
   Group,
   Loader,
-  Paper,
   Stack,
   Text,
-  ThemeIcon,
-  Title,
 } from "@mantine/core";
 import {
   BellRinging,
@@ -24,8 +21,9 @@ import {
 } from "@phosphor-icons/react";
 import { useReminderStore, useVehicleStore } from "../stores";
 import ReminderCard from "./Reminder/ReminderCard";
-
 import ReminderRenewModal from "./Reminder/ReminderRenewModal";
+import SectionHeader from "./common/SectionHeader";
+import StatusCard from "./common/StatusCard";
 
 const SECTION_CARD_PROPS = {
   withBorder: true,
@@ -106,34 +104,20 @@ const RemindersSection = observer(function RemindersSection() {
       >
         <Stack gap="md" h="100%" justify="space-between">
           <Stack gap="md" style={{ flex: 1 }}>
-            <Group justify="space-between" align="center" wrap="nowrap" gap="sm">
-              <Group gap="xs" align="center" wrap="nowrap">
-                <ThemeIcon size={36} radius="md" variant="light" color="blue">
-                  <BellRinging size={20} aria-hidden="true" />
-                </ThemeIcon>
-                <Title
-                  id="reminders-card-title"
-                  order={2}
-                  size="h3"
-                  fw={700}
-                  c="gray.9"
-                >
-                  תזכורות
-                </Title>
-              </Group>
-
-              {activeVehicleId && (
-                <Button
-                  variant="subtle"
-                  size="compact-sm"
-                  onClick={handleNavigateToReminders}
-                  rightSection={<CaretLeft size={16} aria-hidden="true" />}
-                  style={{ flexShrink: 0 }}
-                >
-                  ניהול תזכורות
-                </Button>
-              )}
-            </Group>
+            <SectionHeader
+              icon={BellRinging}
+              title="תזכורות"
+              titleId="reminders-card-title"
+              action={
+                activeVehicleId
+                  ? {
+                      label: "ניהול תזכורות",
+                      onClick: handleNavigateToReminders,
+                      rightSection: <CaretLeft size={16} aria-hidden="true" />,
+                    }
+                  : undefined
+              }
+            />
 
             {actionError && (
               <Alert
@@ -159,39 +143,34 @@ const RemindersSection = observer(function RemindersSection() {
                 </Stack>
               </Center>
             ) : !activeVehicleId ? (
-              <Paper withBorder radius="lg" p="md" bg="gray.0" style={{ flex: 1 }}>
-                <Center h="100%">
-                  <Stack align="center" gap="xs" ta="center">
-                    <ThemeIcon size={44} radius="xl" variant="light" color="gray">
-                      <Car size={22} aria-hidden="true" />
-                    </ThemeIcon>
-                    <Text size="sm" c="dimmed">
-                      בחר רכב כדי לראות את התזכורות
-                    </Text>
-                  </Stack>
-                </Center>
-              </Paper>
+              <StatusCard
+                variant="paper"
+                icon={Car}
+                iconSize={22}
+                iconThemeSize={44}
+                description="בחר רכב כדי לראות את התזכורות"
+                py="xs"
+                gap="xs"
+                flex={1}
+              />
             ) : reminders.length === 0 ? (
-              <Paper withBorder radius="lg" p="md" bg="gray.0" style={{ flex: 1 }}>
-                <Center h="100%">
-                  <Stack align="center" gap="sm" py="xs" ta="center">
-                    <ThemeIcon size={44} radius="xl" variant="light" color="gray">
-                      <BellSlash size={22} aria-hidden="true" />
-                    </ThemeIcon>
-                    <Text size="sm" c="dimmed">
-                      עדיין לא הוגדרו תזכורות לרכב זה
-                    </Text>
-                    <Button
-                      variant="light"
-                      size="sm"
-                      onClick={handleAddReminder}
-                      leftSection={<PlusCircle size={16} aria-hidden="true" />}
-                    >
-                      הוספת תזכורת ראשונה
-                    </Button>
-                  </Stack>
-                </Center>
-              </Paper>
+              <StatusCard
+                variant="paper"
+                icon={BellSlash}
+                iconSize={22}
+                iconThemeSize={44}
+                description="עדיין לא הוגדרו תזכורות לרכב זה"
+                py="xs"
+                gap="sm"
+                flex={1}
+                action={{
+                  label: "הוספת תזכורת ראשונה",
+                  onClick: handleAddReminder,
+                  icon: PlusCircle,
+                  variant: "light",
+                  size: "sm",
+                }}
+              />
             ) : (
               <Stack gap="sm" style={{ flex: 1 }}>
                 {reminders.map((reminder) => (
@@ -237,4 +216,3 @@ const RemindersSection = observer(function RemindersSection() {
 });
 
 export default RemindersSection;
-

@@ -1,10 +1,10 @@
 import { useEffect } from "react";
 import { Container } from "@mantine/core";
-import { useParams } from "react-router";
 import { observer } from "mobx-react-lite";
 import { BellSlash } from "@phosphor-icons/react";
 import { useHeaderTitle } from "../hooks/useHeader";
-import { useVehicleStore, useReminderStore } from "../stores";
+import { useCurrentVehicle } from "../hooks/useCurrentVehicle";
+import { useReminderStore } from "../stores";
 
 import NoVehicleSelected from "../components/NoVehicleSelected";
 import Reminders from "../components/Reminders";
@@ -13,27 +13,21 @@ import LoadErrorCard from "../components/common/LoadErrorCard";
 
 const RemindersPage = observer(function RemindersPage() {
   useHeaderTitle("תזכורות");
-  const { vehicleId } = useParams();
-  const vehicleStore = useVehicleStore();
+  const { vehicle, vehicleId, isVehicleLoading, hasNoVehicle } =
+    useCurrentVehicle();
   const reminderStore = useReminderStore();
 
-  const currentVehicle = vehicleId
-    ? vehicleStore.vehicles.find((v) => v._id === vehicleId)
-    : vehicleStore.activeVehicle;
-
-  const currentVehicleId = currentVehicle?._id;
-
   useEffect(() => {
-    if (currentVehicleId) {
-      reminderStore.fetchReminders(currentVehicleId).catch(() => {});
+    if (vehicleId) {
+      reminderStore.fetchReminders(vehicleId).catch(() => {});
     }
-  }, [currentVehicleId, reminderStore]);
+  }, [vehicleId, reminderStore]);
 
-  if (vehicleStore.isLoading && vehicleStore.vehicles.length === 0) {
+  if (isVehicleLoading) {
     return <PageLoading message="טוען את פרטי הרכב..." />;
   }
 
-  if (!currentVehicle) {
+  if (hasNoVehicle) {
     return (
       <NoVehicleSelected
         title="לא נבחר רכב"
@@ -54,7 +48,7 @@ const RemindersPage = observer(function RemindersPage() {
           title="לא הצלחנו לטעון את התזכורות"
           error={reminderStore.error}
           onRetry={() =>
-            reminderStore.fetchReminders(currentVehicleId).catch(() => {})
+            reminderStore.fetchReminders(vehicleId).catch(() => {})
           }
         />
       </Container>
@@ -63,7 +57,7 @@ const RemindersPage = observer(function RemindersPage() {
 
   return (
     <Container size="lg" py="md">
-      <Reminders vehicle={currentVehicle} />
+      <Reminders vehicle={vehicle} />
     </Container>
   );
 });
