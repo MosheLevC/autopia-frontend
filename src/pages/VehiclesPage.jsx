@@ -13,10 +13,12 @@ import {
 } from "@mantine/core";
 import { observer } from "mobx-react-lite";
 import { useNavigate } from "react-router";
-import { Car, Plus, Trash, WarningCircle } from "@phosphor-icons/react";
+import { Car, PlusCircle, Trash, WarningCircle } from "@phosphor-icons/react";
 import DeleteVehicleModal from "../components/DeleteVehicleModal";
 import MyCarsVehicleCard from "../components/MyCarsVehicleCard";
 import NoVehicleSelected from "../components/NoVehicleSelected";
+import AddBottomButton from "../components/common/AddButton";
+import SectionHeader from "../components/common/SectionHeader";
 import { useHeaderTitle } from "../hooks/useHeader";
 import { useVehicleStore } from "../stores";
 
@@ -95,14 +97,14 @@ const VehiclesPage = observer(function VehiclesPage() {
         icon={Car}
         actionLabel="הוסף רכב"
         actionPath="/vehicles/add"
-        actionIcon={Plus}
+        actionIcon={PlusCircle}
       />
     );
   }
 
   return (
     <Container size={900} px={0} w="100%">
-      <Stack gap="lg" pb={!isDeleteMode ? 80 : 0} w="100%">
+      <Stack gap="lg" pb={{ base: !isDeleteMode ? 80 : 0, sm: 0 }} w="100%">
         {error && (
           <Alert
             color="red"
@@ -114,33 +116,64 @@ const VehiclesPage = observer(function VehiclesPage() {
           </Alert>
         )}
 
-        <Group justify="flex-end">
-          {isDeleteMode ? (
-            <Group gap="sm">
-              <Button variant="default" onClick={cancelDeleteMode}>
-                ביטול
-              </Button>
+        <SectionHeader
+          icon={Car}
+          title="הרכבים שלי"
+          badge={
+            vehicles.length > 0
+              ? `${vehicles.length} ${vehicles.length === 1 ? "רכב" : "רכבים"}`
+              : undefined
+          }
+          action={
+            !isDeleteMode
+              ? {
+                  label: "הוסף רכב",
+                  onClick: () => navigate("/vehicles/add"),
+                  icon: PlusCircle,
+                  variant: "filled",
+                  size: "sm",
+                  radius: "md",
+                  visibleFrom: "sm",
+                }
+              : undefined
+          }
+          actions={
+            isDeleteMode ? (
+              <Group gap="xs">
+                <Button
+                  variant="default"
+                  size="sm"
+                  radius="md"
+                  onClick={cancelDeleteMode}
+                >
+                  ביטול
+                </Button>
+                <Button
+                  color="red"
+                  size="sm"
+                  radius="md"
+                  disabled={!vehicleToDelete}
+                  onClick={() => setIsDeleteModalOpen(true)}
+                >
+                  מחק
+                </Button>
+              </Group>
+            ) : (
               <Button
+                variant="subtle"
                 color="red"
-                disabled={!vehicleToDelete}
-                onClick={() => setIsDeleteModalOpen(true)}
+                size="sm"
+                radius="md"
+                leftSection={
+                  <Trash size={18} weight="bold" aria-hidden="true" />
+                }
+                onClick={enterDeleteMode}
               >
-                מחק
+                מחק רכב
               </Button>
-            </Group>
-          ) : (
-            <Button
-              variant="subtle"
-              color="red"
-              leftSection={
-                <Trash size={18} weight="bold" aria-hidden="true" />
-              }
-              onClick={enterDeleteMode}
-            >
-              מחק רכב
-            </Button>
-          )}
-        </Group>
+            )
+          }
+        />
 
         <Stack gap="md">
           {vehicles.map((vehicle) => {
@@ -183,31 +216,10 @@ const VehiclesPage = observer(function VehiclesPage() {
         </Stack>
 
         {!isDeleteMode && (
-          <Box
-            pos="sticky"
-            bottom={{ base: "5.5rem", sm: "1rem" }}
-            pt="xs"
-            w="100%"
-            style={{ pointerEvents: "none", zIndex: 10 }}
-          >
-            <Group justify="flex-start">
-              <Button
-                w={{ base: 180, xs: 240, sm: 280 }}
-                size="lg"
-                radius="lg"
-                h={50}
-                fw={700}
-                leftSection={
-                  <Plus size={20} weight="bold" aria-hidden="true" />
-                }
-                onClick={() => navigate("/vehicles/add")}
-                shadow="sm"
-                style={{ pointerEvents: "auto" }}
-              >
-                הוסף רכב
-              </Button>
-            </Group>
-          </Box>
+          <AddBottomButton
+            label="הוסף רכב"
+            onClick={() => navigate("/vehicles/add")}
+          />
         )}
       </Stack>
 
