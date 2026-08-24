@@ -27,7 +27,6 @@ import ProfilePage from "./pages/ProfilePage";
 import MaintenancesPage from "./pages/MaintenancesPage";
 import MaintenanceDetailPage from "./pages/MaintenanceDetailPage";
 import RemindersPage from "./pages/RemindersPage";
-import VehicleProfilePage from "./pages/VehicleProfilePage";
 import VehiclesPage from "./pages/VehiclesPage";
 
 const AppLayout = observer(function AppLayout() {
@@ -88,10 +87,6 @@ function App() {
                     <Route path="/ai" element={<AIChatPage />} />
                     <Route path="/vehicles" element={<VehiclesPage />} />
                     <Route path="/vehicles/add" element={<AddVehiclePage />} />
-                    <Route
-                      path="/vehicles/:vehicleId"
-                      element={<VehicleProfilePage />}
-                    />
                     <Route path="/maintenances" element={<MaintenancesPage />} />
                     <Route
                       path="/maintenances/add"
