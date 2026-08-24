@@ -186,3 +186,6 @@ export function createMaintenanceStore() {
 }
 
 export const maintenanceStore = createMaintenanceStore();
+
+export const useMaintenanceStore = () => maintenanceStore;
+

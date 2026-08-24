@@ -1,16 +1,18 @@
 import { Box, Center, Container, Loader, Stack, Text } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { observer } from "mobx-react-lite";
+import { ChatCircleDots, Plus } from "@phosphor-icons/react";
 import AIChatEmptyState from "../components/AIChat/AIChatEmptyState";
 import AIComposer from "../components/AIChat/AIComposer";
 import AIConversationHistory from "../components/AIChat/AIConversationHistory";
 import AIMessageList from "../components/AIChat/AIMessageList";
 import VehicleContextBanner from "../components/AIChat/VehicleContextBanner";
 import NoVehicleSelected from "../components/NoVehicleSelected";
-import { useHeaderTitle } from "../context/HeaderContext";
+import { useHeaderTitle } from "../hooks/useHeader";
 import useAIChat from "../hooks/useAIChat";
 import useAIConversationHistory from "../hooks/useAIConversationHistory";
-import { useVehicleStore } from "../stores/VehicleStoreContext";
+import { useVehicleStore } from "../stores";
+
 
 const AIChatPage = observer(function AIChatPage() {
   useHeaderTitle("עוזר AI");
@@ -85,10 +87,10 @@ const AIChatPage = observer(function AIChatPage() {
       <NoVehicleSelected
         title="צריך רכב כדי להתחיל שיחה"
         description="העוזר של Autopia מתייחס לרכב הפעיל שלך. הוסף רכב כדי להתחיל לשאול שאלות."
-        icon="ph-chat-circle-dots"
+        icon={ChatCircleDots}
         actionLabel="הוספת רכב"
         actionPath="/vehicles/add"
-        actionIcon="ph-plus"
+        actionIcon={Plus}
       />
     );
   }

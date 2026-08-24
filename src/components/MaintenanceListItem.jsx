@@ -7,6 +7,7 @@ import {
   ThemeIcon,
   UnstyledButton,
 } from "@mantine/core";
+import { CaretLeft } from "@phosphor-icons/react";
 import { getMaintenanceTypeInfo } from "../constants/maintenanceConstants";
 import { formatDateToDisplay } from "../utils/plateUtils";
 
@@ -21,6 +22,7 @@ function formatMileage(mileage) {
 
 export default function MaintenanceListItem({ maintenance, onClick }) {
   const typeInfo = getMaintenanceTypeInfo(maintenance.type);
+  const TypeIcon = typeInfo.icon;
   const displayDate =
     formatDateToDisplay(maintenance.maintenanceDate || maintenance.date) ||
     "תאריך לא צוין";
@@ -55,11 +57,9 @@ export default function MaintenanceListItem({ maintenance, onClick }) {
             color="blue"
             style={{ flexShrink: 0 }}
           >
-            <i
-              className={typeInfo.icon}
-              style={{ fontSize: "1.3rem" }}
-              aria-hidden="true"
-            />
+            {TypeIcon ? (
+              <TypeIcon size={20} aria-hidden="true" />
+            ) : null}
           </ThemeIcon>
 
           <Stack gap={4} style={{ flex: 1, minWidth: 0 }}>
@@ -102,14 +102,11 @@ export default function MaintenanceListItem({ maintenance, onClick }) {
             size="sm"
             style={{ flexShrink: 0 }}
           >
-            <i
-              className="ph-caret-left"
-              style={{ fontSize: "1.2rem" }}
-              aria-hidden="true"
-            />
+            <CaretLeft size={18} aria-hidden="true" />
           </ThemeIcon>
         </Group>
       </Group>
     </Paper>
   );
 }
+

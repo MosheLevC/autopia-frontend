@@ -3,22 +3,24 @@ import { useNavigate } from "react-router";
 import { observer } from "mobx-react-lite";
 import {
   Alert,
-  Badge,
-  Button,
-  Card,
-  Group,
   SimpleGrid,
   Stack,
-  Text,
-  ThemeIcon,
-  Title,
 } from "@mantine/core";
-import { useReminderStore } from "../stores/ReminderStoreContext";
+import {
+  BellRinging,
+  BellSlash,
+  PlusCircle,
+  WarningCircle,
+} from "@phosphor-icons/react";
+import { useReminderStore } from "../stores";
 import { getReminderTypeInfo } from "../constants/reminderConstants";
+
 import ReminderCard from "./Reminder/ReminderCard";
 import ReminderRenewModal from "./Reminder/ReminderRenewModal";
 import ConfirmDeleteModal from "./ConfirmDeleteModal";
 import AddBottomButton from "./common/AddButton";
+import SectionHeader from "./common/SectionHeader";
+import StatusCard from "./common/StatusCard";
 
 const Reminders = observer(function Reminders({ vehicle }) {
   const navigate = useNavigate();
@@ -88,7 +90,7 @@ const Reminders = observer(function Reminders({ vehicle }) {
           variant="light"
           radius="md"
           title="שגיאה"
-          icon={<i className="ph-warning-circle" aria-hidden="true" />}
+          icon={<WarningCircle size={20} aria-hidden="true" />}
           withCloseButton
           onClose={() => setActionError(null)}
         >
@@ -96,79 +98,41 @@ const Reminders = observer(function Reminders({ vehicle }) {
         </Alert>
       )}
 
-      <Group justify="space-between" align="center">
-        <Group gap="xs" align="center">
-          <ThemeIcon size={36} radius="md" variant="light" color="blue">
-            <i
-              className="ph-bell-ringing"
-              style={{ fontSize: "1.3rem" }}
-              aria-hidden="true"
-            />
-          </ThemeIcon>
-          <Title order={2} size="h3" fw={700} c="gray.9">
-            תזכורות לרכב
-          </Title>
-        </Group>
-
-        <Group gap="sm" align="center">
-          {reminders.length > 0 && (
-            <Badge variant="light" color="gray" size="lg" radius="md">
-              {reminders.length} {reminders.length === 1 ? "תזכורת" : "תזכורות"}
-            </Badge>
-          )}
-
-          {reminders.length > 0 && canAddReminder && (
-            <Button
-              visibleFrom="sm"
-              variant="filled"
-              size="sm"
-              radius="md"
-              onClick={handleAddClick}
-              leftSection={
-                <i className="ph-plus-circle" aria-hidden="true" />
+      <SectionHeader
+        icon={BellRinging}
+        title="תזכורות לרכב"
+        badge={
+          reminders.length > 0
+            ? `${reminders.length} ${reminders.length === 1 ? "תזכורת" : "תזכורות"}`
+            : undefined
+        }
+        action={
+          reminders.length > 0 && canAddReminder
+            ? {
+                label: "הוסף תזכורת",
+                onClick: handleAddClick,
+                icon: PlusCircle,
+                variant: "filled",
+                size: "sm",
+                radius: "md",
+                visibleFrom: "sm",
               }
-            >
-              הוסף תזכורת
-            </Button>
-          )}
-        </Group>
-      </Group>
+            : undefined
+        }
+      />
 
       {reminders.length === 0 ? (
-        <Card withBorder radius="xl" shadow="xs" p="xl" bg="white">
-          <Stack align="center" gap="md" py="xl" ta="center">
-            <ThemeIcon size={64} radius="xl" variant="light" color="gray">
-              <i
-                className="ph-bell-slash"
-                style={{ fontSize: "2rem" }}
-                aria-hidden="true"
-              />
-            </ThemeIcon>
-            <Stack gap={4} align="center">
-              <Title order={4} fw={700} c="gray.9">
-                אין תזכורות להצגה
-              </Title>
-              <Text c="dimmed" size="sm" maw={380}>
-                עדיין לא הוגדרו תזכורות עבור רכב זה. הוסף תזכורת לטסט שנתי או
-                לביטוח רכב כדי לקבל התראות בזמן.
-              </Text>
-            </Stack>
-            <Button
-              variant="light"
-              onClick={handleAddClick}
-              leftSection={
-                <i
-                  className="ph-plus-circle"
-                  style={{ fontSize: "1.1rem" }}
-                  aria-hidden="true"
-                />
-              }
-              mt="xs"
-            >
-              הוסף תזכורת ראשונה
-            </Button>
-          </Stack>
-        </Card>
+        <StatusCard
+          icon={BellSlash}
+          title="אין תזכורות להצגה"
+          description="עדיין לא הוגדרו תזכורות עבור רכב זה. הוסף תזכורת לטסט שנתי או לביטוח רכב כדי לקבל התראות בזמן."
+          action={{
+            label: "הוסף תזכורת ראשונה",
+            onClick: handleAddClick,
+            icon: PlusCircle,
+            variant: "light",
+          }}
+        />
       ) : (
         <SimpleGrid cols={{ base: 1, md: 2 }} spacing="md">
           {reminders.map((reminder) => (

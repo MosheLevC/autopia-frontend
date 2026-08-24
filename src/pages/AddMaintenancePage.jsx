@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { Alert, Container, Stack } from "@mantine/core";
-import { useNavigate, useParams } from "react-router";
+import { useNavigate } from "react-router";
 import { observer } from "mobx-react-lite";
-import { useHeaderTitle } from "../context/HeaderContext";
-import { useVehicleStore } from "../stores/VehicleStoreContext";
-import { useMaintenanceStore } from "../stores/MaintenanceStoreContext";
+import { WarningCircle, Wrench } from "@phosphor-icons/react";
+import { useHeaderTitle } from "../hooks/useHeader";
+import { useCurrentVehicle } from "../hooks/useCurrentVehicle";
+import { useMaintenanceStore } from "../stores";
+
 import NoVehicleSelected from "../components/NoVehicleSelected";
 import AddMaintenanceForm from "../components/AddMaintenanceForm";
 import PageLoading from "../components/common/PageLoading";
@@ -12,29 +14,23 @@ import PageLoading from "../components/common/PageLoading";
 const AddMaintenancePage = observer(function AddMaintenancePage() {
   useHeaderTitle("הוספת טיפול");
   const navigate = useNavigate();
-  const { vehicleId } = useParams();
-  const vehicleStore = useVehicleStore();
+  const { vehicle, vehicleId, isVehicleLoading, hasNoVehicle, vehicleStore } =
+    useCurrentVehicle();
   const maintenanceStore = useMaintenanceStore();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState(null);
 
-  const currentVehicle = vehicleId
-    ? vehicleStore.vehicles.find((v) => v._id === vehicleId)
-    : vehicleStore.activeVehicle;
-
-  const currentVehicleId = currentVehicle?._id;
-
-  if (vehicleStore.isLoading && vehicleStore.vehicles.length === 0) {
+  if (isVehicleLoading) {
     return <PageLoading message="טוען את פרטי הרכב..." />;
   }
 
-  if (!currentVehicle) {
+  if (hasNoVehicle) {
     return (
       <NoVehicleSelected
         title="לא נבחר רכב"
         description="לא ניתן להוסיף טיפול מכיוון שלא נבחר רכב. יש לבחור או להוסיף רכב תחילה."
-        icon="ph-wrench"
+        icon={Wrench}
       />
     );
   }
@@ -45,7 +41,7 @@ const AddMaintenancePage = observer(function AddMaintenancePage() {
 
     try {
       const result = await maintenanceStore.createMaintenance(
-        currentVehicleId,
+        vehicleId,
         payload
       );
 
@@ -53,7 +49,7 @@ const AddMaintenancePage = observer(function AddMaintenancePage() {
         vehicleStore.updateVehicleLocally(result.vehicle);
       }
 
-      navigate(`/vehicles/${currentVehicleId}/maintenances`);
+      navigate(`/vehicles/${vehicleId}/maintenances`);
     } catch (err) {
       setSubmitError(err.message || "שגיאה בשמירת הטיפול. נא לנסות שוב.");
     } finally {
@@ -62,7 +58,7 @@ const AddMaintenancePage = observer(function AddMaintenancePage() {
   };
 
   const handleCancel = () => {
-    navigate(`/vehicles/${currentVehicleId}/maintenances`);
+    navigate(`/vehicles/${vehicleId}/maintenances`);
   };
 
   return (
@@ -74,14 +70,14 @@ const AddMaintenancePage = observer(function AddMaintenancePage() {
             variant="light"
             radius="md"
             title="שגיאה"
-            icon={<i className="ph-warning-circle" aria-hidden="true" />}
+            icon={<WarningCircle size={20} aria-hidden="true" />}
           >
             {submitError}
           </Alert>
         )}
 
         <AddMaintenanceForm
-          vehicle={currentVehicle}
+          vehicle={vehicle}
           onSubmit={handleSubmit}
           onCancel={handleCancel}
           isSubmitting={isSubmitting}

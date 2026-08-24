@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { Alert, Modal, Stack } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
-import { useVehicleStore } from "../stores/VehicleStoreContext";
+import { useVehicleStore } from "../stores";
 import VehicleEditForm from "./VehicleEditForm";
+
 
 export default function EditVehicleModal({ opened, onClose, vehicle }) {
   const vehicleStore = useVehicleStore();

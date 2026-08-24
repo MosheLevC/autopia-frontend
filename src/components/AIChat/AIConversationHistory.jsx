@@ -13,8 +13,16 @@ import {
 } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 import { useState } from "react";
+import {
+  ArrowRight,
+  ChatCircleDots,
+  ClockCounterClockwise,
+  DotsThreeVertical,
+  Trash,
+  X,
+} from "@phosphor-icons/react";
 import { formatConversationTimestamp } from "../../utils/aiConversation";
-import AIConversationDeleteModal from "./AIConversationDeleteModal";
+import ConfirmDeleteModal from "../ConfirmDeleteModal";
 
 export default function AIConversationHistory({
   opened,
@@ -88,7 +96,7 @@ export default function AIConversationHistory({
         >
           <Group gap="xs" wrap="nowrap">
             <ThemeIcon variant="light" color="gray" radius="md" size="md">
-              <i className="ph-clock-counter-clockwise" aria-hidden="true" />
+              <ClockCounterClockwise size={18} aria-hidden="true" />
             </ThemeIcon>
             <Text fw={700} size="lg">
               שיחות קודמות
@@ -104,11 +112,11 @@ export default function AIConversationHistory({
             onClick={handleClose}
             aria-label={isMobile ? "חזרה לצ׳אט" : "סגירת שיחות קודמות"}
           >
-            <i
-              className={isMobile ? "ph-arrow-right" : "ph-x"}
-              aria-hidden="true"
-              style={{ fontSize: "1.2rem" }}
-            />
+            {isMobile ? (
+              <ArrowRight size={20} aria-hidden="true" />
+            ) : (
+              <X size={20} aria-hidden="true" />
+            )}
           </ActionIcon>
         </Group>
 
@@ -117,11 +125,7 @@ export default function AIConversationHistory({
             <Center h="100%" mih={180} px="md">
               <Stack align="center" gap="xs" ta="center">
                 <ThemeIcon size={44} radius="md" variant="light" color="gray">
-                  <i
-                    className="ph-chat-circle-dots"
-                    aria-hidden="true"
-                    style={{ fontSize: "1.35rem" }}
-                  />
+                  <ChatCircleDots size={24} aria-hidden="true" />
                 </ThemeIcon>
                 <Text size="sm" c="dimmed">
                   אין שיחות קודמות לרכב הזה
@@ -189,19 +193,13 @@ export default function AIConversationHistory({
                             className="ai-history-menu"
                             aria-label={`פעולות עבור השיחה: ${conversation.title}`}
                           >
-                            <i
-                              className="ph-dots-three-vertical"
-                              aria-hidden="true"
-                              style={{ fontSize: "1.2rem" }}
-                            />
+                            <DotsThreeVertical size={20} aria-hidden="true" />
                           </ActionIcon>
                         </Menu.Target>
                         <Menu.Dropdown dir="rtl">
                           <Menu.Item
                             color="red"
-                            leftSection={
-                              <i className="ph-trash" aria-hidden="true" />
-                            }
+                            leftSection={<Trash size={16} aria-hidden="true" />}
                             onClick={() =>
                               setConversationToDelete(conversation)
                             }
@@ -219,12 +217,31 @@ export default function AIConversationHistory({
         </Box>
       </Drawer>
 
-      <AIConversationDeleteModal
-        conversation={conversationToDelete}
-        isDeleting={isDeleting}
+      <ConfirmDeleteModal
+        opened={Boolean(conversationToDelete)}
         onClose={() => setConversationToDelete(null)}
         onConfirm={handleDeleteConfirm}
-      />
+        title="מחיקת שיחה"
+        message="האם למחוק את השיחה הזו?"
+        description="לא ניתן לשחזר אותה לאחר המחיקה."
+        confirmLabel="מחיקה"
+        isDeleting={isDeleting}
+        zIndex={230}
+      >
+        {conversationToDelete?.title && (
+          <Text
+            size="sm"
+            fw={650}
+            p="sm"
+            bg="gray.0"
+            bd="1px solid var(--mantine-color-gray-2)"
+            style={{ borderRadius: "var(--mantine-radius-md)" }}
+            dir="auto"
+          >
+            {conversationToDelete.title}
+          </Text>
+        )}
+      </ConfirmDeleteModal>
     </>
   );
 }

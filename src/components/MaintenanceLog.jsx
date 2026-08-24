@@ -1,18 +1,15 @@
 import { useNavigate } from "react-router";
 import { observer } from "mobx-react-lite";
+import { SimpleGrid, Stack } from "@mantine/core";
 import {
-  Badge,
-  Button,
-  Card,
-  Group,
-  SimpleGrid,
-  Stack,
-  Text,
-  ThemeIcon,
-  Title,
-} from "@mantine/core";
+  ClockCounterClockwise,
+  PlusCircle,
+  Wrench,
+} from "@phosphor-icons/react";
 import MaintenanceListItem from "./MaintenanceListItem";
 import AddBottomButton from "./common/AddButton";
+import SectionHeader from "./common/SectionHeader";
+import StatusCard from "./common/StatusCard";
 
 const MaintenanceLog = observer(function MaintenanceLog({
   vehicle,
@@ -44,79 +41,41 @@ const MaintenanceLog = observer(function MaintenanceLog({
       gap="lg"
       pb={{ base: sortedMaintenances.length > 0 ? 80 : 0, sm: 0 }}
     >
-      <Group justify="space-between" align="center">
-        <Group gap="xs" align="center">
-          <ThemeIcon size={36} radius="md" variant="light" color="blue">
-            <i
-              className="ph-clock-counter-clockwise"
-              style={{ fontSize: "1.3rem" }}
-              aria-hidden="true"
-            />
-          </ThemeIcon>
-          <Title order={2} size="h3" fw={700} c="gray.9">
-            היסטוריית טיפולים
-          </Title>
-        </Group>
-
-        <Group gap="sm" align="center">
-          {sortedMaintenances.length > 0 && (
-            <Badge variant="light" color="gray" size="lg" radius="md">
-              {sortedMaintenances.length} טיפולים
-            </Badge>
-          )}
-
-          {sortedMaintenances.length > 0 && (
-            <Button
-              visibleFrom="sm"
-              variant="filled"
-              size="sm"
-              radius="md"
-              onClick={handleAddClick}
-              leftSection={
-                <i className="ph-plus-circle" aria-hidden="true" />
+      <SectionHeader
+        icon={ClockCounterClockwise}
+        title="היסטוריית טיפולים"
+        badge={
+          sortedMaintenances.length > 0
+            ? `${sortedMaintenances.length} טיפולים`
+            : undefined
+        }
+        action={
+          sortedMaintenances.length > 0
+            ? {
+                label: "הוסף טיפול",
+                onClick: handleAddClick,
+                icon: PlusCircle,
+                variant: "filled",
+                size: "sm",
+                radius: "md",
+                visibleFrom: "sm",
               }
-            >
-              הוסף טיפול
-            </Button>
-          )}
-        </Group>
-      </Group>
+            : undefined
+        }
+      />
 
       {sortedMaintenances.length === 0 ? (
-        <Card withBorder radius="xl" shadow="xs" p="xl" bg="white">
-          <Stack align="center" gap="md" py="xl" ta="center">
-            <ThemeIcon size={64} radius="xl" variant="light" color="gray">
-              <i
-                className="ph-wrench"
-                style={{ fontSize: "2rem" }}
-                aria-hidden="true"
-              />
-            </ThemeIcon>
-            <Stack gap={4} align="center">
-              <Title order={4} fw={700} c="gray.9">
-                אין טיפולים להצגה
-              </Title>
-              <Text c="dimmed" size="sm" maw={360}>
-                עדיין לא נוספו טיפולים עבור רכב זה. הוסף את הטיפול הראשון כדי
-                להתחיל לעקוב אחר היסטוריית התחזוקה.
-              </Text>
-            </Stack>
-            <Button
-              variant="light"
-              onClick={handleAddClick}
-              leftSection={
-                <i
-                  className="ph-plus-circle"
-                  style={{ fontSize: "1.1rem" }}
-                  aria-hidden="true"
-                />
-              }
-              mt="xs"
-            >
-              הוסף טיפול ראשון
-            </Button>
-          </Stack>
-        </Card>
+        <StatusCard
+          icon={Wrench}
+          title="אין טיפולים להצגה"
+          description="עדיין לא נוספו טיפולים עבור רכב זה. הוסף את הטיפול הראשון כדי להתחיל לעקוב אחר היסטוריית התחזוקה."
+          action={{
+            label: "הוסף טיפול ראשון",
+            onClick: handleAddClick,
+            icon: PlusCircle,
+            variant: "light",
+          }}
+        />
       ) : (
         <SimpleGrid cols={{ base: 1, md: 2 }} spacing="md">
           {sortedMaintenances.map((item) => (

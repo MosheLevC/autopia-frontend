@@ -10,6 +10,7 @@ import {
   ThemeIcon,
   Title,
 } from "@mantine/core";
+import { NotePencil, PencilSimple } from "@phosphor-icons/react";
 import { getMaintenanceTypeInfo } from "../../constants/maintenanceConstants";
 import VehicleBanner from "../VehicleBanner";
 import MaintenanceMetricsGrid from "./MaintenanceMetricsGrid";
@@ -22,6 +23,7 @@ export default function MaintenanceDetailView({
   onBack,
 }) {
   const typeInfo = getMaintenanceTypeInfo(maintenance?.type);
+  const TypeIcon = typeInfo.icon;
 
   return (
     <Stack gap="md">
@@ -44,8 +46,8 @@ export default function MaintenanceDetailView({
               size="lg"
               radius="md"
               leftSection={
-                typeInfo.icon ? (
-                  <i className={typeInfo.icon} style={{ fontSize: "1rem" }} aria-hidden="true" />
+                TypeIcon ? (
+                  <TypeIcon size={14} aria-hidden="true" />
                 ) : undefined
               }
             >
@@ -63,7 +65,7 @@ export default function MaintenanceDetailView({
             <Stack gap="xs">
               <Group gap="xs" align="center">
                 <ThemeIcon size="sm" variant="transparent" color="blue">
-                  <i className="ph-note-pencil" style={{ fontSize: "1.1rem" }} aria-hidden="true" />
+                  <NotePencil size={18} aria-hidden="true" />
                 </ThemeIcon>
                 <Text fw={700} size="sm" c="gray.9">
                   הערות ותיאור
@@ -84,7 +86,7 @@ export default function MaintenanceDetailView({
               h={50}
               fw={700}
               onClick={onEdit}
-              leftSection={<i className="ph-pencil-simple" style={{ fontSize: "1.2rem" }} aria-hidden="true" />}
+              leftSection={<PencilSimple size={18} aria-hidden="true" />}
               shadow="sm"
             >
               עריכת טיפול

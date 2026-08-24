@@ -9,6 +9,7 @@ import {
   Text,
   ThemeIcon,
 } from "@mantine/core";
+import { ArrowsClockwise } from "@phosphor-icons/react";
 import {
   calculateRenewedDate,
   formatHebrewDate,
@@ -60,11 +61,7 @@ export default function ReminderRenewModal({
             radius="xl"
             style={{ flexShrink: 0 }}
           >
-            <i
-              className="ph-arrows-clockwise"
-              style={{ fontSize: "1.5rem" }}
-              aria-hidden="true"
-            />
+            <ArrowsClockwise size={24} aria-hidden="true" />
           </ThemeIcon>
           <Stack gap={4}>
             <Text fw={600} size="sm" c="gray.9">
@@ -123,9 +120,7 @@ export default function ReminderRenewModal({
             onClick={onConfirm}
             loading={isRenewing}
             radius="md"
-            leftSection={
-              <i className="ph-arrows-clockwise" aria-hidden="true" />
-            }
+            leftSection={<ArrowsClockwise size={18} aria-hidden="true" />}
           >
             אישור וחידוש תזכורת
           </Button>

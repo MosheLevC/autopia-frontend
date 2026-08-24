@@ -9,11 +9,13 @@ import {
   TextInput,
   Textarea,
 } from "@mantine/core";
+import { Check, Gauge } from "@phosphor-icons/react";
 import { MAINTENANCE_TYPES } from "../constants/maintenanceConstants";
 import AppDateInput from "./AppDateInput";
 import VehicleBanner from "./VehicleBanner";
 import MaintenancePartsPicker from "./AddMaintenance/MaintenancePartsPicker";
 import ConfirmDeleteModal from "./ConfirmDeleteModal";
+import FormActionButtons from "./common/FormActionButtons";
 
 export default function AddMaintenanceForm({
   vehicle,
@@ -190,11 +192,13 @@ export default function AddMaintenanceForm({
               <Group gap="xs" wrap="wrap">
                 {MAINTENANCE_TYPES.map((t) => {
                   const isSelected = type === t.value;
+                  const TypeIcon = t.icon;
                   return (
                     <Button
                       key={t.value}
                       type="button"
                       variant={isSelected ? "filled" : "default"}
+                      color={isSelected ? t.color : undefined}
                       radius="md"
                       size="sm"
                       onClick={() => {
@@ -202,10 +206,11 @@ export default function AddMaintenanceForm({
                         if (errors.type) setErrors((prev) => ({ ...prev, type: null }));
                       }}
                       leftSection={
-                        <i
-                          className={isSelected ? "ph-check" : t.icon}
-                          aria-hidden="true"
-                        />
+                        isSelected ? (
+                          <Check size={16} weight="bold" aria-hidden="true" />
+                        ) : TypeIcon ? (
+                          <TypeIcon size={16} aria-hidden="true" />
+                        ) : undefined
                       }
                     >
                       {t.label}
@@ -240,7 +245,7 @@ export default function AddMaintenanceForm({
                 if (errors.mileage) setErrors((prev) => ({ ...prev, mileage: null }));
               }}
               error={errors.mileage}
-              leftSection={<i className="ph-gauge" aria-hidden="true" />}
+              leftSection={<Gauge size={18} aria-hidden="true" />}
               suffix=" ק״מ"
               thousandSeparator=","
               allowDecimal={false}
@@ -283,48 +288,15 @@ export default function AddMaintenanceForm({
               radius="md"
             />
 
-            <Stack gap="xs" mt="md">
-              <Button
-                type="submit"
-                size="lg"
-                radius="lg"
-                h={50}
-                fw={700}
-                loading={isSubmitting}
-                disabled={isDeleting}
-                shadow="sm"
-              >
-                {isEdit ? "שמירת שינויים" : "שמירת טיפול"}
-              </Button>
-
-              <Button
-                type="button"
-                variant="outline"
-                size="lg"
-                radius="lg"
-                h={50}
-                onClick={onCancel}
-                disabled={isSubmitting || isDeleting}
-              >
-                ביטול
-              </Button>
-
-              {isEdit && onDelete && (
-                <Button
-                  type="button"
-                  variant="light"
-                  color="red"
-                  size="lg"
-                  radius="lg"
-                  h={50}
-                  onClick={() => setDeleteModalOpened(true)}
-                  leftSection={<i className="ph-trash" style={{ fontSize: "1.2rem" }} aria-hidden="true" />}
-                  disabled={isSubmitting || isDeleting}
-                >
-                  מחיקת טיפול
-                </Button>
-              )}
-            </Stack>
+            <FormActionButtons
+              isEdit={isEdit}
+              submitLabel={isEdit ? "שמירת שינויים" : "שמירת טיפול"}
+              deleteLabel="מחיקת טיפול"
+              onCancel={onCancel}
+              onDelete={onDelete ? () => setDeleteModalOpened(true) : undefined}
+              isSubmitting={isSubmitting}
+              isDeleting={isDeleting}
+            />
           </Stack>
         </form>
       </Card>

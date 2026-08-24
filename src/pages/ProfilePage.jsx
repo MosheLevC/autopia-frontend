@@ -4,8 +4,9 @@ import { useDisclosure } from "@mantine/hooks";
 import { observer } from "mobx-react-lite";
 import ChangePasswordModal from "../components/ChangePasswordModal";
 import UserProfile from "../components/UserProfile";
-import { useHeaderTitle } from "../context/HeaderContext";
-import { useAuth } from "../stores/AuthStoreContext";
+import { useHeaderTitle } from "../hooks/useHeader";
+import { useAuth } from "../stores";
+
 
 const ProfilePage = observer(function ProfilePage() {
   useHeaderTitle("הפרופיל שלי");

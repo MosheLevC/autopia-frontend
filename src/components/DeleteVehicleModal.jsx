@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { Alert, Button, Group, Modal, Paper, Stack, Text } from "@mantine/core";
-import { useVehicleStore } from "../stores/VehicleStoreContext";
+import { useVehicleStore } from "../stores";
 import LicensePlate from "./LicensePlate/LicensePlate";
+
 
 export default function DeleteVehicleModal({
   opened,

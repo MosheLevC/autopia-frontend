@@ -18,12 +18,21 @@ import {
   Tooltip,
   UnstyledButton,
 } from "@mantine/core";
+import {
+  CaretDown,
+  WarningCircle,
+  ArrowClockwise,
+  PencilSimple,
+  Car,
+  Plus,
+} from "@phosphor-icons/react";
 import HomeVehicleCard from "./HomeVehicleCard";
 import EditVehicleModal from "./EditVehicleModal";
 import NoVehicleSelected from "./NoVehicleSelected";
 import { formatDateToDisplay } from "../utils/plateUtils";
 import { getAdditionalVehicleDetails } from "../utils/governmentVehicleDetails";
-import { useVehicleStore } from "../stores/VehicleStoreContext";
+import { useVehicleStore } from "../stores";
+
 
 const SECTION_CARD_PROPS = {
   withBorder: true,
@@ -85,13 +94,14 @@ function AdditionalVehicleDetails({ vehicle }) {
             פרטים נוספים
           </Text>
           <ThemeIcon variant="transparent" color="gray" size="sm">
-            <i
-              className="ph-bold ph-caret-down"
-              aria-hidden="true"
+            <CaretDown
+              size={16}
+              weight="bold"
               style={{
                 transition: "transform 150ms ease",
                 transform: opened ? "rotate(180deg)" : "rotate(0deg)",
               }}
+              aria-hidden="true"
             />
           </ThemeIcon>
         </Group>
@@ -151,10 +161,7 @@ const ActiveVehicleSection = observer(function ActiveVehicleSection() {
       >
         <Stack align="center" gap="sm" py="lg" ta="center">
           <ThemeIcon color="red" variant="light" size={48} radius="xl">
-            <i
-              className="ph-bold ph-warning-circle"
-              aria-hidden="true"
-            />
+            <WarningCircle size={28} weight="bold" aria-hidden="true" />
           </ThemeIcon>
           <Title id="active-vehicle-error-title" order={2} size="h3">
             לא הצלחנו לטעון את הרכבים
@@ -167,9 +174,7 @@ const ActiveVehicleSection = observer(function ActiveVehicleSection() {
             color="red"
             mt="xs"
             onClick={() => vehicleStore.fetchVehicles().catch(() => {})}
-            leftSection={
-              <i className="ph-bold ph-arrow-clockwise" aria-hidden="true" />
-            }
+            leftSection={<ArrowClockwise size={18} weight="bold" aria-hidden="true" />}
           >
             נסה שוב
           </Button>
@@ -183,10 +188,10 @@ const ActiveVehicleSection = observer(function ActiveVehicleSection() {
       <NoVehicleSelected
         title="עדיין לא הוספת רכב"
         description="הוספת רכב תאפשר לך לראות כאן את כל הפרטים החשובים."
-        icon="ph-car"
+        icon={Car}
         actionLabel="הוספת רכב"
         actionPath="/vehicles/add"
-        actionIcon="ph-plus"
+        actionIcon={Plus}
       />
     );
   }
@@ -212,7 +217,7 @@ const ActiveVehicleSection = observer(function ActiveVehicleSection() {
                 onClick={() => setEditOpened(true)}
                 aria-label="עריכת פרטי הרכב"
               >
-                <i className="ph-bold ph-pencil-simple" aria-hidden="true" />
+                <PencilSimple size={20} weight="bold" aria-hidden="true" />
               </ActionIcon>
             </Tooltip>
           </Group>

@@ -1,7 +1,8 @@
 import { Navigate, useLocation } from "react-router";
 import { observer } from "mobx-react-lite";
-import { useAuth } from "../stores/AuthStoreContext";
 import { Center, Loader } from "@mantine/core";
+import { useAuth } from "../stores";
+
 
 export const ProtectedRoute = observer(function ProtectedRoute({ children }) {
   const auth = useAuth();

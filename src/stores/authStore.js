@@ -231,3 +231,5 @@ export function createAuthStore() {
 }
 
 export const authStore = createAuthStore();
+
+export const useAuth = () => authStore;

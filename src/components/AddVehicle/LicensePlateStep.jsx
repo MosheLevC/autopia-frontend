@@ -9,6 +9,13 @@ import {
   Text,
   Title,
 } from "@mantine/core";
+import {
+  Car,
+  ClipboardText,
+  PencilSimpleLine,
+  MagnifyingGlass,
+  PencilSimple,
+} from "@phosphor-icons/react";
 import vehicleService from "../../services/vehicleService";
 import {
   cleanLicensePlate,
@@ -21,17 +28,17 @@ const GUIDANCE_ITEMS = [
   {
     title: "נמצא את פרטי הרכב אוטומטית",
     desc: "נשלוף מידע ממאגרי המידע הרשמיים ונציג לך את פרטי הרכב.",
-    icon: "ph-car",
+    Icon: Car,
   },
   {
     title: "נמלא עבורך שדות בסיסיים",
     desc: "נתוני הרכב יוזנו אוטומטית כדי לחסוך לך זמן ומאמץ.",
-    icon: "ph-clipboard-text",
+    Icon: ClipboardText,
   },
   {
     title: "תוכל לערוך ולשפר אחר כך",
     desc: "תמיד תוכל להוסיף, לשנות ולעדכן כל פרט בהמשך.",
-    icon: "ph-pencil-simple-line",
+    Icon: PencilSimpleLine,
   },
 ];
 
@@ -171,12 +178,7 @@ export default function LicensePlateStep({
             fullWidth
             loading={isSearching}
             onClick={handlePlateSearch}
-            leftSection={
-              <i
-                className="ph-bold ph-magnifying-glass"
-                style={{ fontSize: 18 }}
-              />
-            }
+            leftSection={<MagnifyingGlass size={18} weight="bold" aria-hidden="true" />}
           >
             חיפוש רכב
           </Button>
@@ -190,12 +192,7 @@ export default function LicensePlateStep({
             fullWidth
             onClick={handleManualContinue}
             disabled={isSearching}
-            leftSection={
-              <i
-                className="ph-bold ph-pencil-simple"
-                style={{ fontSize: 18 }}
-              />
-            }
+            leftSection={<PencilSimple size={18} weight="bold" aria-hidden="true" />}
           >
             הזנה ידנית
           </Button>

@@ -13,6 +13,12 @@ import {
 } from "@mantine/core";
 import { useNavigate } from "react-router";
 import {
+  ArrowLeft,
+  ArrowsClockwise,
+  PencilSimple,
+  Trash,
+} from "@phosphor-icons/react";
+import {
   formatHebrewDate,
   getReminderFrequencyInfo,
   getReminderStatus,
@@ -32,6 +38,7 @@ export default function ReminderCard({
   if (!reminder) return null;
 
   const typeInfo = getReminderTypeInfo(reminder.type);
+  const TypeIcon = typeInfo.icon;
   const frequencyInfo = getReminderFrequencyInfo(reminder.frequency);
   const status = getReminderStatus(reminder.dueDate);
   const formattedDate = formatHebrewDate(reminder.dueDate);
@@ -71,11 +78,9 @@ export default function ReminderCard({
                   color="blue"
                   style={{ flexShrink: 0 }}
                 >
-                  <i
-                    className={typeInfo.icon}
-                    style={{ fontSize: "1.35rem" }}
-                    aria-hidden="true"
-                  />
+                  {TypeIcon ? (
+                    <TypeIcon size={20} aria-hidden="true" />
+                  ) : null}
                 </ThemeIcon>
                 <Stack gap={1}>
                   <Text size="sm" fw={700} c="gray.9">
@@ -122,7 +127,7 @@ export default function ReminderCard({
               size="xs"
               radius="md"
               onClick={handleDetailClick}
-              rightSection={<i className="ph-arrow-left" aria-hidden="true" />}
+              rightSection={<ArrowLeft size={14} aria-hidden="true" />}
             >
               פרטי תזכורת
             </Button>
@@ -134,13 +139,7 @@ export default function ReminderCard({
                 size="xs"
                 radius="md"
                 onClick={() => onRenewClick(reminder)}
-                leftSection={
-                  <i
-                    className="ph-arrows-clockwise"
-                    style={{ fontSize: "1rem" }}
-                    aria-hidden="true"
-                  />
-                }
+                leftSection={<ArrowsClockwise size={16} aria-hidden="true" />}
               >
                 חדש תזכורת
               </Button>
@@ -172,11 +171,9 @@ export default function ReminderCard({
                 color="blue"
                 style={{ flexShrink: 0 }}
               >
-                <i
-                  className={typeInfo.icon}
-                  style={{ fontSize: "1.6rem" }}
-                  aria-hidden="true"
-                />
+                {TypeIcon ? (
+                  <TypeIcon size={24} aria-hidden="true" />
+                ) : null}
               </ThemeIcon>
 
               <Stack gap={2}>
@@ -247,11 +244,7 @@ export default function ReminderCard({
                 onClick={handleEditClick}
                 aria-label="עריכת תזכורת"
               >
-                <i
-                  className="ph-pencil-simple"
-                  style={{ fontSize: "1.2rem" }}
-                  aria-hidden="true"
-                />
+                <PencilSimple size={18} aria-hidden="true" />
               </ActionIcon>
             </Tooltip>
 
@@ -265,11 +258,7 @@ export default function ReminderCard({
                   onClick={() => onDeleteClick(reminder)}
                   aria-label="מחיקת תזכורת"
                 >
-                  <i
-                    className="ph-trash"
-                    style={{ fontSize: "1.2rem" }}
-                    aria-hidden="true"
-                  />
+                  <Trash size={18} aria-hidden="true" />
                 </ActionIcon>
               </Tooltip>
             )}
@@ -282,13 +271,7 @@ export default function ReminderCard({
               size="sm"
               radius="md"
               onClick={() => onRenewClick(reminder)}
-              leftSection={
-                <i
-                  className="ph-arrows-clockwise"
-                  style={{ fontSize: "1.1rem" }}
-                  aria-hidden="true"
-                />
-              }
+              leftSection={<ArrowsClockwise size={18} aria-hidden="true" />}
             >
               חדש תזכורת
             </Button>

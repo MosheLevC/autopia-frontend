@@ -1,6 +1,7 @@
 import { Container, Grid, Stack } from "@mantine/core";
-import { useHeaderTitle } from "../context/HeaderContext";
+import { useHeaderTitle } from "../hooks/useHeader";
 import ActiveVehicleSection from "../components/ActiveVehicleSection";
+
 import MileageCard from "../components/MileageCard";
 import RemindersSection from "../components/RemindersSection";
 import RecentMaintenanceSection from "../components/RecentMaintenanceSection";

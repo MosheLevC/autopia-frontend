@@ -8,6 +8,7 @@ import {
   Text,
   TextInput,
 } from "@mantine/core";
+import { ArrowsClockwise, Check } from "@phosphor-icons/react";
 import {
   REMINDER_FREQUENCIES,
   REMINDER_TYPES,
@@ -16,6 +17,7 @@ import {
 import AppDateInput from "./AppDateInput";
 import VehicleBanner from "./VehicleBanner";
 import ConfirmDeleteModal from "./ConfirmDeleteModal";
+import FormActionButtons from "./common/FormActionButtons";
 
 export default function AddReminderForm({
   vehicle,
@@ -150,7 +152,9 @@ export default function AddReminderForm({
                 <Group gap="xs">
                   <Badge size="lg" radius="md" variant="light" color="blue">
                     <Group gap={6}>
-                      <i className={currentTypeInfo.icon} aria-hidden="true" />
+                      {currentTypeInfo?.icon ? (
+                        <currentTypeInfo.icon size={16} aria-hidden="true" />
+                      ) : null}
                       <span>{currentTypeInfo.label}</span>
                     </Group>
                   </Badge>
@@ -159,6 +163,7 @@ export default function AddReminderForm({
                 <Group gap="xs" wrap="wrap">
                   {availableTypes.map((t) => {
                     const isSelected = type === t.value;
+                    const TypeIcon = t.icon;
                     return (
                       <Button
                         key={t.value}
@@ -168,10 +173,11 @@ export default function AddReminderForm({
                         size="sm"
                         onClick={() => handleTypeSelect(t.value)}
                         leftSection={
-                          <i
-                            className={isSelected ? "ph-check" : t.icon}
-                            aria-hidden="true"
-                          />
+                          isSelected ? (
+                            <Check size={16} weight="bold" aria-hidden="true" />
+                          ) : TypeIcon ? (
+                            <TypeIcon size={16} aria-hidden="true" />
+                          ) : null
                         }
                       >
                         {t.label}
@@ -242,12 +248,11 @@ export default function AddReminderForm({
                           }
                         }}
                         leftSection={
-                          <i
-                            className={
-                              isSelected ? "ph-check" : "ph-arrows-clockwise"
-                            }
-                            aria-hidden="true"
-                          />
+                          isSelected ? (
+                            <Check size={16} weight="bold" aria-hidden="true" />
+                          ) : (
+                            <ArrowsClockwise size={16} aria-hidden="true" />
+                          )
                         }
                       >
                         {f.label}
@@ -264,54 +269,15 @@ export default function AddReminderForm({
               </Stack>
             )}
 
-            <Stack gap="xs" mt="md">
-              <Button
-                type="submit"
-                size="lg"
-                radius="lg"
-                h={50}
-                fw={700}
-                loading={isSubmitting}
-                disabled={isDeleting}
-                shadow="sm"
-              >
-                {isEdit ? "שמירת שינויים" : "שמירת תזכורת"}
-              </Button>
-
-              <Button
-                type="button"
-                variant="outline"
-                size="lg"
-                radius="lg"
-                h={50}
-                onClick={onCancel}
-                disabled={isSubmitting || isDeleting}
-              >
-                ביטול
-              </Button>
-
-              {isEdit && onDelete && (
-                <Button
-                  type="button"
-                  variant="light"
-                  color="red"
-                  size="lg"
-                  radius="lg"
-                  h={50}
-                  onClick={() => setDeleteModalOpened(true)}
-                  leftSection={
-                    <i
-                      className="ph-trash"
-                      style={{ fontSize: "1.2rem" }}
-                      aria-hidden="true"
-                    />
-                  }
-                  disabled={isSubmitting || isDeleting}
-                >
-                  מחיקת תזכורת
-                </Button>
-              )}
-            </Stack>
+            <FormActionButtons
+              isEdit={isEdit}
+              submitLabel={isEdit ? "שמירת שינויים" : "שמירת תזכורת"}
+              deleteLabel="מחיקת תזכורת"
+              onCancel={onCancel}
+              onDelete={onDelete ? () => setDeleteModalOpened(true) : undefined}
+              isSubmitting={isSubmitting}
+              isDeleting={isDeleting}
+            />
           </Stack>
         </form>
       </Card>

@@ -198,3 +198,6 @@ export function createVehicleStore() {
 
 export const vehicleStore = createVehicleStore();
 
+export const useVehicleStore = () => vehicleStore;
+
+

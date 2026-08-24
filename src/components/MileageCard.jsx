@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { observer } from "mobx-react-lite";
 import { Button, Card, Group, Stack, Text, Title } from "@mantine/core";
-import { useVehicleStore } from "../stores/VehicleStoreContext";
+import { CheckCircle, Gauge } from "@phosphor-icons/react";
+import { useVehicleStore } from "../stores";
 import MileageUpdateModal from "./MileageUpdateModal";
+
 
 const formatMileage = (value) => Number(value).toLocaleString("he-IL");
 
@@ -57,7 +59,7 @@ const MileageCard = observer(function MileageCard() {
             </Text>
             {showSuccess && (
               <Group gap={6} c="green.7">
-                <i className="ph-bold ph-check-circle" aria-hidden="true" />
+                <CheckCircle size={18} weight="bold" aria-hidden="true" />
                 <Text size="sm" fw={600}>
                   הקילומטראז&apos; עודכן בהצלחה
                 </Text>
@@ -67,9 +69,7 @@ const MileageCard = observer(function MileageCard() {
 
           <Button
             onClick={handleOpen}
-            leftSection={
-              <i className="ph-bold ph-gauge" aria-hidden="true" />
-            }
+            leftSection={<Gauge size={18} weight="bold" aria-hidden="true" />}
           >
             עדכון קילומטראז&apos;
           </Button>

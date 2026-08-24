@@ -8,6 +8,7 @@ import {
   Text,
   Tooltip,
 } from "@mantine/core";
+import { Check, Info, Plus, X } from "@phosphor-icons/react";
 import {
   getPartLabel,
   QUICK_PARTS,
@@ -36,7 +37,7 @@ export default function MaintenancePartsPicker({
           </Text>
           <Tooltip label="בחר את החלקים שהוחלפו או טופלו" position="top" withArrow>
             <ActionIcon variant="transparent" size="xs" color="gray" aria-label="מידע">
-              <i className="ph-info" style={{ fontSize: "1rem" }} aria-hidden="true" />
+              <Info size={16} aria-hidden="true" />
             </ActionIcon>
           </Tooltip>
         </Group>
@@ -54,7 +55,7 @@ export default function MaintenancePartsPicker({
                 onClick={() => onTogglePart(part.value)}
                 leftSection={
                   isSelected ? (
-                    <i className="ph-check" aria-hidden="true" />
+                    <Check size={16} weight="bold" aria-hidden="true" />
                   ) : undefined
                 }
               >
@@ -81,7 +82,7 @@ export default function MaintenancePartsPicker({
                   }}
                   aria-label="הסר חלק"
                 >
-                  <i className="ph-x" aria-hidden="true" />
+                  <X size={14} aria-hidden="true" />
                 </ActionIcon>
               }
             >
@@ -95,7 +96,7 @@ export default function MaintenancePartsPicker({
             size="sm"
             radius="md"
             onClick={() => setModalOpened(true)}
-            leftSection={<i className="ph-plus" aria-hidden="true" />}
+            leftSection={<Plus size={16} weight="bold" aria-hidden="true" />}
           >
             חלקים נוספים
           </Button>

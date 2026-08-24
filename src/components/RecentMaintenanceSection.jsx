@@ -7,15 +7,21 @@ import {
   Center,
   Group,
   Loader,
-  Paper,
   Stack,
   Text,
-  ThemeIcon,
-  Title,
 } from "@mantine/core";
+import {
+  ArrowClockwise,
+  CaretLeft,
+  ClockCounterClockwise,
+  PlusCircle,
+  WarningCircle,
+  Wrench,
+} from "@phosphor-icons/react";
 import MaintenanceListItem from "./MaintenanceListItem";
-import { useMaintenanceStore } from "../stores/MaintenanceStoreContext";
-import { useVehicleStore } from "../stores/VehicleStoreContext";
+import SectionHeader from "./common/SectionHeader";
+import StatusCard from "./common/StatusCard";
+import { useMaintenanceStore, useVehicleStore } from "../stores";
 
 const SECTION_CARD_PROPS = {
   withBorder: true,
@@ -79,36 +85,16 @@ const RecentMaintenanceSection = observer(function RecentMaintenanceSection() {
       aria-labelledby="recent-maintenance-title"
     >
       <Stack gap="md">
-        <Group justify="space-between" align="center" wrap="nowrap" gap="sm">
-          <Group gap="xs" align="center" wrap="nowrap">
-            <ThemeIcon size={36} radius="md" variant="light" color="blue">
-              <i
-                className="ph-clock-counter-clockwise"
-                style={{ fontSize: "1.3rem" }}
-                aria-hidden="true"
-              />
-            </ThemeIcon>
-            <Title
-              id="recent-maintenance-title"
-              order={2}
-              size="h3"
-              fw={700}
-              c="gray.9"
-            >
-              טיפולים אחרונים
-            </Title>
-          </Group>
-
-          <Button
-            variant="subtle"
-            size="compact-sm"
-            onClick={navigateToHistory}
-            rightSection={<i className="ph-caret-left" aria-hidden="true" />}
-            style={{ flexShrink: 0 }}
-          >
-            כל הטיפולים
-          </Button>
-        </Group>
+        <SectionHeader
+          icon={ClockCounterClockwise}
+          title="טיפולים אחרונים"
+          titleId="recent-maintenance-title"
+          action={{
+            label: "כל הטיפולים",
+            onClick: navigateToHistory,
+            rightSection: <CaretLeft size={16} aria-hidden="true" />,
+          }}
+        />
 
         {isLoading && (
           <Center py="xl" role="status">
@@ -122,67 +108,56 @@ const RecentMaintenanceSection = observer(function RecentMaintenanceSection() {
         )}
 
         {hasError && (
-          <Paper withBorder radius="lg" p="md" bg="red.0">
-            <Stack align="center" gap="sm" ta="center">
-              <ThemeIcon color="red" variant="light" size={40} radius="xl">
-                <i className="ph-warning-circle" aria-hidden="true" />
-              </ThemeIcon>
-              <Stack gap={2} align="center">
-                <Text fw={700} size="sm">
-                  לא הצלחנו לטעון את הטיפולים האחרונים
-                </Text>
-                <Text size="xs" c="dimmed">
-                  {maintenanceStore.error}
-                </Text>
-              </Stack>
-              <Group gap="xs" justify="center">
+          <StatusCard
+            variant="paper"
+            icon={WarningCircle}
+            iconColor="red"
+            iconSize={24}
+            iconThemeSize={40}
+            title="לא הצלחנו לטעון את הטיפולים האחרונים"
+            description={maintenanceStore.error}
+            bg="red.0"
+            gap="sm"
+            py="sm"
+            actions={
+              <>
                 <Button
                   variant="light"
                   color="red"
                   size="sm"
                   onClick={retryFetch}
-                  leftSection={
-                    <i className="ph-arrow-clockwise" aria-hidden="true" />
-                  }
+                  leftSection={<ArrowClockwise size={16} aria-hidden="true" />}
                 >
                   נסה שוב
                 </Button>
                 <Button variant="default" size="sm" onClick={navigateToAdd}>
                   הוספת טיפול
                 </Button>
-              </Group>
-            </Stack>
-          </Paper>
+              </>
+            }
+          />
         )}
 
         {hasCurrentVehicleData &&
           !isLoading &&
           !hasError &&
           recentMaintenances.length === 0 && (
-            <Paper withBorder radius="lg" p="md" bg="gray.0">
-              <Stack align="center" gap="sm" py="xs" ta="center">
-                <ThemeIcon size={44} radius="xl" variant="light" color="gray">
-                  <i
-                    className="ph-wrench"
-                    style={{ fontSize: "1.35rem" }}
-                    aria-hidden="true"
-                  />
-                </ThemeIcon>
-                <Text size="sm" c="dimmed">
-                  עדיין לא נוספו טיפולים לרכב הזה
-                </Text>
-                <Button
-                  variant="light"
-                  size="sm"
-                  onClick={navigateToAdd}
-                  leftSection={
-                    <i className="ph-plus-circle" aria-hidden="true" />
-                  }
-                >
-                  הוספת טיפול ראשון
-                </Button>
-              </Stack>
-            </Paper>
+            <StatusCard
+              variant="paper"
+              icon={Wrench}
+              iconSize={22}
+              iconThemeSize={44}
+              description="עדיין לא נוספו טיפולים לרכב הזה"
+              py="xs"
+              gap="sm"
+              action={{
+                label: "הוספת טיפול ראשון",
+                onClick: navigateToAdd,
+                icon: PlusCircle,
+                variant: "light",
+                size: "sm",
+              }}
+            />
           )}
 
         {hasCurrentVehicleData &&
@@ -209,9 +184,7 @@ const RecentMaintenanceSection = observer(function RecentMaintenanceSection() {
                   size="sm"
                   w={{ base: "100%", sm: "auto" }}
                   onClick={navigateToAdd}
-                  leftSection={
-                    <i className="ph-plus-circle" aria-hidden="true" />
-                  }
+                  leftSection={<PlusCircle size={16} aria-hidden="true" />}
                 >
                   הוספת טיפול
                 </Button>

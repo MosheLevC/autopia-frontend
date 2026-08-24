@@ -13,6 +13,7 @@ import {
   TextInput,
   Title,
 } from "@mantine/core";
+import { CaretDown, Info, PencilSimple } from "@phosphor-icons/react";
 import {
   cleanLicensePlate,
   formatLicensePlate,
@@ -196,8 +197,9 @@ export default function VehicleDetailsStep({
                       size="compact-sm"
                       onClick={onChangePlate}
                       leftSection={
-                        <i
-                          className="ph-bold ph-pencil-simple"
+                        <PencilSimple
+                          size={14}
+                          weight="bold"
                           aria-hidden="true"
                         />
                       }
@@ -249,7 +251,7 @@ export default function VehicleDetailsStep({
                     maxDropdownHeight={240}
                     inputMode="numeric"
                     rightSection={
-                      <i className="ph-bold ph-caret-down" aria-hidden="true" />
+                      <CaretDown size={14} weight="bold" aria-hidden="true" />
                     }
                     rightSectionPointerEvents="none"
                     error={fieldErrors.year}
@@ -285,7 +287,7 @@ export default function VehicleDetailsStep({
 
                 {isGovernmentAssisted && (
                   <Group gap="xs" justify="center">
-                    <i className="ph-bold ph-info" aria-hidden="true" />
+                    <Info size={16} weight="bold" aria-hidden="true" />
                     <Text size="xs" c="dimmed">
                       הפרטים אותרו במאגר הממשלתי וניתנים לעריכה
                     </Text>

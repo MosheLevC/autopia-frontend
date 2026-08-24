@@ -1,10 +1,11 @@
 import { useEffect } from "react";
 import { Container } from "@mantine/core";
-import { useParams } from "react-router";
 import { observer } from "mobx-react-lite";
-import { useHeaderTitle } from "../context/HeaderContext";
-import { useVehicleStore } from "../stores/VehicleStoreContext";
-import { useMaintenanceStore } from "../stores/MaintenanceStoreContext";
+import { Wrench } from "@phosphor-icons/react";
+import { useHeaderTitle } from "../hooks/useHeader";
+import { useCurrentVehicle } from "../hooks/useCurrentVehicle";
+import { useMaintenanceStore } from "../stores";
+
 import NoVehicleSelected from "../components/NoVehicleSelected";
 import MaintenanceLog from "../components/MaintenanceLog";
 import PageLoading from "../components/common/PageLoading";
@@ -12,32 +13,26 @@ import LoadErrorCard from "../components/common/LoadErrorCard";
 
 const MaintenancesPage = observer(function MaintenancesPage() {
   useHeaderTitle("יומן טיפולים");
-  const { vehicleId } = useParams();
-  const vehicleStore = useVehicleStore();
+  const { vehicle, vehicleId, isVehicleLoading, hasNoVehicle } =
+    useCurrentVehicle();
   const maintenanceStore = useMaintenanceStore();
 
-  const currentVehicle = vehicleId
-    ? vehicleStore.vehicles.find((v) => v._id === vehicleId)
-    : vehicleStore.activeVehicle;
-
-  const currentVehicleId = currentVehicle?._id;
-
   useEffect(() => {
-    if (currentVehicleId) {
-      maintenanceStore.fetchMaintenances(currentVehicleId).catch(() => {});
+    if (vehicleId) {
+      maintenanceStore.fetchMaintenances(vehicleId).catch(() => {});
     }
-  }, [currentVehicleId, maintenanceStore]);
+  }, [vehicleId, maintenanceStore]);
 
-  if (vehicleStore.isLoading && vehicleStore.vehicles.length === 0) {
+  if (isVehicleLoading) {
     return <PageLoading message="טוען את פרטי הרכב..." />;
   }
 
-  if (!currentVehicle) {
+  if (hasNoVehicle) {
     return (
       <NoVehicleSelected
         title="לא נבחר רכב"
         description="לא ניתן להציג את יומן הטיפולים מכיוון שלא נבחר רכב. יש לבחור רכב מתוך רשימת הרכבים שלך."
-        icon="ph-wrench"
+        icon={Wrench}
       />
     );
   }
@@ -53,7 +48,7 @@ const MaintenancesPage = observer(function MaintenancesPage() {
           title="לא הצלחנו לטעון את יומן הטיפולים"
           error={maintenanceStore.error}
           onRetry={() =>
-            maintenanceStore.fetchMaintenances(currentVehicleId).catch(() => {})
+            maintenanceStore.fetchMaintenances(vehicleId).catch(() => {})
           }
         />
       </Container>
@@ -63,7 +58,7 @@ const MaintenancesPage = observer(function MaintenancesPage() {
   return (
     <Container size="lg" py="md">
       <MaintenanceLog
-        vehicle={currentVehicle}
+        vehicle={vehicle}
         maintenances={maintenanceStore.maintenances}
       />
     </Container>
