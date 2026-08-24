@@ -25,8 +25,8 @@ const AIChatPage = observer(function AIChatPage() {
     conversations,
     deleteConversation: deleteStoredConversation,
     loadConversation: getStoredConversation,
-    persistMessage,
     refreshConversations,
+    sendMessage: sendStoredMessage,
     startNewConversation,
   } = useAIConversationHistory({ vehicleId: activeVehicleId });
   const {
@@ -35,7 +35,7 @@ const AIChatPage = observer(function AIChatPage() {
     sendMessage,
     clearConversation,
     loadConversation: loadChatConversation,
-  } = useAIChat({ vehicle: activeVehicle, persistMessage });
+  } = useAIChat({ vehicle: activeVehicle, sendTurn: sendStoredMessage });
 
   const handleOpenHistory = () => {
     void refreshConversations();
