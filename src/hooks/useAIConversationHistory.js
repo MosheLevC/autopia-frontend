@@ -44,7 +44,7 @@ export default function useAIConversationHistory({
     }
 
     try {
-      const conversations = await repository.listConversations(contextKey);
+      const conversations = await repository.listConversations();
 
       if (
         historyRequestIdRef.current !== requestId ||
@@ -91,8 +91,7 @@ export default function useAIConversationHistory({
 
         if (
           operationVersionRef.current !== operationVersion ||
-          contextKeyRef.current !== contextKey ||
-          conversation.vehicleId !== contextKey
+          contextKeyRef.current !== contextKey
         ) {
           return null;
         }
@@ -109,91 +108,76 @@ export default function useAIConversationHistory({
     [contextKey, repository, setActiveConversationRecord],
   );
 
-  const persistMessage = useCallback(
-    async ({ role, content }) => {
+  const sendMessage = useCallback(
+    async (content) => {
       if (!contextKey) {
-        throw new Error("A vehicle is required to persist a conversation");
+        throw new Error("A vehicle is required to send a message");
       }
 
       const operationVersion = operationVersionRef.current;
       const activeRecord = activeConversationRef.current;
-      let conversationId =
+      const conversationId =
         activeRecord.contextKey === contextKey ? activeRecord.id : null;
-      let createdConversation = null;
 
-      if (!conversationId) {
-        if (role !== "user") {
-          throw new Error("A conversation must begin with a user message");
-        }
-
-        createdConversation = await repository.createConversation({
-          title: createConversationTitle(content),
-          vehicleId: contextKey,
+      try {
+        const result = await repository.sendMessage({
+          message: content,
+          ...(conversationId
+            ? { conversationId }
+            : {
+                title: createConversationTitle(content),
+                vehicleId: contextKey,
+              }),
         });
-        conversationId = createdConversation.id;
+
+        if (!conversationId && result.conversation.vehicleId !== contextKey) {
+          throw new Error("Chat response vehicle does not match active vehicle");
+        }
 
         if (
           operationVersionRef.current === operationVersion &&
           contextKeyRef.current === contextKey
         ) {
-          setActiveConversationRecord({ contextKey, id: conversationId });
+          setActiveConversationRecord({
+            contextKey,
+            id: result.conversation.id,
+          });
           setHistory((current) => {
             if (current.contextKey !== contextKey) return current;
 
             const conversations = current.conversations.filter(
-              (conversation) => conversation.id !== conversationId,
+              (conversation) =>
+                conversation.id !== result.conversation.id,
             );
 
             return {
               contextKey,
               conversations: sortByRecentActivity([
-                createdConversation,
+                result.conversation,
                 ...conversations,
               ]),
             };
           });
         }
+
+        return result;
+      } catch (error) {
+        if (
+          operationVersionRef.current === operationVersion &&
+          contextKeyRef.current === contextKey
+        ) {
+          void refreshConversations();
+        }
+
+        throw error;
       }
-
-      const message = await repository.appendMessage(conversationId, {
-        role,
-        content,
-      });
-
-      if (
-        operationVersionRef.current === operationVersion &&
-        contextKeyRef.current === contextKey
-      ) {
-        setHistory((current) => {
-          if (current.contextKey !== contextKey) return current;
-
-          const existingConversation = current.conversations.find(
-            (conversation) => conversation.id === conversationId,
-          );
-          const conversation = {
-            ...(createdConversation || existingConversation),
-            id: conversationId,
-            vehicleId: contextKey,
-            lastMessageAt: message.createdAt,
-            updatedAt: message.createdAt,
-          };
-          const conversations = current.conversations.filter(
-            (item) => item.id !== conversationId,
-          );
-
-          return {
-            contextKey,
-            conversations: sortByRecentActivity([
-              conversation,
-              ...conversations,
-            ]),
-          };
-        });
-      }
-
-      return message;
     },
-    [contextKey, repository, setActiveConversationRecord],
+    [
+      contextKey,
+      refreshConversations,
+      repository,
+      setActiveConversationRecord,
+    ],
   );
 
   const deleteConversation = useCallback(
@@ -235,8 +219,8 @@ export default function useAIConversationHistory({
       history.contextKey === contextKey ? history.conversations : [],
     deleteConversation,
     loadConversation,
-    persistMessage,
     refreshConversations,
+    sendMessage,
     startNewConversation,
   };
 }

@@ -70,39 +70,43 @@ const repositoryError = (error, fallbackMessage) => {
 };
 
 export const createConversationRepository = (client = apiClient) => ({
-  async createConversation({ title, vehicleId }) {
+  async sendMessage({ message, conversationId, title, vehicleId }) {
     try {
-      const response = await client.post("/chat/conversations", {
-        title,
-        primaryVehicleId: vehicleId || null,
-      });
+      const payload = conversationId
+        ? { message, conversationId }
+        : {
+            message,
+            title,
+            primaryVehicleId: vehicleId || null,
+          };
+      const response = await client.post("/chat", payload);
       const conversation = normalizeConversation(
         response.data?.data?.conversation,
       );
+      const userMessage = normalizeMessage(
+        response.data?.data?.userMessage,
+      );
+      const assistantMessage = normalizeMessage(
+        response.data?.data?.assistantMessage,
+      );
 
-      if (!conversation) {
-        throw new Error("Invalid conversation response");
+      if (!conversation || !userMessage || !assistantMessage) {
+        throw new Error("Invalid chat response");
       }
 
-      return conversation;
+      return { conversation, userMessage, assistantMessage };
     } catch (error) {
-      throw repositoryError(error, "שגיאה ביצירת השיחה");
+      throw repositoryError(error, "שגיאה בשליחת ההודעה");
     }
   },
 
-  async listConversations(vehicleId) {
-    if (!vehicleId) return [];
-
+  async listConversations() {
     try {
       const response = await client.get("/chat/conversations");
-      const normalizedVehicleId = String(vehicleId);
 
       return (response.data?.data?.conversations || [])
         .map((conversation) => normalizeConversation(conversation))
-        .filter(
-          (conversation) =>
-            conversation?.vehicleId === normalizedVehicleId,
-        );
+        .filter(Boolean);
     } catch (error) {
       throw repositoryError(error, "שגיאה בטעינת השיחות הקודמות");
     }
@@ -125,24 +129,6 @@ export const createConversationRepository = (client = apiClient) => ({
       return conversation;
     } catch (error) {
       throw repositoryError(error, "שגיאה בטעינת השיחה");
-    }
-  },
-
-  async appendMessage(conversationId, { role, content }) {
-    try {
-      const response = await client.post(
-        `/chat/conversations/${conversationId}/messages`,
-        { role, content },
-      );
-      const message = normalizeMessage(response.data?.data?.message);
-
-      if (!message) {
-        throw new Error("Invalid message response");
-      }
-
-      return message;
-    } catch (error) {
-      throw repositoryError(error, "שגיאה בשמירת ההודעה");
     }
   },
 

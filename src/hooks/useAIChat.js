@@ -1,5 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { createMockAIService } from "../services/ai/mockAIService";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { createAIEntityId } from "../utils/aiConversation";
 
 const createMessage = (role, content) => ({
@@ -9,28 +8,8 @@ const createMessage = (role, content) => ({
   createdAt: new Date().toISOString(),
 });
 
-export default function useAIChat({
-  vehicle,
-  responseSource,
-  persistMessage,
-} = {}) {
+export default function useAIChat({ vehicle, sendTurn } = {}) {
   const contextKey = vehicle?._id || vehicle?.id || null;
-  const mockResponseSource = useMemo(
-    () =>
-      createMockAIService({
-        vehicleName: [vehicle?.manufacturer, vehicle?.model, vehicle?.year]
-          .filter(Boolean)
-          .join(" "),
-        mileage: vehicle?.currentMileage,
-      }),
-    [
-      vehicle?.currentMileage,
-      vehicle?.manufacturer,
-      vehicle?.model,
-      vehicle?.year,
-    ],
-  );
-  const activeResponseSource = responseSource || mockResponseSource;
   const [conversation, setConversation] = useState(() => ({
     contextKey,
     messages: [],
@@ -80,11 +59,10 @@ export default function useAIChat({
     (rawContent) => {
       const content = String(rawContent || "").trim();
       if (!content || !contextKey) return false;
+      if (typeof sendTurn !== "function") return false;
       if (respondingContextKeyRef.current === contextKey) return false;
 
       const userMessage = createMessage("user", content);
-      const history =
-        conversation.contextKey === contextKey ? conversation.messages : [];
       const requestId = requestIdRef.current + 1;
       requestIdRef.current = requestId;
       respondingContextKeyRef.current = contextKey;
@@ -100,9 +78,7 @@ export default function useAIChat({
 
       const getAssistantResponse = async () => {
         try {
-          const persistedUserMessage = persistMessage
-            ? await persistMessage(userMessage)
-            : userMessage;
+          const completedTurn = await sendTurn(content);
 
           if (
             requestIdRef.current !== requestId ||
@@ -111,50 +87,27 @@ export default function useAIChat({
             return;
           }
 
-          setConversation((current) => ({
-            contextKey,
-            messages:
-              current.contextKey === contextKey
-                ? current.messages.map((message) =>
-                    message.id === userMessage.id
-                      ? persistedUserMessage
-                      : message,
-                  )
-                : [persistedUserMessage],
-          }));
+          setConversation((current) => {
+            if (current.contextKey !== contextKey) return current;
 
-          const response = await activeResponseSource.sendMessage({
-            message: persistedUserMessage,
-            history,
-            vehicleId: contextKey,
+            const optimisticIndex = current.messages.findIndex(
+              (message) => message.id === userMessage.id,
+            );
+            if (optimisticIndex === -1) return current;
+
+            const messages = [...current.messages];
+            messages[optimisticIndex] = completedTurn.userMessage;
+
+            if (
+              !messages.some(
+                (message) => message.id === completedTurn.assistantMessage.id,
+              )
+            ) {
+              messages.push(completedTurn.assistantMessage);
+            }
+
+            return { contextKey, messages };
           });
-
-          if (
-            requestIdRef.current !== requestId ||
-            currentContextKeyRef.current !== contextKey
-          ) {
-            return;
-          }
-
-          const assistantMessage = createMessage("assistant", response.content);
-          const persistedAssistantMessage = persistMessage
-            ? await persistMessage(assistantMessage)
-            : assistantMessage;
-
-          if (
-            requestIdRef.current !== requestId ||
-            currentContextKeyRef.current !== contextKey
-          ) {
-            return;
-          }
-
-          setConversation((current) => ({
-            contextKey,
-            messages:
-              current.contextKey === contextKey
-                ? [...current.messages, persistedAssistantMessage]
-                : [persistedAssistantMessage],
-          }));
         } catch {
           if (
             requestIdRef.current === requestId &&
@@ -185,7 +138,7 @@ export default function useAIChat({
       void getAssistantResponse();
       return true;
     },
-    [activeResponseSource, contextKey, conversation, persistMessage],
+    [contextKey, sendTurn],
   );
 
   const messages =
