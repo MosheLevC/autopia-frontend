@@ -1,4 +1,67 @@
 import { Box, Group, Loader, Paper, Text } from "@mantine/core";
+import ReactMarkdown from "react-markdown";
+
+const assistantMarkdownElements = [
+  "p",
+  "strong",
+  "em",
+  "ul",
+  "ol",
+  "li",
+  "br",
+];
+
+const assistantMarkdownComponents = {
+  p: ({ children }) => (
+    <Text
+      component="p"
+      size="sm"
+      m={0}
+      mb="xs"
+      style={{ whiteSpace: "pre-wrap", overflowWrap: "anywhere" }}
+    >
+      {children}
+    </Text>
+  ),
+  strong: ({ children }) => (
+    <Text component="strong" inherit fw={700}>
+      {children}
+    </Text>
+  ),
+  em: ({ children }) => (
+    <Text component="em" inherit fs="italic">
+      {children}
+    </Text>
+  ),
+  ul: ({ children }) => (
+    <Box component="ul" my="xs" ps="xl">
+      {children}
+    </Box>
+  ),
+  ol: ({ children }) => (
+    <Box component="ol" my="xs" ps="xl">
+      {children}
+    </Box>
+  ),
+  li: ({ children }) => (
+    <Text component="li" size="sm" mb={2}>
+      {children}
+    </Text>
+  ),
+};
+
+const AssistantMarkdown = ({ content }) => (
+  <Box dir="auto" fz="sm" style={{ overflowWrap: "anywhere" }}>
+    <ReactMarkdown
+      allowedElements={assistantMarkdownElements}
+      components={assistantMarkdownComponents}
+      skipHtml
+      unwrapDisallowed
+    >
+      {content}
+    </ReactMarkdown>
+  </Box>
+);
 
 const formatMessageTime = (createdAt) => {
   if (!createdAt) return "";
@@ -50,7 +113,7 @@ export default function AIMessage({ message, isLoading = false }) {
                 חושב על זה...
               </Text>
             </Group>
-          ) : (
+          ) : isUser ? (
             <Text
               size="sm"
               dir="auto"
@@ -61,6 +124,8 @@ export default function AIMessage({ message, isLoading = false }) {
             >
               {message.content}
             </Text>
+          ) : (
+            <AssistantMarkdown content={message.content} />
           )}
 
           {timestamp && (
