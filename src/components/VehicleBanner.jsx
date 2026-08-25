@@ -5,7 +5,7 @@ import LicensePlate from "./LicensePlate/LicensePlate";
 export default function VehicleBanner({ vehicle }) {
   if (!vehicle) return null;
 
-  const manufacturer = vehicle.manufacturer || vehicle.make || "";
+  const manufacturer = vehicle.manufacturer || "";
   const model = vehicle.model || "";
   const vehicleBackground = getVehicleBackground(vehicle.color);
 

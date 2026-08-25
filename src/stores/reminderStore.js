@@ -9,10 +9,6 @@ function createReminderStore() {
     isLoading: false,
     error: null,
 
-    clearError: action(function () {
-      store.error = null;
-    }),
-
     async fetchReminders(vehicleId) {
       if (!vehicleId) {
         runInAction(() => {

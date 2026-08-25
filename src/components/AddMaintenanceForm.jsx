@@ -29,15 +29,15 @@ export default function AddMaintenanceForm({
 }) {
   const [title, setTitle] = useState(initialValues?.title || "");
   const [maintenanceDate, setMaintenanceDate] = useState(() => {
-    if (initialValues?.maintenanceDate || initialValues?.date) {
-      return new Date(initialValues.maintenanceDate || initialValues.date);
+    if (initialValues?.maintenanceDate) {
+      return new Date(initialValues.maintenanceDate);
     }
     return new Date();
   });
   const [type, setType] = useState(initialValues?.type || "periodic");
   const [selectedParts, setSelectedParts] = useState(initialValues?.parts || []);
   const [mileage, setMileage] = useState(
-    initialValues?.mileageAtMaintenance ?? initialValues?.mileage ?? ""
+    initialValues?.mileageAtMaintenance ?? ""
   );
   const [totalCost, setTotalCost] = useState(
     initialValues?.totalCost !== undefined ? initialValues.totalCost : 0
@@ -50,14 +50,14 @@ export default function AddMaintenanceForm({
     if (initialValues) {
       setTitle(initialValues.title || "");
       setMaintenanceDate(
-        initialValues.maintenanceDate || initialValues.date
-          ? new Date(initialValues.maintenanceDate || initialValues.date)
+        initialValues.maintenanceDate
+          ? new Date(initialValues.maintenanceDate)
           : new Date()
       );
       setType(initialValues.type || "periodic");
       setSelectedParts(initialValues.parts || []);
       setMileage(
-        initialValues.mileageAtMaintenance ?? initialValues.mileage ?? ""
+        initialValues.mileageAtMaintenance ?? ""
       );
       setTotalCost(
         initialValues.totalCost !== undefined ? initialValues.totalCost : 0

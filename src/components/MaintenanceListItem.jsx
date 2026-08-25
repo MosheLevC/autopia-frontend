@@ -24,10 +24,10 @@ export default function MaintenanceListItem({ maintenance, onClick }) {
   const typeInfo = getMaintenanceTypeInfo(maintenance.type);
   const TypeIcon = typeInfo.icon;
   const displayDate =
-    formatDateToDisplay(maintenance.maintenanceDate || maintenance.date) ||
+    formatDateToDisplay(maintenance.maintenanceDate) ||
     "תאריך לא צוין";
   const mileageText = formatMileage(
-    maintenance.mileageAtMaintenance ?? maintenance.mileage,
+    maintenance.mileageAtMaintenance,
   );
 
   return (

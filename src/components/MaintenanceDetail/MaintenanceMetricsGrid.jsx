@@ -11,7 +11,7 @@ export default function MaintenanceMetricsGrid({ maintenance }) {
       : "לא צוין";
 
   const formattedDate =
-    formatDateToDisplay(maintenance.maintenanceDate || maintenance.date) || "לא צוין";
+    formatDateToDisplay(maintenance.maintenanceDate) || "לא צוין";
 
   return (
     <SimpleGrid cols={{ base: 1, sm: 3 }} spacing="md">

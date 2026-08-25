@@ -10,7 +10,7 @@ export default function EditVehicleModal({ opened, onClose, vehicle }) {
   const isMobile = useMediaQuery("(max-width: 47.99em)");
   const [isSaving, setIsSaving] = useState(false);
   const [submitError, setSubmitError] = useState(null);
-  const vehicleId = vehicle?._id || vehicle?.id;
+  const vehicleId = vehicle?._id;
 
   useEffect(() => {
     if (opened) {

@@ -15,6 +15,13 @@ export const REMINDER_TYPES = [
   },
 ];
 
+export function getAvailableReminderTypes(reminders = []) {
+  if (reminders.length >= REMINDER_TYPES.length) return [];
+
+  const existingTypes = new Set(reminders.map((reminder) => reminder.type));
+  return REMINDER_TYPES.filter((type) => !existingTypes.has(type.value));
+}
+
 export const REMINDER_FREQUENCIES = [
   {
     value: "yearly",
@@ -29,11 +36,6 @@ export const REMINDER_FREQUENCIES = [
     months: 6,
   },
 ];
-
-const REMINDER_FREQUENCY_MONTHS = {
-  yearly: 12,
-  halfYearly: 6,
-};
 
 export function getReminderTypeInfo(type) {
   return REMINDER_TYPES.find((t) => t.value === type) || {
@@ -119,7 +121,7 @@ export function getReminderStatus(dueDate) {
 export function calculateRenewedDate(currentDueDate, frequency = "yearly") {
   if (!currentDueDate) return new Date();
   const result = new Date(currentDueDate);
-  const months = REMINDER_FREQUENCY_MONTHS[frequency] || 12;
+  const { months } = getReminderFrequencyInfo(frequency);
   const dayOfMonth = result.getDate();
   result.setDate(1);
   result.setMonth(result.getMonth() + months);

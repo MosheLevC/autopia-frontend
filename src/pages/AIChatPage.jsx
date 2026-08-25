@@ -19,7 +19,7 @@ const AIChatPage = observer(function AIChatPage() {
 
   const vehicleStore = useVehicleStore();
   const activeVehicle = vehicleStore.activeVehicle;
-  const activeVehicleId = activeVehicle?._id || activeVehicle?.id || null;
+  const activeVehicleId = activeVehicle?._id || null;
   const [historyOpened, { open: openHistory, close: closeHistory }] =
     useDisclosure(false);
   const {

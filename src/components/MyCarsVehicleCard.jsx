@@ -10,7 +10,7 @@ export default function MyCarsVehicleCard({
   isDeleteSelected = false,
   onSelect,
 }) {
-  const vehicleId = vehicle._id || vehicle.id;
+  const vehicleId = vehicle._id;
   const manufacturer = vehicle.manufacturer?.trim() || "יצרן לא ידוע";
   const model = vehicle.model?.trim() || "דגם לא ידוע";
   const vehicleName = `${manufacturer} ${model}`;

@@ -6,10 +6,10 @@ export function useCurrentVehicle() {
   const vehicleStore = useVehicleStore();
 
   const vehicle = vehicleId
-    ? vehicleStore.vehicles.find((v) => (v._id || v.id) === vehicleId)
+    ? vehicleStore.vehicles.find((v) => v._id === vehicleId)
     : vehicleStore.activeVehicle;
 
-  const currentVehicleId = vehicle?._id || vehicle?.id || vehicleId;
+  const currentVehicleId = vehicle?._id || vehicleId;
   const isVehicleLoading =
     vehicleStore.isLoading && vehicleStore.vehicles.length === 0;
   const hasNoVehicle = !isVehicleLoading && !vehicle;

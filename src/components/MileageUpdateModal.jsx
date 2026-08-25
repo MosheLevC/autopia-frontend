@@ -203,7 +203,7 @@ export default function MileageUpdateModal({
   currentMileage,
   onSubmit,
 }) {
-  const isMobile = useMediaQuery("(max-width: 48em)", false, {
+  const isMobile = useMediaQuery("(max-width: 47.99em)", false, {
     getInitialValueInEffect: false,
   });
   const [mode, setMode] = useState(INPUT_MODES.newMileage);

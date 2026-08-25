@@ -33,7 +33,7 @@ const VehiclesPage = observer(function VehiclesPage() {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   const vehicleToDelete = vehicles.find(
-    (vehicle) => (vehicle._id || vehicle.id) === vehicleToDeleteId,
+    (vehicle) => vehicle._id === vehicleToDeleteId,
   );
 
   const enterDeleteMode = () => {
@@ -175,7 +175,7 @@ const VehiclesPage = observer(function VehiclesPage() {
 
         <Stack gap="md">
           {vehicles.map((vehicle) => {
-            const vehicleId = vehicle._id || vehicle.id;
+            const vehicleId = vehicle._id;
             const vehicleName = `${vehicle.manufacturer?.trim() || "יצרן לא ידוע"} ${vehicle.model?.trim() || "דגם לא ידוע"}`;
 
             return (

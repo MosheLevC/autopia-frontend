@@ -61,6 +61,50 @@ const NAV_ITEMS = [
   },
 ];
 
+function renderMobileNavItems(items, pathname, onItemClick) {
+  return items.map((item) => {
+    const active = item.isActive(pathname);
+    const ItemIcon = item.Icon;
+
+    return (
+      <UnstyledButton
+        key={item.id}
+        onClick={() => onItemClick(item)}
+        p={4}
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          minWidth: 56,
+        }}
+      >
+        <ItemIcon
+          size={22}
+          weight={active ? "fill" : "regular"}
+          color={
+            active
+              ? "var(--mantine-primary-color-filled)"
+              : "var(--mantine-color-gray-6)"
+          }
+        />
+        <Text
+          size="xs"
+          fw={active ? 700 : 500}
+          c={
+            active
+              ? "var(--mantine-primary-color-filled)"
+              : "var(--mantine-color-gray-6)"
+          }
+          mt={2}
+        >
+          {item.label}
+        </Text>
+      </UnstyledButton>
+    );
+  });
+}
+
 const Navbar = observer(function Navbar() {
   const location = useLocation();
   const navigate = useNavigate();
@@ -246,46 +290,11 @@ const Navbar = observer(function Navbar() {
             pos="relative"
           >
             <Flex align="center" justify="space-around" style={{ flex: 1 }}>
-              {rightItems.map((item) => {
-                const active = item.isActive(location.pathname);
-                const ItemIcon = item.Icon;
-                return (
-                  <UnstyledButton
-                    key={item.id}
-                    onClick={() => handleNavClick(item)}
-                    p={4}
-                    style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      minWidth: 56,
-                    }}
-                  >
-                    <ItemIcon
-                      size={22}
-                      weight={active ? "fill" : "regular"}
-                      color={
-                        active
-                          ? "var(--mantine-primary-color-filled)"
-                          : "var(--mantine-color-gray-6)"
-                      }
-                    />
-                    <Text
-                      size="xs"
-                      fw={active ? 700 : 500}
-                      c={
-                        active
-                          ? "var(--mantine-primary-color-filled)"
-                          : "var(--mantine-color-gray-6)"
-                      }
-                      mt={2}
-                    >
-                      {item.label}
-                    </Text>
-                  </UnstyledButton>
-                );
-              })}
+              {renderMobileNavItems(
+                rightItems,
+                location.pathname,
+                handleNavClick,
+              )}
             </Flex>
 
             <Box
@@ -337,46 +346,11 @@ const Navbar = observer(function Navbar() {
             </Box>
 
             <Flex align="center" justify="space-around" style={{ flex: 1 }}>
-              {leftItems.map((item) => {
-                const active = item.isActive(location.pathname);
-                const ItemIcon = item.Icon;
-                return (
-                  <UnstyledButton
-                    key={item.id}
-                    onClick={() => handleNavClick(item)}
-                    p={4}
-                    style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      minWidth: 56,
-                    }}
-                  >
-                    <ItemIcon
-                      size={22}
-                      weight={active ? "fill" : "regular"}
-                      color={
-                        active
-                          ? "var(--mantine-primary-color-filled)"
-                          : "var(--mantine-color-gray-6)"
-                      }
-                    />
-                    <Text
-                      size="xs"
-                      fw={active ? 700 : 500}
-                      c={
-                        active
-                          ? "var(--mantine-primary-color-filled)"
-                          : "var(--mantine-color-gray-6)"
-                      }
-                      mt={2}
-                    >
-                      {item.label}
-                    </Text>
-                  </UnstyledButton>
-                );
-              })}
+              {renderMobileNavItems(
+                leftItems,
+                location.pathname,
+                handleNavClick,
+              )}
             </Flex>
           </Flex>
         </Box>

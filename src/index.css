@@ -160,7 +160,7 @@ button {
   opacity: 1;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 47.99em) {
   .app-container {
     flex-direction: column;
   }
@@ -218,17 +218,6 @@ button {
   transform: translateY(-1px);
   box-shadow: var(--mantine-shadow-sm);
   border-color: var(--mantine-color-gray-4);
-}
-
-
-.mantine-DatePicker-weekday,
-.mantine-Month-weekday,
-.mantine-DateInput-weekday,
-.mantine-Calendar-weekday,
-table[class*="month"] th,
-th[class*="weekday"],
-[class*="weekday"] {
-  text-align: center;
 }
 
 

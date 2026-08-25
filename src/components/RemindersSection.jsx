@@ -18,6 +18,7 @@ import {
   PlusCircle,
   WarningCircle,
 } from "@phosphor-icons/react";
+import { getAvailableReminderTypes } from "../constants/reminderConstants";
 import { useReminderStore, useVehicleStore } from "../stores";
 import ReminderCard from "./Reminder/ReminderCard";
 import ReminderRenewModal from "./Reminder/ReminderRenewModal";
@@ -60,10 +61,7 @@ const RemindersSection = observer(function RemindersSection() {
       ? reminderStore.reminders
       : [];
 
-  const hasBothTypes =
-    reminders.some((r) => r.type === "test") &&
-    reminders.some((r) => r.type === "insurance");
-  const canAddReminder = !hasBothTypes && reminders.length < 2;
+  const canAddReminder = getAvailableReminderTypes(reminders).length > 0;
 
   const handleNavigateToReminders = () => {
     navigate(`/vehicles/${activeVehicleId}/reminders`);

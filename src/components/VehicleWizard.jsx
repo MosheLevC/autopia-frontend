@@ -117,8 +117,6 @@ export default function VehicleWizard({
     currentMileage: "",
     vehicleLicenseValidUntil: "",
     insuranceExpiryDate: "",
-    manualFile: null,
-    manualFileName: "",
     lastMaintenanceDate: "",
     maintenanceInterval: "",
     governmentData: null,

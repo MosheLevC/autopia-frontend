@@ -9,10 +9,6 @@ function createMaintenanceStore() {
     isLoading: false,
     error: null,
 
-    clearError: action(function () {
-      store.error = null;
-    }),
-
     async fetchMaintenances(vehicleId) {
       if (!vehicleId) {
         runInAction(() => {
