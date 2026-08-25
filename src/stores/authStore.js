@@ -7,14 +7,8 @@ import { reminderStore } from "./reminderStore";
 const TOKEN_KEY = "autopia_auth_token";
 const USER_KEY = "autopia_user";
 
-function persistUserForActiveSession(user) {
-  const serializedUser = JSON.stringify(user);
-
-  if (localStorage.getItem(TOKEN_KEY)) {
-    localStorage.setItem(USER_KEY, serializedUser);
-  } else if (sessionStorage.getItem(TOKEN_KEY)) {
-    sessionStorage.setItem(USER_KEY, serializedUser);
-  }
+function persistUser(user) {
+  localStorage.setItem(USER_KEY, JSON.stringify(user));
 }
 
 export function createAuthStore() {
@@ -36,10 +30,8 @@ export function createAuthStore() {
 
     initAuth: action(function () {
       try {
-        const storedToken =
-          localStorage.getItem(TOKEN_KEY) || sessionStorage.getItem(TOKEN_KEY);
-        const storedUser =
-          localStorage.getItem(USER_KEY) || sessionStorage.getItem(USER_KEY);
+        const storedToken = localStorage.getItem(TOKEN_KEY);
+        const storedUser = localStorage.getItem(USER_KEY);
 
         if (storedToken && storedUser) {
           store.token = storedToken;
@@ -54,12 +46,10 @@ export function createAuthStore() {
 
     clearStorage() {
       localStorage.removeItem(TOKEN_KEY);
-      sessionStorage.removeItem(TOKEN_KEY);
       localStorage.removeItem(USER_KEY);
-      sessionStorage.removeItem(USER_KEY);
     },
 
-    async login(email, password, rememberMe = true) {
+    async login(email, password) {
       runInAction(() => {
         store.isSubmitting = true;
         store.error = null;
@@ -72,17 +62,8 @@ export function createAuthStore() {
           store.token = result.token;
           store.error = null;
 
-          const storage = rememberMe ? localStorage : sessionStorage;
-          storage.setItem(TOKEN_KEY, result.token);
-          storage.setItem(USER_KEY, JSON.stringify(result.user));
-
-          if (!rememberMe) {
-            localStorage.removeItem(TOKEN_KEY);
-            localStorage.removeItem(USER_KEY);
-          } else {
-            sessionStorage.removeItem(TOKEN_KEY);
-            sessionStorage.removeItem(USER_KEY);
-          }
+          localStorage.setItem(TOKEN_KEY, result.token);
+          localStorage.setItem(USER_KEY, JSON.stringify(result.user));
         });
         return result;
       } catch (err) {
@@ -97,30 +78,32 @@ export function createAuthStore() {
       }
     },
 
-    async signup(userData, rememberMe = true) {
+    async signup(userData) {
+      let payload = userData;
+
+      if (typeof userData === "string") {
+        payload = {
+          firstName: arguments[0],
+          lastName: arguments[1],
+          email: arguments[2],
+          password: arguments[3],
+        };
+      }
+
       runInAction(() => {
         store.isSubmitting = true;
         store.error = null;
       });
 
       try {
-        const result = await authService.signup(userData);
+        const result = await authService.signup(payload);
         runInAction(() => {
           store.user = result.user;
           store.token = result.token;
           store.error = null;
 
-          const storage = rememberMe ? localStorage : sessionStorage;
-          storage.setItem(TOKEN_KEY, result.token);
-          storage.setItem(USER_KEY, JSON.stringify(result.user));
-
-          if (!rememberMe) {
-            localStorage.removeItem(TOKEN_KEY);
-            localStorage.removeItem(USER_KEY);
-          } else {
-            sessionStorage.removeItem(TOKEN_KEY);
-            sessionStorage.removeItem(USER_KEY);
-          }
+          localStorage.setItem(TOKEN_KEY, result.token);
+          localStorage.setItem(USER_KEY, JSON.stringify(result.user));
         });
         return result;
       } catch (err) {
@@ -139,7 +122,7 @@ export function createAuthStore() {
       const user = await authService.getUserInfo();
 
       runInAction(() => {
-        persistUserForActiveSession(user);
+        persistUser(user);
         store.user = user;
       });
 
@@ -156,7 +139,7 @@ export function createAuthStore() {
         const user = await authService.updateUserInfo(profileData);
 
         runInAction(() => {
-          persistUserForActiveSession(user);
+          persistUser(user);
           store.user = user;
           store.error = null;
         });

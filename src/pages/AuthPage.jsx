@@ -6,7 +6,6 @@ import {
   Anchor,
   Box,
   Button,
-  Checkbox,
   Container,
   Divider,
   Group,
@@ -41,7 +40,6 @@ const AuthPage = observer(function AuthPage() {
     email: "",
     password: "",
     confirmPassword: "",
-    rememberMe: false,
   });
   const [fieldErrors, setFieldErrors] = useState({});
 
@@ -101,15 +99,14 @@ const AuthPage = observer(function AuthPage() {
 
     try {
       if (mode === "login") {
-        await auth.login(formData.email, formData.password, formData.rememberMe);
+        await auth.login(formData.email, formData.password);
       } else {
-        await auth.signup(
-          formData.firstName,
-          formData.lastName,
-          formData.email,
-          formData.password,
-          formData.rememberMe,
-        );
+        await auth.signup({
+          firstName: formData.firstName,
+          lastName: formData.lastName,
+          email: formData.email,
+          password: formData.password,
+        });
       }
       const from = location.state?.from?.pathname || "/home";
       navigate(from, { replace: true });
@@ -271,24 +268,6 @@ const AuthPage = observer(function AuthPage() {
                         />
                       }
                       radius="md"
-                    />
-                  </Box>
-                </div>
-              </div>
-
-              <div
-                className={`auth-expandable-row ${mode === "login" ? "expanded" : ""
-                  }`}
-              >
-                <div className="auth-expandable-content">
-                  <Box pt="2px">
-                    <Checkbox
-                      checked={formData.rememberMe}
-                      onChange={(e) =>
-                        handleChange("rememberMe", e.currentTarget.checked)
-                      }
-                      label="זכור אותי במכשיר זה"
-                      size="sm"
                     />
                   </Box>
                 </div>

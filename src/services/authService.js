@@ -11,6 +11,7 @@ const ERROR_TRANSLATIONS = {
   "Current password is incorrect": "הסיסמה הנוכחית שגויה",
   "New password must differ from the current password":
     "הסיסמה החדשה חייבת להיות שונה מהסיסמה הנוכחית",
+  "Validation failed": "פרטי הטופס אינם תקינים",
 };
 
 function formatErrorMessage(err, defaultMessage) {
@@ -25,7 +26,17 @@ function formatErrorMessage(err, defaultMessage) {
 }
 
 export const authService = {
-  async signup({ firstName, lastName, email, password }) {
+  async signup(payload) {
+    let body = payload;
+    if (arguments.length > 1 || typeof payload === "string") {
+      body = {
+        firstName: arguments[0],
+        lastName: arguments[1],
+        email: arguments[2],
+        password: arguments[3],
+      };
+    }
+    const { firstName, lastName, email, password } = body || {};
     try {
       const response = await apiClient.post("/auth/signup", {
         firstName,
