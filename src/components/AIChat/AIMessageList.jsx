@@ -1,9 +1,12 @@
 import { Box, Stack } from "@mantine/core";
-import { useEffect, useRef } from "react";
+import { useMediaQuery } from "@mantine/hooks";
+import { useEffect, useRef, useState } from "react";
 import AIMessage from "./AIMessage";
 
 export default function AIMessageList({ messages, isResponding }) {
   const viewportRef = useRef(null);
+  const isTouchInteraction = useMediaQuery("(hover: none), (pointer: coarse)");
+  const [revealedMessageId, setRevealedMessageId] = useState(null);
 
   useEffect(() => {
     const animationFrame = requestAnimationFrame(() => {
@@ -19,6 +22,31 @@ export default function AIMessageList({ messages, isResponding }) {
     return () => cancelAnimationFrame(animationFrame);
   }, [messages.length, isResponding]);
 
+  useEffect(() => {
+    if (
+      revealedMessageId &&
+      !messages.some((message) => message.id === revealedMessageId)
+    ) {
+      setRevealedMessageId(null);
+    }
+  }, [messages, revealedMessageId]);
+
+  const revealVehicleContext = (messageId, revealed) => {
+    setRevealedMessageId((current) => {
+      if (!revealed) {
+        return current === messageId ? null : current;
+      }
+
+      return messageId;
+    });
+  };
+
+  const toggleVehicleContext = (messageId) => {
+    setRevealedMessageId((current) =>
+      current === messageId ? null : messageId,
+    );
+  };
+
   return (
     <Box
       ref={viewportRef}
@@ -31,7 +59,14 @@ export default function AIMessageList({ messages, isResponding }) {
     >
       <Stack gap="md" px={{ base: 0, sm: "md" }} py="md">
         {messages.map((message) => (
-          <AIMessage key={message.id} message={message} />
+          <AIMessage
+            key={message.id}
+            message={message}
+            isTouchInteraction={Boolean(isTouchInteraction)}
+            isVehicleContextRevealed={revealedMessageId === message.id}
+            onVehicleContextReveal={revealVehicleContext}
+            onVehicleContextToggle={toggleVehicleContext}
+          />
         ))}
 
         {isResponding && (

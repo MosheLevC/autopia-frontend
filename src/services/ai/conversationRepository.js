@@ -10,6 +10,27 @@ const toISOString = (value) => {
   return Number.isNaN(date.getTime()) ? null : date.toISOString();
 };
 
+const normalizeFocusedVehicle = (vehicle) => {
+  if (!vehicle || typeof vehicle !== "object") return null;
+
+  const id = toId(vehicle.id);
+  const manufacturer =
+    typeof vehicle.manufacturer === "string"
+      ? vehicle.manufacturer.trim()
+      : "";
+  const model = typeof vehicle.model === "string" ? vehicle.model.trim() : "";
+  const licensePlate =
+    typeof vehicle.licensePlate === "string"
+      ? vehicle.licensePlate.trim()
+      : "";
+
+  if (!id || !manufacturer || !model || !licensePlate) {
+    return null;
+  }
+
+  return { id, manufacturer, model, licensePlate };
+};
+
 const normalizeMessage = (message) => {
   if (!message || typeof message !== "object") return null;
   if (message.role !== "user" && message.role !== "assistant") return null;
@@ -19,12 +40,20 @@ const normalizeMessage = (message) => {
   const createdAt = toISOString(message.createdAt);
   if (!id || !createdAt) return null;
 
-  return {
+  const normalized = {
     id,
     role: message.role,
     content: message.content,
     createdAt,
   };
+
+  const focusedVehicle = normalizeFocusedVehicle(message.focusedVehicle);
+
+  if (focusedVehicle) {
+    normalized.focusedVehicle = focusedVehicle;
+  }
+
+  return normalized;
 };
 
 const normalizeConversation = (conversation, messages) => {
@@ -73,11 +102,16 @@ export const createConversationRepository = (client = apiClient) => ({
   async sendMessage({ message, conversationId, title, vehicleId }) {
     try {
       const payload = conversationId
-        ? { message, conversationId }
+        ? {
+            message,
+            conversationId,
+            focusedVehicleId: vehicleId || null,
+          }
         : {
             message,
             title,
             primaryVehicleId: vehicleId || null,
+            focusedVehicleId: vehicleId || null,
           };
       const response = await client.post("/chat", payload);
       const conversation = normalizeConversation(
