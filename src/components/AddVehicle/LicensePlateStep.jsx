@@ -196,16 +196,11 @@ export default function LicensePlateStep({
           >
             הזנה ידנית
           </Button>
-
-          <Text size="xs" c="dimmed" ta="center">
-            אם הרכב לא נמצא, אפשר להמשיך להזנה ידנית
-          </Text>
         </Stack>
       </Card>
 
       <StepGuidanceCard
         title="מה קורה אחרי החיפוש?"
-        subtitle="נמצא את פרטי הרכב שלך ונמלא עבורך את הפרטים הבסיסיים."
         items={GUIDANCE_ITEMS}
       />
     </SimpleGrid>

@@ -53,10 +53,6 @@ export default function StepProgress({ activeStep, steps, onStepClick }) {
           />
         ))}
       </Stepper>
-
-      <Text size="xs" c="dimmed" mt="xs">
-        שלב {activeStep + 1} מתוך {steps.length}
-      </Text>
     </Stack>
   );
 }

@@ -2,7 +2,6 @@ import { Card, Group, Paper, Stack, Text, ThemeIcon, Title } from "@mantine/core
 
 export default function StepGuidanceCard({
   title = "מה קורה אחרי החיפוש?",
-  subtitle = "נמצא את פרטי הרכב שלך ונמלא עבורך את הפרטים הבסיסיים.",
   items = []
 }) {
   return (
@@ -18,11 +17,6 @@ export default function StepGuidanceCard({
           <Title order={3} fw={700}>
             {title}
           </Title>
-          {subtitle && (
-            <Text size="xs" c="dimmed">
-              {subtitle}
-            </Text>
-          )}
         </Stack>
 
         <Stack gap="md">
