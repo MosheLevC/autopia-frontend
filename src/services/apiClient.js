@@ -12,9 +12,7 @@ const apiClient = axios.create({
 
 apiClient.interceptors.request.use(
   (config) => {
-    const token =
-      localStorage.getItem("autopia_auth_token") ||
-      sessionStorage.getItem("autopia_auth_token");
+    const token = localStorage.getItem("autopia_auth_token");
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -28,9 +26,7 @@ apiClient.interceptors.response.use(
   (error) => {
     if (error.response && error.response.status === 401) {
       localStorage.removeItem("autopia_auth_token");
-      sessionStorage.removeItem("autopia_auth_token");
       localStorage.removeItem("autopia_user");
-      sessionStorage.removeItem("autopia_user");
       window.dispatchEvent(new Event("autopia:unauthorized"));
     }
     return Promise.reject(error);
