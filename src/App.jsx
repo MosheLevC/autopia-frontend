@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import {
   BrowserRouter,
+  Navigate,
   Outlet,
   Route,
   Routes,
@@ -121,6 +122,7 @@ function App() {
             />
             <Route path="/profile" element={<ProfilePage />} />
           </Route>
+          <Route path="*" element={<Navigate to="/home" replace />} />
         </Routes>
       </BrowserRouter>
     </HeaderProvider>
