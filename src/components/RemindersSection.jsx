@@ -14,7 +14,6 @@ import {
 import {
   BellRinging,
   BellSlash,
-  Car,
   CaretLeft,
   PlusCircle,
   WarningCircle,
@@ -52,6 +51,10 @@ const RemindersSection = observer(function RemindersSection() {
     }
   }, [activeVehicleId, reminderStore]);
 
+  if (!activeVehicle || !activeVehicleId) {
+    return null;
+  }
+
   const reminders =
     reminderStore.remindersVehicleId === activeVehicleId
       ? reminderStore.reminders
@@ -63,19 +66,11 @@ const RemindersSection = observer(function RemindersSection() {
   const canAddReminder = !hasBothTypes && reminders.length < 2;
 
   const handleNavigateToReminders = () => {
-    if (activeVehicleId) {
-      navigate(`/vehicles/${activeVehicleId}/reminders`);
-    } else {
-      navigate("/reminders");
-    }
+    navigate(`/vehicles/${activeVehicleId}/reminders`);
   };
 
   const handleAddReminder = () => {
-    if (activeVehicleId) {
-      navigate(`/vehicles/${activeVehicleId}/reminders/add`);
-    } else {
-      navigate("/reminders/add");
-    }
+    navigate(`/vehicles/${activeVehicleId}/reminders/add`);
   };
 
   const handleConfirmRenew = async () => {
@@ -108,15 +103,11 @@ const RemindersSection = observer(function RemindersSection() {
               icon={BellRinging}
               title="תזכורות"
               titleId="reminders-card-title"
-              action={
-                activeVehicleId
-                  ? {
-                      label: "ניהול תזכורות",
-                      onClick: handleNavigateToReminders,
-                      rightSection: <CaretLeft size={16} aria-hidden="true" />,
-                    }
-                  : undefined
-              }
+              action={{
+                label: "ניהול תזכורות",
+                onClick: handleNavigateToReminders,
+                rightSection: <CaretLeft size={16} aria-hidden="true" />,
+              }}
             />
 
             {actionError && (
@@ -142,17 +133,6 @@ const RemindersSection = observer(function RemindersSection() {
                   </Text>
                 </Stack>
               </Center>
-            ) : !activeVehicleId ? (
-              <StatusCard
-                variant="paper"
-                icon={Car}
-                iconSize={22}
-                iconThemeSize={44}
-                description="בחר רכב כדי לראות את התזכורות"
-                py="xs"
-                gap="xs"
-                flex={1}
-              />
             ) : reminders.length === 0 ? (
               <StatusCard
                 variant="paper"
@@ -187,7 +167,7 @@ const RemindersSection = observer(function RemindersSection() {
             )}
           </Stack>
 
-          {activeVehicleId && canAddReminder && reminders.length > 0 && (
+          {canAddReminder && reminders.length > 0 && (
             <Group justify="flex-end" pt="xs">
               <Button
                 variant="light"
