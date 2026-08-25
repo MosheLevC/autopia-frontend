@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { Container } from "@mantine/core";
 import { observer } from "mobx-react-lite";
-import { Wrench } from "@phosphor-icons/react";
+import { Car, Plus } from "@phosphor-icons/react";
 import { useHeaderTitle } from "../hooks/useHeader";
 import { useCurrentVehicle } from "../hooks/useCurrentVehicle";
 import { useMaintenanceStore } from "../stores";
@@ -30,9 +30,12 @@ const MaintenancesPage = observer(function MaintenancesPage() {
   if (hasNoVehicle) {
     return (
       <NoVehicleSelected
-        title="לא נבחר רכב"
-        description="לא ניתן להציג את יומן הטיפולים מכיוון שלא נבחר רכב. יש לבחור רכב מתוך רשימת הרכבים שלך."
-        icon={Wrench}
+        title="עדיין לא הוספת רכב"
+        description="הוספת רכב תאפשר לך לעקוב אחר היסטוריית הטיפולים והתחזוקה."
+        icon={Car}
+        actionLabel="הוספת רכב"
+        actionPath="/vehicles/add"
+        actionIcon={Plus}
       />
     );
   }

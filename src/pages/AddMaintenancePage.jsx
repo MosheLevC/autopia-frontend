@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Alert, Container, Stack } from "@mantine/core";
 import { useNavigate } from "react-router";
 import { observer } from "mobx-react-lite";
-import { WarningCircle, Wrench } from "@phosphor-icons/react";
+import { Car, Plus, WarningCircle } from "@phosphor-icons/react";
 import { useHeaderTitle } from "../hooks/useHeader";
 import { useCurrentVehicle } from "../hooks/useCurrentVehicle";
 import { useMaintenanceStore } from "../stores";
@@ -28,9 +28,12 @@ const AddMaintenancePage = observer(function AddMaintenancePage() {
   if (hasNoVehicle) {
     return (
       <NoVehicleSelected
-        title="לא נבחר רכב"
-        description="לא ניתן להוסיף טיפול מכיוון שלא נבחר רכב. יש לבחור או להוסיף רכב תחילה."
-        icon={Wrench}
+        title="עדיין לא הוספת רכב"
+        description="לא ניתן להוסיף טיפול מכיוון שעדיין לא הוספת רכב. יש להוסיף רכב תחילה."
+        icon={Car}
+        actionLabel="הוספת רכב"
+        actionPath="/vehicles/add"
+        actionIcon={Plus}
       />
     );
   }

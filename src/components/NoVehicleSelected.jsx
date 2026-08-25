@@ -1,15 +1,15 @@
 import { Center, Container } from "@mantine/core";
 import { useNavigate } from "react-router";
-import { Car } from "@phosphor-icons/react";
+import { Car, Plus } from "@phosphor-icons/react";
 import StatusCard from "./common/StatusCard";
 
 export default function NoVehicleSelected({
-  title = "לא נבחר רכב",
-  description = "לא ניתן להציג את המידע מכיוון שלא נבחר רכב.",
+  title = "עדיין לא הוספת רכב",
+  description = "הוספת רכב תאפשר לך לראות כאן את כל הפרטים החשובים.",
   icon: Icon = Car,
-  actionLabel = "לרכבים שלי",
-  actionPath = "/vehicles",
-  actionIcon: ActionIconComponent = Car,
+  actionLabel = "הוספת רכב",
+  actionPath = "/vehicles/add",
+  actionIcon: ActionIconComponent = Plus,
 }) {
   const navigate = useNavigate();
 

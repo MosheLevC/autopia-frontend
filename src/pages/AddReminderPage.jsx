@@ -4,8 +4,9 @@ import { useNavigate } from "react-router";
 import { observer } from "mobx-react-lite";
 import {
   ArrowRight,
-  BellSlash,
+  Car,
   CheckCircle,
+  Plus,
   WarningCircle,
 } from "@phosphor-icons/react";
 import { useHeaderTitle } from "../hooks/useHeader";
@@ -40,9 +41,12 @@ const AddReminderPage = observer(function AddReminderPage() {
   if (hasNoVehicle) {
     return (
       <NoVehicleSelected
-        title="לא נבחר רכב"
-        description="לא ניתן להוסיף תזכורת מכיוון שלא נבחר רכב. יש לבחור או להוסיף רכב תחילה."
-        icon={BellSlash}
+        title="עדיין לא הוספת רכב"
+        description="לא ניתן להוסיף תזכורת מכיוון שעדיין לא הוספת רכב. יש להוסיף רכב תחילה."
+        icon={Car}
+        actionLabel="הוספת רכב"
+        actionPath="/vehicles/add"
+        actionIcon={Plus}
       />
     );
   }

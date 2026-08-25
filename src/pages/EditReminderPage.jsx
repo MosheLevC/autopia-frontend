@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Alert, Container, Stack } from "@mantine/core";
 import { useNavigate, useParams } from "react-router";
 import { observer } from "mobx-react-lite";
-import { BellSlash, WarningCircle } from "@phosphor-icons/react";
+import { Car, Plus, WarningCircle } from "@phosphor-icons/react";
 import { useHeaderTitle } from "../hooks/useHeader";
 import { useCurrentVehicle } from "../hooks/useCurrentVehicle";
 import { useReminderStore } from "../stores";
@@ -49,9 +49,12 @@ const EditReminderPage = observer(function EditReminderPage() {
   if (hasNoVehicle) {
     return (
       <NoVehicleSelected
-        title="לא נבחר רכב"
-        description="לא ניתן לערוך תזכורת מכיוון שלא נבחר רכב."
-        icon={BellSlash}
+        title="עדיין לא הוספת רכב"
+        description="לא ניתן לערוך תזכורת מכיוון שעדיין לא הוספת רכב."
+        icon={Car}
+        actionLabel="הוספת רכב"
+        actionPath="/vehicles/add"
+        actionIcon={Plus}
       />
     );
   }

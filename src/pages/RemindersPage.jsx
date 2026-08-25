@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { Container } from "@mantine/core";
 import { observer } from "mobx-react-lite";
-import { BellSlash } from "@phosphor-icons/react";
+import { Car, Plus } from "@phosphor-icons/react";
 import { useHeaderTitle } from "../hooks/useHeader";
 import { useCurrentVehicle } from "../hooks/useCurrentVehicle";
 import { useReminderStore } from "../stores";
@@ -30,9 +30,12 @@ const RemindersPage = observer(function RemindersPage() {
   if (hasNoVehicle) {
     return (
       <NoVehicleSelected
-        title="לא נבחר רכב"
-        description="לא ניתן להציג את התזכורות מכיוון שלא נבחר רכב. יש לבחור רכב מתוך רשימת הרכבים שלך."
-        icon={BellSlash}
+        title="עדיין לא הוספת רכב"
+        description="הוספת רכב תאפשר לך לנהל תזכורות לטסט, ביטוח ועוד."
+        icon={Car}
+        actionLabel="הוספת רכב"
+        actionPath="/vehicles/add"
+        actionIcon={Plus}
       />
     );
   }
