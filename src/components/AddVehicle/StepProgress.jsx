@@ -2,7 +2,7 @@ import { Stepper, Stack, Text } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 
 export default function StepProgress({ activeStep, steps, onStepClick }) {
-  const isMobile = useMediaQuery("(max-width: 48em)");
+  const isMobile = useMediaQuery("(max-width: 47.99em)");
 
   return (
     <Stack gap="xs" align="center" w="100%" maw={720} mx="auto">

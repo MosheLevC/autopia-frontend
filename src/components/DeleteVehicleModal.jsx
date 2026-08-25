@@ -13,7 +13,7 @@ export default function DeleteVehicleModal({
   const vehicleStore = useVehicleStore();
   const [isDeleting, setIsDeleting] = useState(false);
   const [deleteError, setDeleteError] = useState(null);
-  const vehicleId = vehicle?._id || vehicle?.id;
+  const vehicleId = vehicle?._id;
   const manufacturer = vehicle?.manufacturer?.trim() || "יצרן לא ידוע";
   const model = vehicle?.model?.trim() || "דגם לא ידוע";
 

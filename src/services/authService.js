@@ -27,16 +27,7 @@ function formatErrorMessage(err, defaultMessage) {
 
 export const authService = {
   async signup(payload) {
-    let body = payload;
-    if (arguments.length > 1 || typeof payload === "string") {
-      body = {
-        firstName: arguments[0],
-        lastName: arguments[1],
-        email: arguments[2],
-        password: arguments[3],
-      };
-    }
-    const { firstName, lastName, email, password } = body || {};
+    const { firstName, lastName, email, password } = payload || {};
     try {
       const response = await apiClient.post("/auth/signup", {
         firstName,

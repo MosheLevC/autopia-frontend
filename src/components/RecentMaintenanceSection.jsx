@@ -36,7 +36,7 @@ const RecentMaintenanceSection = observer(function RecentMaintenanceSection() {
   const vehicleStore = useVehicleStore();
   const maintenanceStore = useMaintenanceStore();
   const activeVehicle = vehicleStore.activeVehicle;
-  const vehicleId = activeVehicle?._id || activeVehicle?.id;
+  const vehicleId = activeVehicle?._id;
   const hasCurrentVehicleData =
     Boolean(vehicleId) &&
     maintenanceStore.maintenancesVehicleId === vehicleId;

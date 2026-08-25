@@ -11,6 +11,7 @@ import {
 import { useHeaderTitle } from "../hooks/useHeader";
 import { useCurrentVehicle } from "../hooks/useCurrentVehicle";
 import { useReminderStore } from "../stores";
+import { getAvailableReminderTypes } from "../constants/reminderConstants";
 
 import NoVehicleSelected from "../components/NoVehicleSelected";
 import AddReminderForm from "../components/AddReminderForm";
@@ -51,9 +52,9 @@ const AddReminderPage = observer(function AddReminderPage() {
     reminderStore.remindersVehicleId === vehicleId
       ? reminderStore.reminders
       : [];
-  const existingTypes = existingReminders.map((r) => r.type);
+  const availableTypes = getAvailableReminderTypes(existingReminders);
 
-  if (existingTypes.includes("test") && existingTypes.includes("insurance")) {
+  if (availableTypes.length === 0) {
     return (
       <Container size="sm" py="md">
         <StatusCard
@@ -107,7 +108,7 @@ const AddReminderPage = observer(function AddReminderPage() {
 
         <AddReminderForm
           vehicle={vehicle}
-          existingTypes={existingTypes}
+          existingReminders={existingReminders}
           onSubmit={handleSubmit}
           onCancel={handleCancel}
           isSubmitting={isSubmitting}

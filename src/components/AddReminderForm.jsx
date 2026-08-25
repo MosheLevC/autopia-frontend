@@ -12,6 +12,7 @@ import { ArrowsClockwise, Check } from "@phosphor-icons/react";
 import {
   REMINDER_FREQUENCIES,
   REMINDER_TYPES,
+  getAvailableReminderTypes,
   getReminderTypeInfo,
 } from "../constants/reminderConstants";
 import AppDateInput from "./AppDateInput";
@@ -22,7 +23,7 @@ import FormActionButtons from "./common/FormActionButtons";
 export default function AddReminderForm({
   vehicle,
   initialValues,
-  existingTypes = [],
+  existingReminders = [],
   onSubmit,
   onCancel,
   onDelete,
@@ -32,7 +33,7 @@ export default function AddReminderForm({
 }) {
   const availableTypes = isEdit
     ? REMINDER_TYPES
-    : REMINDER_TYPES.filter((t) => !existingTypes.includes(t.value));
+    : getAvailableReminderTypes(existingReminders);
 
   const getDefaultType = () => {
     if (initialValues?.type) return initialValues.type;

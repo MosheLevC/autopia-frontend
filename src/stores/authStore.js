@@ -79,24 +79,13 @@ function createAuthStore() {
     },
 
     async signup(userData) {
-      let payload = userData;
-
-      if (typeof userData === "string") {
-        payload = {
-          firstName: arguments[0],
-          lastName: arguments[1],
-          email: arguments[2],
-          password: arguments[3],
-        };
-      }
-
       runInAction(() => {
         store.isSubmitting = true;
         store.error = null;
       });
 
       try {
-        const result = await authService.signup(payload);
+        const result = await authService.signup(userData);
         runInAction(() => {
           store.user = result.user;
           store.token = result.token;

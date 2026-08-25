@@ -19,8 +19,8 @@ const MaintenanceLog = observer(function MaintenanceLog({
   const vehicleId = vehicle?._id;
 
   const sortedMaintenances = [...maintenances].sort((a, b) => {
-    const dateA = new Date(a.maintenanceDate || a.date || 0);
-    const dateB = new Date(b.maintenanceDate || b.date || 0);
+    const dateA = new Date(a.maintenanceDate || 0);
+    const dateB = new Date(b.maintenanceDate || 0);
     return dateB - dateA;
   });
 
