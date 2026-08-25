@@ -166,9 +166,6 @@ export default function UserProfile({
             <Title id="profile-details-title" order={2} size="h3">
               פרטים אישיים
             </Title>
-            <Text size="sm" c="dimmed">
-              פרטי החשבון שלך ב-Autopia
-            </Text>
           </Stack>
 
           {!isEditing && (
