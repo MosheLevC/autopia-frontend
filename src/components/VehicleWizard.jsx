@@ -239,7 +239,7 @@ export default function VehicleWizard({
   };
 
   return (
-    <Stack gap="xl" dir="rtl" maw={1100} mx="auto">
+    <Stack gap="xl" dir="rtl" maw={850} mx="auto" w="100%">
       <StepProgress
         activeStep={activeStep}
         steps={stepsList}

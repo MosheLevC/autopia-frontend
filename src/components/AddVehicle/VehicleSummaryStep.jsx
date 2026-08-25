@@ -1,4 +1,4 @@
-import { Box, Card, Divider, SimpleGrid, Stack, Text, Title } from "@mantine/core";
+import { Box, Card, Divider, Group, SimpleGrid, Stack, Text, Title } from "@mantine/core";
 import {
   formatDateToDisplay,
   formatLicensePlate,
@@ -23,21 +23,19 @@ const formatKilometers = (value) => {
 function SummaryRow({ item, isLast }) {
   return (
     <Box py="sm">
-      <SimpleGrid
-        cols={{ base: 1, sm: 2 }}
-        spacing={{ base: 2, sm: "lg" }}
-      >
+      <Group justify="space-between" align="center" wrap="nowrap" gap="sm">
         <Text size="sm" c="dimmed">
           {item.label}
         </Text>
         <Text
+          size="sm"
           fw={600}
           dir={item.valueDirection}
-          ta={{ base: "right", sm: "left" }}
+          ta="left"
         >
           {item.value}
         </Text>
-      </SimpleGrid>
+      </Group>
       {!isLast && <Divider mt="sm" color="gray.2" />}
     </Box>
   );
@@ -102,7 +100,7 @@ export default function VehicleSummaryStep({ vehicleData }) {
   ];
 
   return (
-    <Card shadow="sm" p={{ base: "md", sm: "xl" }} radius="xl" withBorder>
+    <Card shadow="sm" p={{ base: "md", sm: "xl" }} radius="xl" withBorder w="100%">
       <Stack gap="xl">
         <Stack gap={4} ta="center">
           <Title order={3} fw={800}>
@@ -113,9 +111,13 @@ export default function VehicleSummaryStep({ vehicleData }) {
           </Text>
         </Stack>
 
-        <SummarySection title="פרטי הרכב" items={vehicleItems} />
-        <SummarySection title="שימוש ותחזוקה" items={usageItems} />
-        <SummarySection title="תאריכי תוקף" items={validityItems} />
+        <SimpleGrid cols={{ base: 1, md: 2 }} spacing={{ base: "xl", md: 48 }}>
+          <SummarySection title="פרטי הרכב" items={vehicleItems} />
+          <Stack gap="xl">
+            <SummarySection title="שימוש ותחזוקה" items={usageItems} />
+            <SummarySection title="תאריכי תוקף" items={validityItems} />
+          </Stack>
+        </SimpleGrid>
       </Stack>
     </Card>
   );
