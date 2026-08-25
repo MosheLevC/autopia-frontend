@@ -3,7 +3,6 @@ import { Alert, Button, Group, Stack } from "@mantine/core";
 import LicensePlateStep from "./AddVehicle/LicensePlateStep";
 import StepProgress from "./AddVehicle/StepProgress";
 import VehicleDetailsStep from "./AddVehicle/VehicleDetailsStep";
-import VehicleManualStep from "./AddVehicle/VehicleManualStep";
 import VehicleSummaryStep from "./AddVehicle/VehicleSummaryStep";
 import VehicleUsageStep from "./AddVehicle/VehicleUsageStep";
 import { cleanLicensePlate } from "../utils/plateUtils";
@@ -125,7 +124,6 @@ export default function VehicleWizard({
   const stepsList = [
     { title: "הזנת מספר רכב" },
     { title: "פרטי רכב" },
-    { title: "ספר רכב" },
     { title: "תחזוקה ראשונית" },
     { title: "סיכום" },
   ];
@@ -192,22 +190,14 @@ export default function VehicleWizard({
     setFurthestStep(2);
   };
 
-  const handleNextStep = () => {
-    if (activeStep < 4) {
-      const nextStep = activeStep + 1;
-      setActiveStep(nextStep);
-      setFurthestStep((current) => Math.max(current, nextStep));
-    }
-  };
-
   const handleVehicleUsageDirty = () => {
-    setFurthestStep((current) => Math.min(current, 3));
+    setFurthestStep((current) => Math.min(current, 2));
   };
 
   const handleVehicleUsageContinue = (usageDetails) => {
     setFormData((prev) => ({ ...prev, ...usageDetails }));
-    setActiveStep(4);
-    setFurthestStep(4);
+    setActiveStep(3);
+    setFurthestStep(3);
   };
 
   const handlePreviousStep = () => {
@@ -276,9 +266,7 @@ export default function VehicleWizard({
         />
       )}
 
-      {activeStep === 2 && <VehicleManualStep onContinue={handleNextStep} />}
-
-      {activeStep === 3 && (
+      {activeStep === 2 && (
         <VehicleUsageStep
           formId={VEHICLE_USAGE_FORM_ID}
           usageData={formData}
@@ -287,9 +275,9 @@ export default function VehicleWizard({
         />
       )}
 
-      {activeStep === 4 && <VehicleSummaryStep vehicleData={formData} />}
+      {activeStep === 3 && <VehicleSummaryStep vehicleData={formData} />}
 
-      {activeStep === 4 && finalSubmissionError && (
+      {activeStep === 3 && finalSubmissionError && (
         <Alert color="red" radius="md">
           {finalSubmissionError}
         </Alert>
@@ -335,18 +323,6 @@ export default function VehicleWizard({
 
         {activeStep === 2 && (
           <Button
-            size="md"
-            radius="md"
-            w={{ base: "100%", xs: 128 }}
-            onClick={handleNextStep}
-            disabled={isLoading}
-          >
-            המשך
-          </Button>
-        )}
-
-        {activeStep === 3 && (
-          <Button
             type="submit"
             form={VEHICLE_USAGE_FORM_ID}
             size="md"
@@ -358,7 +334,7 @@ export default function VehicleWizard({
           </Button>
         )}
 
-        {activeStep === 4 && (
+        {activeStep === 3 && (
           <Button
             size="md"
             radius="md"
