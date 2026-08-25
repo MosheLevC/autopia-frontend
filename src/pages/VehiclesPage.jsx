@@ -95,9 +95,6 @@ const VehiclesPage = observer(function VehiclesPage() {
         title="עדיין לא הוספת רכב"
         description="הוסף את הרכב הראשון שלך כדי להתחיל לנהל את כל המידע החשוב במקום אחד."
         icon={Car}
-        actionLabel="הוסף רכב"
-        actionPath="/vehicles/add"
-        actionIcon={PlusCircle}
       />
     );
   }

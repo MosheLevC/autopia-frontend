@@ -27,13 +27,13 @@ export default function StatusCard({
   const defaultRadius = variant === "paper" ? "lg" : "xl";
   const defaultPadding = p !== undefined ? p : (variant === "paper" ? "md" : "xl");
 
-  const renderSection = (section, IconComp, iconSize) => {
+  const renderSection = (section, IconComp, iconSize, iconWeight) => {
     if (React.isValidElement(section)) return section;
     if (typeof section === "function") {
       const SectionComp = section;
-      return <SectionComp size={iconSize} aria-hidden="true" />;
+      return <SectionComp size={iconSize} weight={iconWeight} aria-hidden="true" />;
     }
-    if (IconComp) return <IconComp size={iconSize} aria-hidden="true" />;
+    if (IconComp) return <IconComp size={iconSize} weight={iconWeight} aria-hidden="true" />;
     return undefined;
   };
 
@@ -89,12 +89,14 @@ export default function StatusCard({
             leftSection={renderSection(
               action.leftSection,
               action.icon,
-              action.iconSize || 18
+              action.iconSize || 18,
+              action.iconWeight
             )}
             rightSection={renderSection(
               action.rightSection,
               action.rightIcon,
-              action.iconSize || 18
+              action.iconSize || 18,
+              action.iconWeight
             )}
             loading={action.loading}
             disabled={action.disabled}

@@ -28,8 +28,10 @@ export default function NoVehicleSelected({
             label: actionLabel,
             onClick: () => navigate(actionPath),
             icon: ActionIconComponent,
+            iconSize: 18,
+            iconWeight: "bold",
             size: "md",
-            radius: "lg",
+            radius: "xl",
             variant: "filled",
           }}
         />
