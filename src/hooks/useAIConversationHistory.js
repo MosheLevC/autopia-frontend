@@ -13,171 +13,124 @@ export default function useAIConversationHistory({
   vehicleId,
   repository = conversationRepository,
 }) {
-  const contextKey = vehicleId ? String(vehicleId) : null;
-  const contextKeyRef = useRef(contextKey);
-  const activeConversationRef = useRef({ contextKey, id: null });
+  const focusedVehicleId = vehicleId ? String(vehicleId) : null;
+  const focusedVehicleIdRef = useRef(focusedVehicleId);
+  const activeConversationRef = useRef(null);
   const operationVersionRef = useRef(0);
   const historyRequestIdRef = useRef(0);
-  const [activeConversation, setActiveConversation] = useState({
-    contextKey,
-    id: null,
-  });
-  const [history, setHistory] = useState({
-    contextKey,
-    conversations: [],
-  });
+  const [activeConversationId, setActiveConversationId] = useState(null);
+  const [conversations, setConversations] = useState([]);
 
-  contextKeyRef.current = contextKey;
+  focusedVehicleIdRef.current = focusedVehicleId;
 
-  const setActiveConversationRecord = useCallback((record) => {
-    activeConversationRef.current = record;
-    setActiveConversation(record);
+  const setActiveConversation = useCallback((conversationId) => {
+    activeConversationRef.current = conversationId;
+    setActiveConversationId(conversationId);
   }, []);
 
   const refreshConversations = useCallback(async () => {
     const requestId = historyRequestIdRef.current + 1;
     historyRequestIdRef.current = requestId;
 
-    if (!contextKey) {
-      setHistory({ contextKey, conversations: [] });
-      return [];
-    }
-
     try {
-      const conversations = await repository.listConversations();
+      const records = await repository.listConversations();
 
-      if (
-        historyRequestIdRef.current !== requestId ||
-        contextKeyRef.current !== contextKey
-      ) {
+      if (historyRequestIdRef.current !== requestId) {
         return [];
       }
 
-      setHistory({ contextKey, conversations });
-      return conversations;
+      setConversations(records);
+      return records;
     } catch {
-      if (
-        historyRequestIdRef.current === requestId &&
-        contextKeyRef.current === contextKey
-      ) {
-        setHistory({ contextKey, conversations: [] });
+      if (historyRequestIdRef.current === requestId) {
+        setConversations([]);
       }
 
       return [];
     }
-  }, [contextKey, repository]);
+  }, [repository]);
 
   useEffect(() => {
-    operationVersionRef.current += 1;
-    setActiveConversationRecord({ contextKey, id: null });
-    setHistory({ contextKey, conversations: [] });
     void refreshConversations();
-  }, [contextKey, refreshConversations, setActiveConversationRecord]);
+  }, [refreshConversations]);
 
   const startNewConversation = useCallback(() => {
     operationVersionRef.current += 1;
-    setActiveConversationRecord({ contextKey, id: null });
-  }, [contextKey, setActiveConversationRecord]);
+    setActiveConversation(null);
+  }, [setActiveConversation]);
 
   const loadConversation = useCallback(
     async (conversationId) => {
-      if (!contextKey) return null;
-
       const operationVersion = operationVersionRef.current + 1;
       operationVersionRef.current = operationVersion;
 
       try {
         const conversation = await repository.getConversation(conversationId);
 
-        if (
-          operationVersionRef.current !== operationVersion ||
-          contextKeyRef.current !== contextKey
-        ) {
+        if (operationVersionRef.current !== operationVersion) {
           return null;
         }
 
-        setActiveConversationRecord({
-          contextKey,
-          id: conversation.id,
-        });
+        setActiveConversation(conversation.id);
         return conversation;
       } catch {
         return null;
       }
     },
-    [contextKey, repository, setActiveConversationRecord],
+    [repository, setActiveConversation],
   );
 
   const sendMessage = useCallback(
     async (content) => {
-      if (!contextKey) {
+      const currentFocusedVehicleId = focusedVehicleIdRef.current;
+
+      if (!currentFocusedVehicleId) {
         throw new Error("A vehicle is required to send a message");
       }
 
       const operationVersion = operationVersionRef.current;
-      const activeRecord = activeConversationRef.current;
-      const conversationId =
-        activeRecord.contextKey === contextKey ? activeRecord.id : null;
+      const conversationId = activeConversationRef.current;
 
       try {
         const result = await repository.sendMessage({
           message: content,
+          vehicleId: currentFocusedVehicleId,
           ...(conversationId
             ? { conversationId }
-            : {
-                title: createConversationTitle(content),
-                vehicleId: contextKey,
-              }),
+            : { title: createConversationTitle(content) }),
         });
 
-        if (!conversationId && result.conversation.vehicleId !== contextKey) {
+        if (
+          !conversationId &&
+          result.conversation.vehicleId !== currentFocusedVehicleId
+        ) {
           throw new Error("Chat response vehicle does not match active vehicle");
         }
 
-        if (
-          operationVersionRef.current === operationVersion &&
-          contextKeyRef.current === contextKey
-        ) {
-          setActiveConversationRecord({
-            contextKey,
-            id: result.conversation.id,
-          });
-          setHistory((current) => {
-            if (current.contextKey !== contextKey) return current;
-
-            const conversations = current.conversations.filter(
-              (conversation) =>
-                conversation.id !== result.conversation.id,
+        if (operationVersionRef.current === operationVersion) {
+          setActiveConversation(result.conversation.id);
+          setConversations((current) => {
+            const withoutCurrent = current.filter(
+              (conversation) => conversation.id !== result.conversation.id,
             );
 
-            return {
-              contextKey,
-              conversations: sortByRecentActivity([
-                result.conversation,
-                ...conversations,
-              ]),
-            };
+            return sortByRecentActivity([
+              result.conversation,
+              ...withoutCurrent,
+            ]);
           });
         }
 
         return result;
       } catch (error) {
-        if (
-          operationVersionRef.current === operationVersion &&
-          contextKeyRef.current === contextKey
-        ) {
+        if (operationVersionRef.current === operationVersion) {
           void refreshConversations();
         }
 
         throw error;
       }
     },
-    [
-      contextKey,
-      refreshConversations,
-      repository,
-      setActiveConversationRecord,
-    ],
+    [refreshConversations, repository, setActiveConversation],
   );
 
   const deleteConversation = useCallback(
@@ -190,33 +143,25 @@ export default function useAIConversationHistory({
         return { deleted: false, wasActive: false };
       }
 
-      const activeRecord = activeConversationRef.current;
-      const wasActive = activeRecord.id === conversationId;
+      const wasActive = activeConversationRef.current === conversationId;
 
       if (wasActive) {
         operationVersionRef.current += 1;
-        setActiveConversationRecord({ contextKey, id: null });
+        setActiveConversation(null);
       }
 
-      setHistory((current) => ({
-        ...current,
-        conversations: current.conversations.filter(
-          (conversation) => conversation.id !== conversationId,
-        ),
-      }));
+      setConversations((current) =>
+        current.filter((conversation) => conversation.id !== conversationId),
+      );
 
       return { deleted: true, wasActive };
     },
-    [contextKey, repository, setActiveConversationRecord],
+    [repository, setActiveConversation],
   );
 
   return {
-    activeConversationId:
-      activeConversation.contextKey === contextKey
-        ? activeConversation.id
-        : null,
-    conversations:
-      history.contextKey === contextKey ? history.conversations : [],
+    activeConversationId,
+    conversations,
     deleteConversation,
     loadConversation,
     refreshConversations,

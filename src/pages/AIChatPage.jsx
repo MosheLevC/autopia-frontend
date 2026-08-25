@@ -37,7 +37,7 @@ const AIChatPage = observer(function AIChatPage() {
     sendMessage,
     clearConversation,
     loadConversation: loadChatConversation,
-  } = useAIChat({ vehicle: activeVehicle, sendTurn: sendStoredMessage });
+  } = useAIChat({ sendTurn: sendStoredMessage });
 
   const handleOpenHistory = () => {
     void refreshConversations();

@@ -128,7 +128,7 @@ export default function AIConversationHistory({
                   <ChatCircleDots size={24} aria-hidden="true" />
                 </ThemeIcon>
                 <Text size="sm" c="dimmed">
-                  אין שיחות קודמות לרכב הזה
+                  אין שיחות קודמות
                 </Text>
               </Stack>
             </Center>

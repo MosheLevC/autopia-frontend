@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { createAIEntityId } from "../utils/aiConversation";
 
 const createMessage = (role, content) => ({
@@ -8,129 +8,81 @@ const createMessage = (role, content) => ({
   createdAt: new Date().toISOString(),
 });
 
-export default function useAIChat({ vehicle, sendTurn } = {}) {
-  const contextKey = vehicle?._id || vehicle?.id || null;
-  const [conversation, setConversation] = useState(() => ({
-    contextKey,
-    messages: [],
-  }));
-  const [responseState, setResponseState] = useState({
-    contextKey: null,
-    active: false,
-  });
+export default function useAIChat({ sendTurn } = {}) {
+  const [messages, setMessages] = useState([]);
+  const [isResponding, setIsResponding] = useState(false);
   const requestIdRef = useRef(0);
-  const currentContextKeyRef = useRef(contextKey);
-  const respondingContextKeyRef = useRef(null);
-  const previousContextKeyRef = useRef(contextKey);
-
-  currentContextKeyRef.current = contextKey;
-
-  useEffect(() => {
-    if (previousContextKeyRef.current === contextKey) return;
-
-    previousContextKeyRef.current = contextKey;
-    requestIdRef.current += 1;
-    respondingContextKeyRef.current = null;
-    setConversation({ contextKey, messages: [] });
-    setResponseState({ contextKey: null, active: false });
-  }, [contextKey]);
+  const isRespondingRef = useRef(false);
 
   const clearConversation = useCallback(() => {
     requestIdRef.current += 1;
-    respondingContextKeyRef.current = null;
-    setConversation({ contextKey, messages: [] });
-    setResponseState({ contextKey: null, active: false });
-  }, [contextKey]);
+    isRespondingRef.current = false;
+    setMessages([]);
+    setIsResponding(false);
+  }, []);
 
-  const loadConversation = useCallback(
-    (messages) => {
-      requestIdRef.current += 1;
-      respondingContextKeyRef.current = null;
-      setConversation({
-        contextKey,
-        messages: Array.isArray(messages) ? messages : [],
-      });
-      setResponseState({ contextKey: null, active: false });
-    },
-    [contextKey],
-  );
+  const loadConversation = useCallback((storedMessages) => {
+    requestIdRef.current += 1;
+    isRespondingRef.current = false;
+    setMessages(Array.isArray(storedMessages) ? storedMessages : []);
+    setIsResponding(false);
+  }, []);
 
   const sendMessage = useCallback(
     (rawContent) => {
       const content = String(rawContent || "").trim();
-      if (!content || !contextKey) return false;
-      if (typeof sendTurn !== "function") return false;
-      if (respondingContextKeyRef.current === contextKey) return false;
+      if (!content || typeof sendTurn !== "function") return false;
+      if (isRespondingRef.current) return false;
 
       const userMessage = createMessage("user", content);
       const requestId = requestIdRef.current + 1;
       requestIdRef.current = requestId;
-      respondingContextKeyRef.current = contextKey;
+      isRespondingRef.current = true;
 
-      setConversation((current) => ({
-        contextKey,
-        messages:
-          current.contextKey === contextKey
-            ? [...current.messages, userMessage]
-            : [userMessage],
-      }));
-      setResponseState({ contextKey, active: true });
+      setMessages((current) => [...current, userMessage]);
+      setIsResponding(true);
 
       const getAssistantResponse = async () => {
         try {
           const completedTurn = await sendTurn(content);
 
-          if (
-            requestIdRef.current !== requestId ||
-            currentContextKeyRef.current !== contextKey
-          ) {
+          if (requestIdRef.current !== requestId) {
             return;
           }
 
-          setConversation((current) => {
-            if (current.contextKey !== contextKey) return current;
-
-            const optimisticIndex = current.messages.findIndex(
+          setMessages((current) => {
+            const optimisticIndex = current.findIndex(
               (message) => message.id === userMessage.id,
             );
             if (optimisticIndex === -1) return current;
 
-            const messages = [...current.messages];
-            messages[optimisticIndex] = completedTurn.userMessage;
+            const nextMessages = [...current];
+            nextMessages[optimisticIndex] = completedTurn.userMessage;
 
             if (
-              !messages.some(
+              !nextMessages.some(
                 (message) => message.id === completedTurn.assistantMessage.id,
               )
             ) {
-              messages.push(completedTurn.assistantMessage);
+              nextMessages.push(completedTurn.assistantMessage);
             }
 
-            return { contextKey, messages };
+            return nextMessages;
           });
         } catch {
-          if (
-            requestIdRef.current === requestId &&
-            currentContextKeyRef.current === contextKey
-          ) {
-            setConversation((current) => ({
-              contextKey,
-              messages: [
-                ...(current.contextKey === contextKey ? current.messages : []),
-                createMessage(
-                  "assistant",
-                  "לא הצלחתי להכין תשובה כרגע. אפשר לנסות שוב בעוד רגע.",
-                ),
-              ],
-            }));
+          if (requestIdRef.current === requestId) {
+            setMessages((current) => [
+              ...current,
+              createMessage(
+                "assistant",
+                "לא הצלחתי להכין תשובה כרגע. אפשר לנסות שוב בעוד רגע.",
+              ),
+            ]);
           }
         } finally {
-          if (
-            requestIdRef.current === requestId &&
-            currentContextKeyRef.current === contextKey
-          ) {
-            respondingContextKeyRef.current = null;
-            setResponseState({ contextKey, active: false });
+          if (requestIdRef.current === requestId) {
+            isRespondingRef.current = false;
+            setIsResponding(false);
           }
         }
       };
@@ -138,13 +90,8 @@ export default function useAIChat({ vehicle, sendTurn } = {}) {
       void getAssistantResponse();
       return true;
     },
-    [contextKey, sendTurn],
+    [sendTurn],
   );
-
-  const messages =
-    conversation.contextKey === contextKey ? conversation.messages : [];
-  const isResponding =
-    responseState.contextKey === contextKey && responseState.active;
 
   return {
     messages,
