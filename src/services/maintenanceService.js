@@ -1,6 +1,6 @@
 import apiClient from "./apiClient";
 
-export const maintenanceService = {
+const maintenanceService = {
   async getMaintenances(vehicleId) {
     if (!vehicleId) return [];
 

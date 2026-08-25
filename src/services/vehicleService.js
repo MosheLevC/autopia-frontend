@@ -1,7 +1,7 @@
 import apiClient from "./apiClient";
 import { cleanLicensePlate } from "../utils/plateUtils";
 
-export const vehicleService = {
+const vehicleService = {
   async lookupVehicle(licensePlate) {
     const clean = cleanLicensePlate(licensePlate);
     if (!clean) {
@@ -47,15 +47,6 @@ export const vehicleService = {
       return response.data?.data?.vehicles || [];
     } catch (err) {
       throw new Error(err.response?.data?.message || "שגיאה בטעינת רשימת הרכבים");
-    }
-  },
-
-  async getVehicle(vehicleId) {
-    try {
-      const response = await apiClient.get(`/vehicles/${vehicleId}`);
-      return response.data?.data?.vehicle || null;
-    } catch (err) {
-      throw new Error(err.response?.data?.message || "שגיאה בטעינת פרטי הרכב");
     }
   },
 

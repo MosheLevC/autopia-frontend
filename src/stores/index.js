@@ -1,4 +1,4 @@
-export { authStore, useAuth } from "./authStore";
-export { vehicleStore, useVehicleStore } from "./vehicleStore";
-export { maintenanceStore, useMaintenanceStore } from "./maintenanceStore";
-export { reminderStore, useReminderStore } from "./reminderStore";
+export { useAuth } from "./authStore";
+export { useVehicleStore } from "./vehicleStore";
+export { useMaintenanceStore } from "./maintenanceStore";
+export { useReminderStore } from "./reminderStore";

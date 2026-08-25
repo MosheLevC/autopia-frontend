@@ -30,7 +30,7 @@ const BULLETS = [
 
 export default function LandingHero() {
   return (
-    <Box component="section" className={classes.hero}>
+    <Box component="section">
       <Container size="lg" px="md">
         <div className={classes.heroInner}>
           <div className={classes.heroContent}>

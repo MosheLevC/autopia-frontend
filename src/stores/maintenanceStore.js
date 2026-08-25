@@ -1,7 +1,7 @@
 import { observable, action, runInAction } from "mobx";
 import maintenanceService from "../services/maintenanceService";
 
-export function createMaintenanceStore() {
+function createMaintenanceStore() {
   const store = observable({
     maintenances: [],
     maintenancesVehicleId: null,
