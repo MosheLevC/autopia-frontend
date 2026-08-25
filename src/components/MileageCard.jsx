@@ -28,9 +28,7 @@ const MileageCard = observer(function MileageCard() {
 
   const handleSubmit = async (newMileage) => {
     const vehicleId = activeVehicle._id;
-    await vehicleStore.updateVehicle(vehicleId, {
-      currentMileage: newMileage,
-    });
+    await vehicleStore.advanceMileage(vehicleId, newMileage);
     setSuccessVehicleId(vehicleId);
   };
 
