@@ -3,7 +3,7 @@ import vehicleService from "../services/vehicleService";
 
 const ACTIVE_VEHICLE_KEY = "autopia_active_vehicle_id";
 
-export function createVehicleStore() {
+function createVehicleStore() {
   const store = observable({
     vehicles: [],
     activeVehicleId: null,

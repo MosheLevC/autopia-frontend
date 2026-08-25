@@ -1,7 +1,7 @@
 import { Box, Button } from "@mantine/core";
 import { PlusCircle } from "@phosphor-icons/react";
 
-export function AddBottomButton({
+function AddBottomButton({
   label = "הוסף",
   onClick,
   icon: Icon = PlusCircle,

@@ -98,7 +98,7 @@ const repositoryError = (error, fallbackMessage) => {
   return normalizedError;
 };
 
-export const createConversationRepository = (client = apiClient) => ({
+const createConversationRepository = (client = apiClient) => ({
   async sendMessage({ message, conversationId, title, vehicleId }) {
     try {
       const payload = conversationId

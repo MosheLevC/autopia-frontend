@@ -1,7 +1,7 @@
 import { observable, action, runInAction } from "mobx";
 import reminderService from "../services/reminderService";
 
-export function createReminderStore() {
+function createReminderStore() {
   const store = observable({
     reminders: [],
     remindersVehicleId: null,

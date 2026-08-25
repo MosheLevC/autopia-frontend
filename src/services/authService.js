@@ -24,7 +24,7 @@ function formatErrorMessage(err, defaultMessage) {
   return defaultMessage;
 }
 
-export const authService = {
+const authService = {
   async signup({ firstName, lastName, email, password }) {
     try {
       const response = await apiClient.post("/auth/signup", {

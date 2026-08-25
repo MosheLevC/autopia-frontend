@@ -30,17 +30,10 @@ export const REMINDER_FREQUENCIES = [
   },
 ];
 
-export const REMINDER_FREQUENCY_MONTHS = {
+const REMINDER_FREQUENCY_MONTHS = {
   yearly: 12,
   halfYearly: 6,
 };
-
-export function getFrequenciesForType(type) {
-  if (type === "insurance") {
-    return REMINDER_FREQUENCIES.filter((f) => f.value === "yearly");
-  }
-  return REMINDER_FREQUENCIES;
-}
 
 export function getReminderTypeInfo(type) {
   return REMINDER_TYPES.find((t) => t.value === type) || {
@@ -60,7 +53,7 @@ export function getReminderFrequencyInfo(frequency) {
   };
 }
 
-export function getDaysDifference(targetDate) {
+function getDaysDifference(targetDate) {
   if (!targetDate) return 0;
   const target = new Date(targetDate);
   target.setHours(0, 0, 0, 0);

@@ -1,6 +1,6 @@
 import apiClient from "./apiClient";
 
-export const reminderService = {
+const reminderService = {
   async getReminders(vehicleId) {
     if (!vehicleId) return [];
 

@@ -6,7 +6,7 @@ import {
   DotsThreeCircle,
 } from "@phosphor-icons/react";
 
-export const MAINTENANCE_TYPE_CONFIG = {
+const MAINTENANCE_TYPE_CONFIG = {
   periodic: { label: "תקופתי", color: "orange", icon: ClockCounterClockwise },
   repair: { label: "תיקון", color: "red", icon: Wrench },
   replacement: { label: "החלפה", color: "grape", icon: ArrowsLeftRight },

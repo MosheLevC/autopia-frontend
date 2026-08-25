@@ -17,7 +17,7 @@ function persistUserForActiveSession(user) {
   }
 }
 
-export function createAuthStore() {
+function createAuthStore() {
   const store = observable({
     user: null,
     token: null,
@@ -230,6 +230,6 @@ export function createAuthStore() {
   return store;
 }
 
-export const authStore = createAuthStore();
+const authStore = createAuthStore();
 
 export const useAuth = () => authStore;
