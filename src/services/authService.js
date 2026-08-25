@@ -20,7 +20,7 @@ function formatErrorMessage(err, defaultMessage) {
     return ERROR_TRANSLATIONS[backendMsg] || backendMsg;
   }
   if (err.code === "ECONNABORTED" || err.message?.includes("Network Error") || !err.response) {
-    return "לא ניתן להתחבר לשרת. נא לוודא ששרת ה-API פעיל.";
+    return "אירעה שגיאה, נא לנסות שוב מאוחר יותר.";
   }
   return defaultMessage;
 }

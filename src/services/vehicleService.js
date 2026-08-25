@@ -34,7 +34,7 @@ const vehicleService = {
       }
 
       if (err.code === "ECONNABORTED" || err.message?.includes("Network Error") || !err.response) {
-        throw new Error("לא ניתן להתחבר לשרת. נא לוודא ששרת ה-API פעיל.");
+        throw new Error("אירעה שגיאה, נא לנסות שוב מאוחר יותר.");
       }
 
       throw new Error(err.response?.data?.message || "שגיאה בחיפוש פרטי הרכב.");
