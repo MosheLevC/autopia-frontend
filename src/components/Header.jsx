@@ -23,9 +23,12 @@ export default function Header() {
       bg="white"
       h="var(--app-header-height)"
       px="md"
-      bdb="1px solid var(--mantine-color-gray-2)"
       shadow="xs"
-      style={{ zIndex: 100, flexShrink: 0 }}
+      style={{
+        zIndex: 100,
+        flexShrink: 0,
+        borderBottom: "1px solid var(--mantine-color-gray-2)",
+      }}
     >
       <Flex
         align="center"

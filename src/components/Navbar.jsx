@@ -88,12 +88,13 @@ const Navbar = observer(function Navbar() {
         top={0}
         bg="white"
         p="md"
-        bdl="1px solid var(--mantine-color-gray-2)"
         style={{
           flexShrink: 0,
           flexDirection: "column",
           justifyContent: "space-between",
           zIndex: 90,
+          borderLeft: "1px solid var(--mantine-color-gray-2)",
+          borderInlineEnd: "1px solid var(--mantine-color-gray-2)",
         }}
       >
         <Stack gap="xl">
