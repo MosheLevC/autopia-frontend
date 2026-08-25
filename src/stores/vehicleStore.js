@@ -145,6 +145,40 @@ function createVehicleStore() {
       }
     },
 
+    async advanceMileage(vehicleId, currentMileage) {
+      runInAction(() => {
+        store.isLoading = true;
+        store.error = null;
+      });
+
+      try {
+        const updated = await vehicleService.advanceMileage(
+          vehicleId,
+          currentMileage
+        );
+        runInAction(() => {
+          if (updated) {
+            const index = store.vehicles.findIndex(
+              (v) => v._id === vehicleId
+            );
+            if (index !== -1) {
+              store.vehicles[index] = updated;
+            }
+          }
+        });
+        return updated;
+      } catch (err) {
+        runInAction(() => {
+          store.error = err.message || "שגיאה בעדכון הקילומטראז׳";
+        });
+        throw err;
+      } finally {
+        runInAction(() => {
+          store.isLoading = false;
+        });
+      }
+    },
+
     async deleteVehicle(vehicleId) {
       runInAction(() => {
         store.isLoading = true;

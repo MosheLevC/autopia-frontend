@@ -143,6 +143,8 @@ export default function AddMaintenanceForm({
 
     if (mileage !== "" && mileage !== null && mileage !== undefined) {
       payload.mileageAtMaintenance = Number(mileage);
+    } else if (isEdit) {
+      payload.mileageAtMaintenance = null;
     }
 
     onSubmit(payload);

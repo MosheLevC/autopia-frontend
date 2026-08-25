@@ -68,6 +68,17 @@ const vehicleService = {
     }
   },
 
+  async advanceMileage(vehicleId, currentMileage) {
+    try {
+      const response = await apiClient.patch(`/vehicles/${vehicleId}/mileage`, {
+        currentMileage,
+      });
+      return response.data?.data?.vehicle || null;
+    } catch (err) {
+      throw new Error(err.response?.data?.message || "שגיאה בעדכון הקילומטראז׳");
+    }
+  },
+
   async deleteVehicle(vehicleId) {
     try {
       const response = await apiClient.delete(`/vehicles/${vehicleId}`);
