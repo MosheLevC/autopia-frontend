@@ -4,7 +4,7 @@ import {
   formatLicensePlate,
 } from "../../utils/plateUtils";
 
-const EMPTY_VALUE = "לא זמין";
+const EMPTY_VALUE = "-";
 
 const hasValue = (value) =>
   value !== "" && value !== null && value !== undefined;

@@ -86,7 +86,7 @@ export default function LicensePlate({
   readOnly = false,
   displayOnly = false,
   size = "lg",
-  emptyLabel = "לא זמין",
+  emptyLabel = "-",
   ariaLabel = "מספר רישוי",
 }) {
   const config = SIZE_CONFIG[size] || SIZE_CONFIG.lg;
