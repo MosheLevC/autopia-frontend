@@ -1,5 +1,8 @@
 import apiClient from "../apiClient";
 
+const AI_CHAT_TIMEOUT_MS = 65000;
+const AXIOS_TIMEOUT_CODES = new Set(["ECONNABORTED", "ETIMEDOUT"]);
+
 const toId = (value) => {
   const id = value?._id || value?.id || value;
   return id ? String(id) : null;
@@ -91,10 +94,29 @@ const normalizeConversation = (conversation, messages) => {
 };
 
 const repositoryError = (error, fallbackMessage) => {
+  const response = error?.response;
+  const backendMessage =
+    typeof response?.data?.message === "string" &&
+    response.data.message.trim().length > 0
+      ? response.data.message.trim()
+      : null;
+  const backendCode =
+    typeof response?.data?.code === "string" ? response.data.code : null;
+  const axiosCode = typeof error?.code === "string" ? error.code : null;
+  const hasHttpResponse = Boolean(response);
+  const isTimeout = AXIOS_TIMEOUT_CODES.has(axiosCode);
+  const noHttpResponse = error?.isAxiosError === true && !hasHttpResponse;
   const normalizedError = new Error(
-    error.response?.data?.message || fallbackMessage,
+    backendMessage || fallbackMessage,
+    { cause: error },
   );
-  normalizedError.status = error.response?.status;
+  normalizedError.status = response?.status;
+  normalizedError.code = backendCode || axiosCode;
+  normalizedError.backendMessage = backendMessage;
+  normalizedError.axiosCode = axiosCode;
+  normalizedError.noHttpResponse = noHttpResponse;
+  normalizedError.isTimeout = isTimeout;
+  normalizedError.isNetworkError = noHttpResponse && !isTimeout;
   return normalizedError;
 };
 
@@ -113,7 +135,9 @@ const createConversationRepository = (client = apiClient) => ({
             primaryVehicleId: vehicleId || null,
             focusedVehicleId: vehicleId || null,
           };
-      const response = await client.post("/chat", payload);
+      const response = await client.post("/chat", payload, {
+        timeout: AI_CHAT_TIMEOUT_MS,
+      });
       const conversation = normalizeConversation(
         response.data?.data?.conversation,
       );
