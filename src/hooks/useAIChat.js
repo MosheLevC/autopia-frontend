@@ -1,6 +1,33 @@
 import { useCallback, useRef, useState } from "react";
 import { createAIEntityId } from "../utils/aiConversation";
 
+const CHAT_ERROR_MESSAGES = Object.freeze({
+  generic: "לא הצלחתי להכין תשובה כרגע. אפשר לנסות שוב בעוד רגע.",
+  network: "לא ניתן להתחבר לשרת כרגע. נסה שוב בעוד רגע.",
+  rateLimit: "יש כרגע עומס על שירות ה-AI. נסה שוב בעוד רגע.",
+  timeout: "התשובה לוקחת יותר מהרגיל. נסה שוב בעוד רגע.",
+});
+
+export const getChatErrorMessage = (error) => {
+  if (
+    error?.isTimeout === true ||
+    error?.status === 408 ||
+    error?.status === 504
+  ) {
+    return CHAT_ERROR_MESSAGES.timeout;
+  }
+
+  if (error?.isNetworkError === true) {
+    return CHAT_ERROR_MESSAGES.network;
+  }
+
+  if (error?.status === 429) {
+    return CHAT_ERROR_MESSAGES.rateLimit;
+  }
+
+  return CHAT_ERROR_MESSAGES.generic;
+};
+
 const createMessage = (role, content) => ({
   id: createAIEntityId(role),
   role,
@@ -69,14 +96,11 @@ export default function useAIChat({ sendTurn } = {}) {
 
             return nextMessages;
           });
-        } catch {
+        } catch (error) {
           if (requestIdRef.current === requestId) {
             setMessages((current) => [
               ...current,
-              createMessage(
-                "assistant",
-                "לא הצלחתי להכין תשובה כרגע. אפשר לנסות שוב בעוד רגע.",
-              ),
+              createMessage("assistant", getChatErrorMessage(error)),
             ]);
           }
         } finally {
